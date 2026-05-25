@@ -24,7 +24,47 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .container{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
 
 /* LOGIN */
-#login-screen{position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:100;}
+#login-screen{position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+
+/* LOGO BADGE — ATHLÉ 91 OFFICIEL */
+.logo-badge{
+  display:inline-flex;
+  align-items:center;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 6px 24px rgba(0,0,0,.6);
+  margin-bottom:14px;
+  font-family:'Barlow Condensed',Impact,sans-serif;
+  font-weight:900;
+  line-height:1;
+}
+.logo-athle{
+  background:#f5c400;
+  color:#ffffff;
+  padding:10px 18px;
+  font-size:32px;
+  letter-spacing:3px;
+}
+.logo-91{
+  background:#f5a623;
+  color:#000000;
+  padding:10px 18px;
+  font-size:32px;
+  letter-spacing:3px;
+}
+.login-subtitle{
+  font-family:'Barlow',sans-serif !important;
+  font-size:11px !important;
+  color:#888 !important;
+  letter-spacing:3px !important;
+  text-transform:uppercase;
+  margin-bottom:28px !important;
+  font-weight:600;
+}
+@media(max-width:480px){
+  .logo-athle{font-size:24px;padding:8px 14px;letter-spacing:2px;}
+  .logo-91{font-size:24px;padding:8px 14px;letter-spacing:2px;}
+}
 .login-box{background:#1c1c1c;border:1px solid #333;border-radius:20px;padding:40px 32px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
 .login-box .club-logo{margin-bottom:4px;}
 .login-box p{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;}
@@ -142,13 +182,17 @@ tr:last-child td{border-bottom:none;}
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <div style="display:flex;align-items:center;gap:16px;margin-bottom:6px">
-      <div style="background:linear-gradient(135deg,var(--accent2),var(--accent3));color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:42px;line-height:1;padding:4px 12px;letter-spacing:2px;border-radius:8px">ATHLÉ</div>
-      <div style="background:var(--accent);color:#1a0a2e;font-family:'Barlow Condensed',sans-serif;font-size:56px;line-height:1;padding:0 12px;border-radius:8px;font-weight:800">91</div>
+
+    <!-- LOGO ATHLÉ 91 -->
+    <div class="logo-badge">
+      <span class="logo-athle">ATHLÉ</span>
+      <span class="logo-91">91</span>
     </div>
-    <p style="font-family:'Roboto Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px">Viry-Châtillon</p>
-    <p>Choisir un profil</p>
+
+    <p class="login-subtitle">Viry-Châtillon · Choisir un profil</p>
+
     <div class="login-list" id="login-list"></div>
+
     <div class="login-pw" id="login-pw">
       <button class="back" onclick="backToList()">← Retour</button>
       <div class="form-group"><label>Mot de passe</label><input type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
