@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="theme-color" content="#f5c400">
+<meta name="theme-color" content="#e06000">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,8 +18,8 @@
 <style>
 :root{
   --bg:#f5f5f5;--surface:#fff;--card:#fff;--border:#e0e0e0;
-  --red:#e53935;--yellow:#f5c400;--orange:#f5a623;
-  --text:#111;--muted:#888;--accent:#f5c400;--accent2:#f5a623;
+  --red:#e53935;--yellow:#e06000;--orange:#f5a623;
+  --text:#111;--muted:#888;--accent:#e06000;--accent2:#f5a623;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
@@ -28,13 +28,13 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 #login-screen{position:fixed;inset:0;background:#ececec;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
 .login-box{background:#fff;border:1px solid #e0e0e0;border-radius:20px;padding:36px 28px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,.12);}
 .logo-badge{display:inline-flex;align-items:stretch;border-radius:10px;overflow:hidden;margin-bottom:14px;}
-.logo-athle{background:#f5c400;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;padding:8px 16px;letter-spacing:3px;line-height:1;}
+.logo-athle{background:#e06000;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;padding:8px 16px;letter-spacing:3px;line-height:1;}
 .logo-91{background:#f5a623;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;padding:8px 14px;line-height:1;}
 .login-subtitle{font-size:10px;color:#999;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;font-weight:600;}
 .login-step{display:none;flex-direction:column;gap:8px;}
 .login-step.show{display:flex;}
 .login-user{display:flex;align-items:center;justify-content:space-between;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .2s;}
-.login-user:hover{border-color:var(--yellow);background:rgba(245,196,0,.1);}
+.login-user:hover{border-color:var(--yellow);background:rgba(224,96,0,.1);}
 .login-user .uname{font-size:14px;font-weight:600;color:#111;}
 .login-user .urole{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
 .login-back{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;text-align:left;margin-bottom:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
@@ -103,7 +103,7 @@ tr:last-child td{border-bottom:none;}
 tr:hover td{background:#fafafa;}
 .perf-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--yellow);}
 .badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.5px;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
-.badge-r1,.badge-r2,.badge-r3,.badge-r4,.badge-r5,.badge-r6{background:rgba(245,196,0,.15);color:var(--yellow);border:1px solid rgba(245,196,0,.4);}
+.badge-r1,.badge-r2,.badge-r3,.badge-r4,.badge-r5,.badge-r6{background:rgba(224,96,0,.15);color:var(--yellow);border:1px solid rgba(224,96,0,.4);}
 .badge-d1,.badge-d2,.badge-d3,.badge-d7,.badge-d{background:rgba(245,166,35,.12);color:var(--orange);border:1px solid rgba(245,166,35,.3);}
 .rp-badge{display:inline-block;background:var(--yellow);color:#000;font-size:8px;font-weight:900;padding:1px 5px;border-radius:2px;text-transform:uppercase;margin-left:5px;vertical-align:middle;letter-spacing:.5px;}
 
@@ -145,7 +145,7 @@ tr:hover td{background:#fafafa;}
 .records-filters label{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
 .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
 .rec-card{background:#fff;border:1px solid #e8e8e8;border-bottom:3px solid var(--yellow);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.05);}
-.rec-card:hover{border-color:var(--yellow);background:#fffbf0;box-shadow:0 2px 8px rgba(245,196,0,.15);}
+.rec-card:hover{border-color:var(--yellow);background:#fffbf0;box-shadow:0 2px 8px rgba(224,96,0,.15);}
 .rec-card.open{border-color:var(--orange);}
 .rec-card .disc{font-size:10px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
 .rec-card .disc-label{font-size:10px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
@@ -172,7 +172,7 @@ tr:hover td{background:#fafafa;}
 .disc-pill label{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#888;cursor:pointer;background:#f5f5f5;border:1px solid #ddd;padding:5px 10px;border-radius:4px;transition:all .15s;}
 .disc-pill label:hover{border-color:var(--yellow);color:#111;}
 .disc-pill input:checked+span{color:var(--yellow);}
-.disc-pill label:has(input:checked){background:rgba(245,196,0,.1);border-color:var(--yellow);}
+.disc-pill label:has(input:checked){background:rgba(224,96,0,.1);border-color:var(--yellow);}
 
 /* ── EMPTY STATE ─────────────────── */
 .empty-state{text-align:center;padding:36px;color:#888;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
@@ -851,7 +851,7 @@ tr:hover td{background:#fafafa;}
   font-size:28px;
   font-weight:900;
   margin-bottom:12px;
-  box-shadow:0 4px 14px rgba(245,196,0,.25);
+  box-shadow:0 4px 14px rgba(224,96,0,.25);
 }
 .confirm-modal h3{
   margin-bottom:8px;
@@ -1061,7 +1061,7 @@ tr:hover td{background:#fafafa;}
 <script>
 // ─── SUPABASE ──────────────────────────────────────────────────────────────
 const {createClient} = supabase;
-const sb = createClient('https://jxuiltcgxnvsqxgydyxg.supabase.co','sb_publishable_1xOdv8qQMV-JoTHBuxRZdg_FmwuzeOd');
+const sb = createClient('https://jxuiltcgxnvsqxgydyxg.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4dWlsdGNneG52c3F4Z3lkeXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTYxMTgsImV4cCI6MjA5NTI5MjExOH0.VRfH2EZMBvtb5lr_yMAOEe518oU0FCfTMPAh2452CXI');
 
 // ─── CONSTANTS ─────────────────────────────────────────────────────────────
 const DISCIPLINES_ALL = [
@@ -1081,6 +1081,7 @@ const CATS_ORDER = ['BB','EA','PO','BE','MI','CA','JU','ES','SE','M35','M40','M4
 // ─── STATE ─────────────────────────────────────────────────────────────────
 const athletes = {};
 const users    = {};
+const clientId = Math.random().toString(36).slice(2);
 let currentUser=null, currentAthlete=null;
 let charts={}, chartFilters={}, selectedLoginCoach=null;
 
@@ -1295,10 +1296,16 @@ function syncFromServer(){
 
 function setupRealtime(){
   if(realtimeChannel)sb.removeChannel(realtimeChannel);
-  realtimeChannel=sb.channel('athle91-live')
-    .on('postgres_changes',{event:'*',schema:'public',table:'performances'},()=>{syncFromServer();})
-    .on('postgres_changes',{event:'*',schema:'public',table:'haies_franchies'},()=>{syncFromServer();})
+  realtimeChannel=sb.channel('athle91-room',{config:{broadcast:{self:false}}})
+    .on('broadcast',{event:'data-changed'},({payload})=>{
+      if(payload&&payload.from===clientId)return;
+      syncFromServer();
+    })
     .subscribe();
+}
+
+function broadcastChange(){
+  if(realtimeChannel)realtimeChannel.send({type:'broadcast',event:'data-changed',payload:{from:clientId}});
 }
 
 function showSyncBanner(){document.getElementById('sync-banner').style.display='block';}
@@ -1357,7 +1364,7 @@ function buildSwitcher(){
 function buildTabs(){
   if(!currentAthlete||!athletes[currentAthlete]){showNoAthleteScreen();return;}
   const ath=athletes[currentAthlete];
-  const hasHaies=ath.disciplines.some(d=>d.toLowerCase().includes('haies'));
+  const hasHaies=ath.prenom==='Margaux'&&ath.nom.toUpperCase()==='GREGO';
   const tabList=ath.disciplines.map(d=>discKey(d)).concat(hasHaies?['haies_franchies','records','parametres']:['records','parametres']);
   const tabLabels=ath.disciplines.concat(hasHaies?['Haies Franchies','Records','Paramètres']:['Records','Paramètres']);
   document.getElementById('main-tabs').innerHTML=
@@ -1548,7 +1555,7 @@ function buildParamTab(){
       <div class="card-title">Disciplines actives</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
         ${ath.disciplines.map(d=>`
-          <span style="background:rgba(245,196,0,.1);color:var(--yellow);border:1px solid rgba(245,196,0,.3);font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:6px">
+          <span style="background:rgba(224,96,0,.1);color:var(--yellow);border:1px solid rgba(224,96,0,.3);font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:6px">
             ${d}
             <button onclick="removeDisc('${d}')" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:13px;line-height:1;padding:0">×</button>
           </span>`).join('')}
@@ -1658,17 +1665,26 @@ function buildChart(k){
   const ctx=document.getElementById('chart-'+k);
   if(!ctx)return;
   if(charts[k])charts[k].destroy();
-  const datasets=[];
-  if(view==='les2'||view==='compet')datasets.push({
-    label:'Compétition',data:mapToLabels(compet),
-    borderColor:'#e53935',backgroundColor:'rgba(229,57,53,.06)',
-    pointBackgroundColor:'#e53935',pointRadius:5,tension:0.3,fill:true,borderWidth:2,spanGaps:false
-  });
-  if(view==='les2'||view==='entrainement')datasets.push({
-    label:'Entraînement',data:mapToLabels(train),
-    borderColor:'#f5c400',backgroundColor:'rgba(245,196,0,.06)',
-    pointBackgroundColor:'#f5c400',pointRadius:5,tension:0.3,fill:true,borderWidth:2,spanGaps:false
-  });
+  const datasets=[
+    {
+      label:'Compétition',data:mapToLabels(compet),
+      borderColor:'#e53935',backgroundColor:'rgba(229,57,53,.06)',
+      pointBackgroundColor:'#e53935',pointRadius:5,tension:0.3,fill:true,borderWidth:2,spanGaps:false,
+      borderDash:view==='entrainement'?[4,4]:[],
+      borderWidth:view==='entrainement'?1:2,
+      pointRadius:view==='entrainement'?3:5,
+      opacity:view==='entrainement'?0.35:1
+    },
+    {
+      label:'Entraînement',data:mapToLabels(train),
+      borderColor:'#e06000',backgroundColor:'rgba(224,96,0,.06)',
+      pointBackgroundColor:'#e06000',pointRadius:5,tension:0.3,fill:true,borderWidth:2,spanGaps:false,
+      borderDash:view==='compet'?[4,4]:[],
+      borderWidth:view==='compet'?1:2,
+      pointRadius:view==='compet'?3:5,
+      opacity:view==='compet'?0.35:1
+    }
+  ];
   charts[k]=new Chart(ctx.getContext('2d'),{
     type:'line',data:{labels,datasets},
     options:{
@@ -1705,8 +1721,8 @@ function buildChartHF(){
   charts['hf']=new Chart(ctx.getContext('2d'),{
     type:'line',
     data:{labels:filtered.map(d=>formatDate(d.date)),datasets:[{
-      data:cumulData,borderColor:'#f5c400',backgroundColor:'rgba(245,196,0,.06)',
-      pointBackgroundColor:'#f5c400',pointRadius:5,tension:0.3,fill:true,borderWidth:2,
+      data:cumulData,borderColor:'#e06000',backgroundColor:'rgba(224,96,0,.06)',
+      pointBackgroundColor:'#e06000',pointRadius:5,tension:0.3,fill:true,borderWidth:2,
     }]},
     options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:c=>c.raw+' haies cumulées'}}}}
   });
@@ -1861,6 +1877,7 @@ async function addPerf(k,disc){
   document.getElementById(k+'-lieu').value='';
   if(document.getElementById(k+'-niveau'))document.getElementById(k+'-niveau').value='';
   renderPerf(k,disc);
+  broadcastChange();
 }
 
 async function addHF(){
@@ -1880,13 +1897,17 @@ async function addHF(){
   document.getElementById('hf-val').value='';
   document.getElementById('hf-note').value='';
   renderHF();
+  broadcastChange();
 }
 
 async function delPerf(dk,k,disc,id){
-  const {error}=await sb.from('performances').delete().eq('id',id);
-  if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
-  athletes[currentAthlete][dk]=(athletes[currentAthlete][dk]||[]).filter(d=>d.id!==id);
-  renderPerf(k,disc);
+  showConfirm('Supprimer cette performance','Es-tu sûre de vouloir supprimer cette performance ? Cette action est définitive.',async()=>{
+    const {error}=await sb.from('performances').delete().eq('id',id);
+    if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
+    athletes[currentAthlete][dk]=(athletes[currentAthlete][dk]||[]).filter(d=>d.id!==id);
+    renderPerf(k,disc);
+    broadcastChange();
+  },'danger');
 }
 
 document.addEventListener('click',e=>{
@@ -1897,10 +1918,13 @@ document.addEventListener('click',e=>{
 });
 
 async function delHF(id){
-  const {error}=await sb.from('haies_franchies').delete().eq('id',id);
-  if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
-  athletes[currentAthlete].haiesFranchies=(athletes[currentAthlete].haiesFranchies||[]).filter(d=>d.id!==id);
-  renderHF();
+  showConfirm('Supprimer cette entrée','Es-tu sûre de vouloir supprimer cette entrée ? Cette action est définitive.',async()=>{
+    const {error}=await sb.from('haies_franchies').delete().eq('id',id);
+    if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
+    athletes[currentAthlete].haiesFranchies=(athletes[currentAthlete].haiesFranchies||[]).filter(d=>d.id!==id);
+    renderHF();
+    broadcastChange();
+  },'danger');
 }
 
 async function removeDisc(disc){
@@ -1993,6 +2017,7 @@ async function confirmAddDisc(){
   inserts.forEach(ins=>{if(!ath.disciplines.includes(ins.discipline))ath.disciplines.push(ins.discipline);});
   closeModal('modal-add-disc');
   charts={};buildTabs();renderAll();
+  broadcastChange();
 }
 
 // ─── MODALS ──────────────────────────────────────────────────────────────

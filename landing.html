@@ -124,6 +124,16 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
         <li>Appuie sur <strong>Ajouter</strong></li>
       </ol>
     </div>
+
+    <div class="instructions" id="firefox-instructions" style="display:none">
+      <p>Installer sur Firefox</p>
+      <ol>
+        <li>Regarde la <strong>barre d'adresse</strong> en haut à droite</li>
+        <li>Clique sur l'icône <strong>🏠⊕</strong> ou <strong>⬇</strong> qui apparaît</li>
+        <li>Sélectionne <strong>« Installer »</strong></li>
+        <li>Si l'icône n'apparaît pas : menu <strong>☰</strong> → <strong>Plus d'outils</strong> → <strong>Installer le site…</strong></li>
+      </ol>
+    </div>
   </div>
 
   <div class="divider"></div>
@@ -139,6 +149,8 @@ const isInstalled = window.matchMedia('(display-mode: standalone)').matches
 
 // Détecte iOS
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+// Détecte Firefox
+const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
@@ -172,6 +184,13 @@ if (isIOS && !isInstalled) {
   document.getElementById('ios-instructions').style.display = 'block';
   document.getElementById('install-status').textContent =
     'Sur iPhone, utilise Safari pour installer l\'app.';
+}
+
+// Firefox : affiche les instructions spécifiques
+if (isFirefox && !isInstalled) {
+  document.getElementById('firefox-instructions').style.display = 'block';
+  document.getElementById('install-status').textContent =
+    'Sur Firefox, regarde l\'icône dans la barre d\'adresse pour installer.';
 }
 
 // Déjà installée
