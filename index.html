@@ -1073,233 +1073,63 @@ const DISCIPLINES_ALL = [
 
 const CATS_ORDER = ['BB','EA','PO','BE','MI','CA','JU','ES','SE','M35','M40','M45','M50','M55','M60','M65','M70','M75'];
 
-const HIST = {
-  'Margaux': {
-    'Hauteur':[
-      {date:'2024-04-27',val:130,type:'compet',lieu:'Noisy Le Grand',niveau:'D3'},
-      {date:'2024-05-11',val:130,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {date:'2024-06-27',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-    ],
-    'Longueur':[
-      {date:'2017-05-01',val:359,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {date:'2017-06-04',val:348,type:'compet',lieu:'Vanves',niveau:'MI'},
-      {date:'2017-06-25',val:379,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {date:'2022-05-14',val:400,type:'compet',lieu:'Savigny Sur Orge',niveau:'D5'},
-      {date:'2022-05-21',val:400,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {date:'2022-05-29',val:400,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2023-05-08',val:460,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {date:'2023-05-13',val:460,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {date:'2023-05-28',val:460,type:'compet',lieu:'Lisses',niveau:'R5'},
-      {date:'2023-06-08',val:447,type:'compet',lieu:'Savigny Sur Orge',niveau:'R6'},
-      {date:'2023-06-28',val:469,type:'compet',lieu:'Lisses',niveau:'R5'},
-      {date:'2024-05-26',val:457,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {date:'2024-05-30',val:446,type:'compet',lieu:'Bondoufle',niveau:'R6'},
-      {date:'2024-06-06',val:448,type:'compet',lieu:'Saint Michel Sur Orge',niveau:'R6'},
-      {date:'2024-07-06',val:448,type:'compet',lieu:'Saint Michel Sur Orge',niveau:'R6'},
-    ],
-    'Triple Saut':[
-      {date:'2024-06-06',val:929,type:'compet',lieu:'Savigny sur Orge',niveau:'D1'},
-      {date:'2024-06-13',val:865,type:'compet',lieu:'Bretigny Sur Orge',niveau:'D3'},
-    ],
-    '100m':[
-      {date:'2017-06-25',val:15.64,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {date:'2022-05-14',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2022-05-28',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2022-06-23',val:14.30,type:'compet',lieu:'Bretigny sur Orge',niveau:'D1'},
-    ],
-    '200m':[
-      {date:'2022-05-16',val:29.76,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {date:'2022-06-30',val:30.56,type:'compet',lieu:'Longjumeau',niveau:'D1'},
-      {date:'2023-05-08',val:30.27,type:'compet',lieu:'Savigny Sur Orge',niveau:'R6'},
-      {date:'2023-05-13',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {date:'2023-05-28',val:29.81,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {date:'2023-05-28',val:30.57,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2023-06-08',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {date:'2023-06-29',val:29.36,type:'compet',lieu:'Longjumeau',niveau:'R5'},
-    ],
-    '400m':[
-      {date:'2023-06-15',val:69.44,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {date:'2023-06-22',val:69.01,type:'compet',lieu:'Savigny sur Orge',niveau:'R5'},
-    ],
-    '50m':[
-      {date:'2017-06-04',val:7.99,type:'compet',lieu:'Vanves',niveau:'MI'},
-      {date:'2017-06-25',val:8.17,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-    ],
-    'Disque':[
-      {date:'2022-04-14',val:1857,type:'compet',lieu:'Savigny Sur Orge',niveau:'D5'},
-      {date:'2022-05-14',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {date:'2022-05-21',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {date:'2022-05-29',val:2317,type:'compet',lieu:'Lisses',niveau:'D2'},
-      {date:'2022-06-05',val:2011,type:'compet',lieu:'Antony',niveau:'D4'},
-      {date:'2023-01-08',val:1971,type:'compet',lieu:'Montgeron',niveau:'D4'},
-      {date:'2023-05-06',val:1314,type:'compet',lieu:'Noisy Le Grand',niveau:'D7'},
-      {date:'2023-05-13',val:2195,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {date:'2023-05-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
-      {date:'2023-05-28',val:2579,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2023-06-08',val:2244,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {date:'2023-06-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
-      {date:'2023-06-17',val:2244,type:'compet',lieu:'Pontoise',niveau:'D3'},
-      {date:'2024-04-27',val:1951,type:'compet',lieu:'Noisy Le Grand',niveau:'D4'},
-      {date:'2024-05-11',val:2441,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
-      {date:'2025-05-17',val:2348,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
-    ],
-    'Poids':[
-      {date:'2017-05-01',val:729,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {date:'2017-06-04',val:732,type:'compet',lieu:'Vanves',niveau:'MI'},
-    ],
-    '80m Haies':[{date:'2017-05-01',val:17.02,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'}],
-  },
-  'Maria': {
-    '200m':[
-      {date:'2026-04-25',val:28.56,type:'compet',lieu:'Villejuif',niveau:'R3'},
-    ],
-  }
-};
-
-const athletes = {
-  margaux:{id:'margaux',dbId:null,prenom:'Margaux',nom:'GREGO',annee:2002,cat:'SE',pw:'margaux91',
-    disciplines:['Hauteur','400m Haies'],sub:'Athlé 91 · SE · née 2002',
-    records:[
-      {disc:'50m',perf:'7"99',date:'4 Juin 2017',cat:'MI'},
-      {disc:'100m',perf:'14"30',date:'23 Juin 2022',cat:'ES'},
-      {disc:'200m',perf:'29"36',date:'29 Juin 2023',cat:'ES'},
-      {disc:'400m',perf:'69"01',date:'22 Juin 2023',cat:'ES'},
-      {disc:'80m Haies',perf:'17"02',date:'1 Mai 2017',cat:'MI'},
-      {disc:'Hauteur',perf:'1m40',date:'17 Mai 2025',cat:'SE'},
-      {disc:'Longueur',perf:'4m60',date:'28 Mai 2023',cat:'ES'},
-      {disc:'Triple Saut',perf:'9m29',date:'6 Juin 2024',cat:'ES'},
-      {disc:'Poids',perf:'7m32',date:'4 Juin 2017',cat:'MI'},
-      {disc:'Disque',perf:'25m79',date:'28 Mai 2023',cat:'ES'},
-    ],
-    hauteur:[
-      {id:1,date:'2024-04-27',val:130,type:'compet',lieu:'Noisy Le Grand',niveau:'D3'},
-      {id:2,date:'2024-05-11',val:130,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {id:3,date:'2024-06-27',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-      {id:4,date:'2025-05-03',val:130,type:'compet',lieu:'Mantes La Jolie',niveau:'D3'},
-      {id:5,date:'2025-05-17',val:140,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {id:6,date:'2025-05-24',val:140,type:'compet',lieu:'Montgeron',niveau:'R5'},
-      {id:7,date:'2025-06-21',val:132,type:'compet',lieu:'Viry Chatillon',niveau:'D2'},
-      {id:8,date:'2025-06-28',val:133,type:'compet',lieu:'Ivry Sur Seine',niveau:'D2'},
-      {id:9,date:'2025-12-07',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-    ],
-    haies:[],
-    // Pre-populated from HIST
-    m50:[
-      {id:50,date:'2017-06-04',val:7.99,type:'compet',lieu:'Vanves',niveau:'MI'},
-      {id:51,date:'2017-06-25',val:8.17,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-    ],
-    m100:[
-      {id:60,date:'2017-06-25',val:15.64,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {id:61,date:'2022-05-14',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {id:62,date:'2022-05-28',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {id:63,date:'2022-06-23',val:14.30,type:'compet',lieu:'Bretigny sur Orge',niveau:'D1'},
-    ],
-    m200:[
-      {id:70,date:'2022-05-16',val:29.76,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {id:71,date:'2022-06-30',val:30.56,type:'compet',lieu:'Longjumeau',niveau:'D1'},
-      {id:72,date:'2023-05-08',val:30.27,type:'compet',lieu:'Savigny Sur Orge',niveau:'R6'},
-      {id:73,date:'2023-05-13',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {id:74,date:'2023-05-28',val:29.81,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {id:75,date:'2023-06-08',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {id:76,date:'2023-06-29',val:29.36,type:'compet',lieu:'Longjumeau',niveau:'R5'},
-    ],
-    m400:[
-      {id:80,date:'2023-06-15',val:69.44,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {id:81,date:'2023-06-22',val:69.01,type:'compet',lieu:'Savigny sur Orge',niveau:'R5'},
-    ],
-    m80haies:[
-      {id:90,date:'2017-05-01',val:17.02,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-    ],
-    poids:[
-      {id:100,date:'2017-05-01',val:729,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {id:101,date:'2017-06-04',val:732,type:'compet',lieu:'Vanves',niveau:'MI'},
-    ],
-    disque:[
-      {id:110,date:'2022-04-14',val:1857,type:'compet',lieu:'Savigny Sur Orge',niveau:'D5'},
-      {id:111,date:'2022-05-14',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {id:112,date:'2022-05-21',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {id:113,date:'2022-05-29',val:2317,type:'compet',lieu:'Lisses',niveau:'D2'},
-      {id:114,date:'2022-06-05',val:2011,type:'compet',lieu:'Antony',niveau:'D4'},
-      {id:115,date:'2023-01-08',val:1971,type:'compet',lieu:'Montgeron',niveau:'D4'},
-      {id:116,date:'2023-05-06',val:1314,type:'compet',lieu:'Noisy Le Grand',niveau:'D7'},
-      {id:117,date:'2023-05-13',val:2195,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {id:118,date:'2023-05-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
-      {id:119,date:'2023-05-28',val:2579,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {id:120,date:'2023-06-08',val:2244,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {id:121,date:'2023-06-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
-      {id:122,date:'2023-06-17',val:2244,type:'compet',lieu:'Pontoise',niveau:'D3'},
-      {id:123,date:'2024-04-27',val:1951,type:'compet',lieu:'Noisy Le Grand',niveau:'D4'},
-      {id:124,date:'2024-05-11',val:2441,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
-      {id:125,date:'2025-05-17',val:2348,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
-    ],
-    triplesaut:[
-      {id:130,date:'2024-06-06',val:929,type:'compet',lieu:'Savigny sur Orge',niveau:'D1'},
-      {id:131,date:'2024-06-13',val:865,type:'compet',lieu:'Bretigny Sur Orge',niveau:'D3'},
-    ],
-    haiesFranchies:[{id:1,date:'2025-05-22',val:1,dist:'100m',type:'entrainement',note:'1ère haie franchie'}],
-    haiesTotalSince:'22 Mai 2025',
-  },
-  maria:{id:'maria',dbId:null,prenom:'Maria',nom:'KANTE',annee:2006,cat:'ES',pw:'maria91',
-    disciplines:['Hauteur','Longueur'],sub:'Athlé 91 · ES · née 2006',
-    records:[
-      {disc:'200m',perf:'28"56',date:'25 Avr. 2026',cat:'ES'},
-      {disc:'Hauteur',perf:'1m50',date:'17 Mai 2026',cat:'ES'},
-      {disc:'Longueur',perf:'4m67',date:'25 Avr. 2026',cat:'ES'},
-    ],
-    hauteur:[
-      // 2025
-      {id:10,date:'2025-06-12',val:110,type:'compet',lieu:'Viry Chatillon',niveau:'D7'},
-      {id:11,date:'2025-06-19',val:110,type:'compet',lieu:'Viry Chatillon',niveau:'D7'},
-      {id:12,date:'2025-06-21',val:132,type:'compet',lieu:'Viry Chatillon',niveau:'D2'},
-      {id:13,date:'2025-07-12',val:133,type:'compet',lieu:'Ivry Sur Seine',niveau:'D2'},
-      {id:14,date:'2025-12-07',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-      // 2026
-      {id:15,date:'2026-01-14',val:140,type:'compet',lieu:'Paris',niveau:'R5'},
-      {id:16,date:'2026-02-04',val:143,type:'compet',lieu:'Paris',niveau:'R4'},
-      {id:17,date:'2026-02-06',val:149,type:'compet',lieu:'Eaubonne',niveau:''},
-      {id:18,date:'2026-04-25',val:146,type:'compet',lieu:'Villejuif',niveau:'R3'},
-      {id:19,date:'2026-05-02',val:145,type:'compet',lieu:'Noisy Le Grand',niveau:'R3'},
-      {id:20,date:'2026-05-17',val:150,type:'compet',lieu:'Caen',niveau:'R1'},
-    ],
-    longueur:[
-      // 2024
-      {id:30,date:'2024-12-14',val:411,type:'compet',lieu:'Viry Chatillon',niveau:'D3'},
-      // 2025
-      {id:31,date:'2025-06-12',val:409,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {id:32,date:'2025-06-21',val:402,type:'compet',lieu:'Viry Chatillon',niveau:'D3'},
-      {id:33,date:'2025-12-06',val:432,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-      // 2026
-      {id:34,date:'2026-02-06',val:450,type:'compet',lieu:'Eaubonne',niveau:'R6'},
-      {id:35,date:'2026-04-25',val:467,type:'compet',lieu:'Villejuif',niveau:'R5'},
-      {id:36,date:'2026-05-02',val:445,type:'compet',lieu:'Noisy Le Grand',niveau:'R3'},
-    ],
-    haies:[],haiesFranchies:[],haiesTotalSince:null,
-  }
-};
-const users = {coach:{id:'coach',name:'Kevin DEI',pw:'coach91',dbId:null}};
+let HIST = {};
+let athletes = {};
+let users = {};
 let currentUser=null,currentAthlete=null,nextId=500;
 let charts={};
 let chartFilters={}; // {key: {period:'tout', view:'les2'}}
 let selectedLoginCoach='coach';
+let remoteLoaded=false;
+let remoteSaveTimer=null;
 
 // Association par défaut des athlètes existants au coach Kevin
 Object.values(athletes).forEach(a=>{if(!a.coachId)a.coachId='coach';});
 
-// Sauvegarde locale simple pour conserver les coachs/athlètes ajoutés sur le même navigateur
-function saveLocalData(){
-  try{localStorage.setItem('athle91-data',JSON.stringify({users,athletes,nextId}));}catch(e){}
+// Sauvegarde Supabase : les données sont chargées depuis la table athle91_app_state
+function applyState(data){
+  if(!data)return;
+  HIST=data.HIST||{};
+  Object.keys(athletes).forEach(k=>delete athletes[k]);
+  Object.assign(athletes,data.athletes||{});
+  Object.keys(users).forEach(k=>delete users[k]);
+  Object.assign(users,data.users||{});
+  nextId=data.nextId||500;
+  Object.values(athletes).forEach(a=>{if(!a.coachId)a.coachId='coach';});
 }
-function loadLocalData(){
-  try{
-    const raw=localStorage.getItem('athle91-data');
-    if(!raw)return;
-    const data=JSON.parse(raw);
-    if(data.users)Object.assign(users,data.users);
-    if(data.athletes)Object.assign(athletes,data.athletes);
-    if(data.nextId)nextId=data.nextId;
-    Object.values(athletes).forEach(a=>{if(!a.coachId)a.coachId='coach';});
-  }catch(e){}
+
+function currentState(){
+  return {HIST,athletes,users,nextId};
 }
+
+async function saveLocalData(){
+  if(!remoteLoaded)return;
+  clearTimeout(remoteSaveTimer);
+  remoteSaveTimer=setTimeout(async()=>{
+    const {error}=await sb.from('athle91_app_state').upsert({
+      id:'main',
+      data:currentState(),
+      updated_at:new Date().toISOString()
+    });
+    if(error){
+      console.error('Erreur sauvegarde Supabase',error);
+      showMessage('Sauvegarde impossible','Les données n’ont pas pu être enregistrées dans Supabase. Vérifie les policies RLS.','danger');
+    }
+  },250);
+}
+
+async function loadLocalData(){
+  const {data,error}=await sb.from('athle91_app_state').select('data').eq('id','main').single();
+  if(error){
+    console.error('Erreur chargement Supabase',error);
+    document.getElementById('coach-list').innerHTML='<div class="empty-state" style="padding:18px">Impossible de charger les données Supabase. Vérifie que le SQL a bien été exécuté.</div>';
+    return false;
+  }
+  applyState(data.data);
+  remoteLoaded=true;
+  return true;
+}
+
 function athletesForCoach(coachKey){
   return Object.values(athletes).filter(a=>(a.coachId||'coach')===coachKey);
 }
@@ -1380,8 +1210,10 @@ function logout(){
   showStep(1);
 }
 
-loadLocalData();
-setTimeout(renderCoachLogin,0);
+(async()=>{
+  await loadLocalData();
+  renderCoachLogin();
+})();
 
 // ─── APP ──────────────────────────────────────────────────────────────────
 function buildApp(){
@@ -2010,6 +1842,7 @@ function addPerf(k,disc){
   document.getElementById(k+'-lieu').value='';
   if(document.getElementById(k+'-niveau'))document.getElementById(k+'-niveau').value='';
   renderPerf(k,disc);
+  saveLocalData();
 }
 
 function addHF(){
@@ -2025,16 +1858,19 @@ function addHF(){
   document.getElementById('hf-val').value='';
   document.getElementById('hf-note').value='';
   renderHF();
+  saveLocalData();
 }
 
 function delPerf(dk,k,disc,id){
   athletes[currentAthlete][dk]=(athletes[currentAthlete][dk]||[]).filter(d=>d.id!==id);
   renderPerf(k,disc);
+  saveLocalData();
 }
 
 function delHF(id){
   athletes[currentAthlete].haiesFranchies=(athletes[currentAthlete].haiesFranchies||[]).filter(d=>d.id!==id);
   renderHF();
+  saveLocalData();
 }
 
 function removeDisc(disc){
