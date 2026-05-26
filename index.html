@@ -627,6 +627,122 @@ tr:hover td{background:#fafafa;}
   }
 }
 
+
+
+/* ═══ CORRECTION MOBILE V3 — disciplines + dates vraiment lisibles ═══════════════ */
+@media(max-width:640px){
+  /* Annule le découpage qui mettait certains mots à la verticale */
+  #disc-checkboxes,
+  #disc-add-checkboxes{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:8px!important;
+    max-height:48vh;
+    overflow-y:auto;
+    padding-right:2px;
+  }
+
+  #disc-checkboxes .disc-pill,
+  #disc-add-checkboxes .disc-pill{
+    display:block!important;
+    width:100%!important;
+    min-width:100%!important;
+  }
+
+  #disc-checkboxes .disc-pill label,
+  #disc-add-checkboxes .disc-pill label{
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    width:100%!important;
+    min-height:44px;
+    padding:10px 12px!important;
+    gap:10px!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    line-height:1.25!important;
+    text-align:left!important;
+  }
+
+  #disc-checkboxes .disc-pill span,
+  #disc-add-checkboxes .disc-pill span{
+    display:block!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    line-height:1.25!important;
+  }
+
+  #disc-checkboxes .disc-pill input,
+  #disc-add-checkboxes .disc-pill input{
+    flex:0 0 16px!important;
+    width:16px!important;
+    height:16px!important;
+    margin:0!important;
+  }
+
+  /* Les champs Date dans les formulaires d'ajout : un bloc propre, jamais écrasé */
+  .form-col .form-row-2 .form-group:has(input[type="date"]),
+  .modal .form-group:has(input[type="date"]){
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  .form-col input[type="date"],
+  .modal input[type="date"]{
+    -webkit-appearance:none!important;
+    appearance:none!important;
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:50px!important;
+    min-height:50px!important;
+    padding:12px 14px!important;
+    line-height:normal!important;
+    font-size:16px!important;
+    text-align:left!important;
+    background:#f5f5f5!important;
+    border:1.5px solid #ddd!important;
+    border-radius:8px!important;
+    color:#111!important;
+  }
+
+  .form-col input[type="date"]::-webkit-date-and-time-value,
+  .modal input[type="date"]::-webkit-date-and-time-value{
+    display:block!important;
+    width:100%!important;
+    min-height:22px!important;
+    line-height:22px!important;
+    text-align:left!important;
+    padding:0!important;
+    margin:0!important;
+  }
+
+  .form-col input[type="date"]::-webkit-calendar-picker-indicator,
+  .modal input[type="date"]::-webkit-calendar-picker-indicator{
+    opacity:1;
+    width:22px;
+    height:22px;
+    margin:0;
+  }
+
+  /* Dans les cartes/tableaux mobiles, la date reste lisible à droite */
+  .table-wrap td:first-child,
+  .rec-history td:first-child{
+    align-items:center!important;
+  }
+  .table-wrap td:first-child::after,
+  .rec-history td:first-child::after{
+    white-space:normal!important;
+  }
+}
+
 </style>
 </head>
 <body>
