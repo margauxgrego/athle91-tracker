@@ -1269,13 +1269,13 @@ function dataFingerprint(){
 
 function startPolling(){
   stopPolling();
-  pollInterval=setInterval(()=>{
+  // Polling silencieux toutes les 5s — filet de sécurité si Realtime déconnecté
+  pollInterval=setInterval(async()=>{
     if(!currentUser||document.visibilityState!=='visible')return;
     const before=dataFingerprint();
-    loadAllData().then(()=>{
-      if(dataFingerprint()!==before&&currentAthlete)renderAll();
-    }).catch(()=>{});
-  },10000);
+    await loadAllData().catch(()=>{});
+    if(dataFingerprint()!==before&&currentAthlete)renderAll();
+  },5000);
 }
 function stopPolling(){if(pollInterval){clearInterval(pollInterval);pollInterval=null;}}
 
@@ -1284,6 +1284,7 @@ let realtimeChannel=null;
 let syncTimer=null;
 
 function syncFromServer(){
+  // Déduplique les appels rapprochés (ex: plusieurs lignes modifiées à la suite)
   if(syncTimer)clearTimeout(syncTimer);
   showSyncBanner();
   syncTimer=setTimeout(()=>{
@@ -1291,19 +1292,36 @@ function syncFromServer(){
       .then(()=>{if(currentAthlete)renderAll();})
       .catch(()=>{})
       .finally(()=>hideSyncBanner());
-  },300);
+  },250);
 }
 
 function setupRealtime(){
   if(realtimeChannel){sb.removeChannel(realtimeChannel);realtimeChannel=null;}
-  realtimeChannel=sb.channel('athle91-room',{config:{broadcast:{self:false}}})
+
+  realtimeChannel=sb.channel('athle91-sync',{config:{broadcast:{self:false}}})
+
+    // ── Postgres Changes : écoute les vraies écritures en base ──────────────
+    // Se déclenche sur TOUS les clients connectés dès qu'une ligne est modifiée
+    // même depuis un autre PC, une autre session, ou Supabase Studio.
+    .on('postgres_changes',{event:'*',schema:'public',table:'performances'},
+      ()=>syncFromServer())
+    .on('postgres_changes',{event:'*',schema:'public',table:'haies_franchies'},
+      ()=>syncFromServer())
+    .on('postgres_changes',{event:'*',schema:'public',table:'athletes'},
+      ()=>syncFromServer())
+
+    // ── Broadcast : signal immédiat entre clients déjà connectés ────────────
     .on('broadcast',{event:'data-changed'},({payload})=>{
       if(payload&&payload.from===clientId)return;
       syncFromServer();
     })
+
     .subscribe(status=>{
       if(status==='SUBSCRIBED')console.log('[Realtime] connecté ✓');
-      if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('[Realtime] erreur:',status);
+      if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
+        console.warn('[Realtime] erreur:',status,', reconnexion dans 5s…');
+        setTimeout(setupRealtime,5000);
+      }
     });
 }
 
