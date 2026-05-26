@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Athlé 91 — Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+
+.logo-badge{display:inline-flex;align-items:stretch;border-radius:12px;overflow:hidden;margin-bottom:32px;}
+.logo-athle{background:#f5c400;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;padding:10px 20px;letter-spacing:3px;line-height:1;}
+.logo-91{background:#f5a623;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;padding:10px 18px;line-height:1;}
+
+.hero{text-align:center;max-width:480px;}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(40px,10vw,72px);font-weight:900;line-height:1;margin-bottom:16px;}
+.hero h1 span{color:#f5c400;}
+.hero p{font-size:16px;color:#aaa;line-height:1.6;margin-bottom:40px;}
+
+.features{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px;margin-bottom:40px;}
+.feature{display:flex;align-items:center;gap:14px;background:#1a1a1a;border-radius:12px;padding:14px 18px;}
+.feature-icon{font-size:22px;flex-shrink:0;}
+.feature-text{font-size:14px;color:#ccc;line-height:1.4;}
+.feature-text strong{color:#fff;display:block;font-size:15px;margin-bottom:2px;}
+
+.install-section{text-align:center;width:100%;max-width:360px;}
+
+#btn-install{
+  display:none;
+  width:100%;padding:18px;
+  background:#f5c400;color:#000;
+  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:2px;
+  border:none;border-radius:14px;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 24px rgba(245,196,0,.35);
+}
+#btn-install:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,196,0,.5);}
+#btn-install:active{transform:translateY(0);}
+
+#btn-open{
+  display:block;
+  width:100%;padding:18px;
+  background:#f5c400;color:#000;
+  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:2px;
+  border:none;border-radius:14px;cursor:pointer;text-decoration:none;text-align:center;
+  transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 24px rgba(245,196,0,.35);
+}
+#btn-open:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,196,0,.5);}
+
+#install-status{margin-top:14px;font-size:13px;color:#666;line-height:1.5;}
+
+.instructions{margin-top:20px;background:#1a1a1a;border-radius:12px;padding:16px 18px;text-align:left;}
+.instructions p{font-size:13px;color:#888;margin-bottom:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+.instructions ol{padding-left:18px;}
+.instructions li{font-size:13px;color:#bbb;line-height:1.7;}
+
+.divider{width:40px;height:3px;background:#f5c400;border-radius:2px;margin:40px auto;}
+.footer{font-size:11px;color:#444;text-align:center;margin-top:32px;letter-spacing:1px;}
+
+@media(max-width:480px){
+  .logo-athle,.logo-91{font-size:28px;padding:8px 14px;}
+  .hero h1{font-size:42px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo-badge">
+    <span class="logo-athle">ATHLÉ</span>
+    <span class="logo-91">91</span>
+  </div>
+
+  <h1>TRACKER<br><span>ATHLÉTISME</span></h1>
+  <p>Suis tes performances, visualise ta progression et bats tes records personnels.</p>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">📈</div>
+      <div class="feature-text">
+        <strong>Graphiques de progression</strong>
+        Visualise ton évolution sur toutes tes disciplines
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🏆</div>
+      <div class="feature-text">
+        <strong>Records personnels</strong>
+        Suivi automatique de tes meilleures performances
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🚧</div>
+      <div class="feature-text">
+        <strong>Haies franchies</strong>
+        Compteur dédié pour l'entraînement haies
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📲</div>
+      <div class="feature-text">
+        <strong>Fonctionne hors ligne</strong>
+        Disponible même sans connexion internet
+      </div>
+    </div>
+  </div>
+
+  <div class="install-section">
+    <button id="btn-install" onclick="installApp()">⬇ INSTALLER L'APPLICATION</button>
+    <a id="btn-open" href="/index.html">OUVRIR L'APPLICATION →</a>
+    <div id="install-status"></div>
+
+    <div class="instructions" id="ios-instructions" style="display:none">
+      <p>Installer sur iPhone / iPad</p>
+      <ol>
+        <li>Appuie sur le bouton <strong>Partager</strong> (📤) en bas de Safari</li>
+        <li>Sélectionne <strong>« Sur l'écran d'accueil »</strong></li>
+        <li>Appuie sur <strong>Ajouter</strong></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="footer">ATHLÉ 91 · ESSONNE · TRACKER v1.0</div>
+</div>
+
+<script>
+let deferredPrompt = null;
+
+// Détecte si déjà installée
+const isInstalled = window.matchMedia('(display-mode: standalone)').matches
+  || window.navigator.standalone === true;
+
+// Détecte iOS
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('btn-install').style.display = 'block';
+  document.getElementById('btn-open').style.display = 'none';
+  document.getElementById('install-status').textContent =
+    'Compatible avec Chrome, Edge et Android.';
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('btn-install').style.display = 'none';
+  document.getElementById('btn-open').style.display = 'block';
+  document.getElementById('install-status').textContent =
+    'Application installée ! Retrouve-la sur ton écran d\'accueil.';
+  deferredPrompt = null;
+});
+
+async function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    document.getElementById('install-status').textContent = 'Installation en cours…';
+  }
+  deferredPrompt = null;
+}
+
+// iOS : pas de beforeinstallprompt, affiche les instructions
+if (isIOS && !isInstalled) {
+  document.getElementById('ios-instructions').style.display = 'block';
+  document.getElementById('install-status').textContent =
+    'Sur iPhone, utilise Safari pour installer l\'app.';
+}
+
+// Déjà installée
+if (isInstalled) {
+  document.getElementById('btn-open').textContent = '→ OUVRIR L\'APPLICATION';
+  document.getElementById('install-status').textContent = 'Application déjà installée.';
+}
+</script>
+
+</body>
+</html>

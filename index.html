@@ -1015,6 +1015,8 @@ tr:hover td{background:#fafafa;}
 <div class="modal-overlay" id="modal-add-disc">
   <div class="modal">
     <h3>Ajouter une discipline</h3>
+    <input type="text" id="disc-search" placeholder="Rechercher…" oninput="filterDiscs(this.value)"
+      style="width:100%;padding:10px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;margin-bottom:12px;outline:none;">
     <div class="disc-pills" id="disc-add-checkboxes"></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-add-disc')">Annuler</button>
@@ -1893,9 +1895,19 @@ function openAddDisc(){
   const ath=athletes[currentAthlete];
   const avail=DISCIPLINES_ALL.filter(d=>!ath.disciplines.includes(d));
   if(!avail.length){showMessage('Aucune discipline disponible','Toutes les disciplines sont déjà ajoutées.');return;}
+  document.getElementById('disc-search').value='';
   document.getElementById('disc-add-checkboxes').innerHTML=avail.map(d=>`
     <div class="disc-pill"><label><input type="checkbox" value="${d}"><span> ${d}</span></label></div>`).join('');
   openModal('modal-add-disc');
+  setTimeout(()=>document.getElementById('disc-search').focus(),200);
+}
+
+function filterDiscs(q){
+  const term=q.toLowerCase().trim();
+  document.querySelectorAll('#disc-add-checkboxes .disc-pill').forEach(pill=>{
+    const name=pill.querySelector('span').textContent.toLowerCase();
+    pill.style.display=(!term||name.includes(term))?'':'none';
+  });
 }
 
 async function confirmAddDisc(){
