@@ -1723,7 +1723,7 @@ function buildChart(k){
     {
       label:'Compétition',data:mapToLabels(compet),
       borderColor:'#f5c400',backgroundColor:'rgba(245,196,0,.08)',
-      pointBackgroundColor:'#f5c400',tension:0.3,fill:true,spanGaps:false,
+      pointBackgroundColor:'#f5c400',tension:0.3,fill:true,spanGaps:true,
       borderDash:view==='entrainement'?[4,4]:[],
       borderWidth:view==='entrainement'?1:2,
       pointRadius:view==='entrainement'?3:5,
@@ -1732,7 +1732,7 @@ function buildChart(k){
     {
       label:'Entraînement',data:mapToLabels(train),
       borderColor:'#e06000',backgroundColor:'rgba(224,96,0,.06)',
-      pointBackgroundColor:'#e06000',pointRadius:5,tension:0.3,fill:true,borderWidth:2,spanGaps:false,
+      pointBackgroundColor:'#e06000',pointRadius:5,tension:0.3,fill:true,borderWidth:2,spanGaps:true,
       borderDash:view==='compet'?[4,4]:[],
       borderWidth:view==='compet'?1:2,
       pointRadius:view==='compet'?3:5,
@@ -1874,18 +1874,50 @@ function renderRecords(){
   const grid=document.getElementById('records-grid');
   const sel=document.getElementById('rec-year-filter');
   if(!grid||!sel)return;
+
+  // ── Filtre années ──────────────────────────────────────────────────────────
   const years=new Set();
   Object.values(ath).forEach(v=>{
     if(Array.isArray(v))v.forEach(p=>{if(p&&p.date){const y=extractYear(p.date);if(y)years.add(y);}});
   });
   const curVal=sel.value||'tout';
   sel.innerHTML='<option value="tout">Toutes</option>'+[...years].sort((a,b)=>b-a).map(y=>`<option value="${y}" ${curVal===y?'selected':''}>${y}</option>`).join('');
+
   const discDisplayNames={'Poids':'Poids 3kg','Disque':'Disque 1kg'};
-  grid.innerHTML=ath.records.map((r,i)=>`
-    <div class="rec-card" id="rec-${i}" onclick="toggleRecHistory(${i},'${r.disc}')">
-      <div class="disc">${discDisplayNames[r.disc]||r.disc}</div>
-      <div class="perf">${r.perf}</div>
-      <div class="meta">${extractYear(r.date)||''} · ${r.cat}</div>
+  const shown=new Set();
+  const cards=[];
+
+  // ── 1. Records AUTO-CALCULÉS depuis les performances ──────────────────────
+  // Pour chaque discipline de l'athlète, on calcule le meilleur résultat réel
+  ath.disciplines.forEach(disc=>{
+    const data=getAllDataForDisc(disc);
+    if(!data.length)return;
+    const dist=isDistDisc(disc),isTime=isTimeDisc(disc);
+    const pr=dist?Math.max(...data.map(d=>d.val)):isTime?Math.min(...data.map(d=>d.val)):Math.max(...data.map(d=>d.val));
+    const prEntry=[...data].sort((a,b)=>b.date.localeCompare(a.date)).find(d=>d.val===pr);
+    const fmtPr=dist?cmToM(pr):isTime?formatTime(pr):pr+' cm';
+    shown.add(disc);
+    cards.push({disc,fmtPr,year:extractYear(prEntry?.date)||'',cat:ath.cat||''});
+  });
+
+  // ── 2. Records manuels (table records) pour les disciplines sans perfs ─────
+  // Cela couvre les disciplines saisies directement dans Supabase
+  ath.records.forEach(r=>{
+    if(shown.has(r.disc))return; // déjà couvert par les perfs
+    shown.add(r.disc);
+    cards.push({disc:r.disc,fmtPr:r.perf,year:extractYear(r.date)||'',cat:r.cat||''});
+  });
+
+  if(!cards.length){
+    grid.innerHTML='<p style="color:#999;font-size:13px;padding:12px 0">Aucun record enregistré</p>';
+    return;
+  }
+
+  grid.innerHTML=cards.map((c,i)=>`
+    <div class="rec-card" id="rec-${i}" onclick="toggleRecHistory(${i},'${c.disc}')">
+      <div class="disc">${discDisplayNames[c.disc]||c.disc}</div>
+      <div class="perf">${c.fmtPr}</div>
+      <div class="meta">${c.year}${c.year&&c.cat?' · ':''}${c.cat}</div>
       <div class="rec-history" id="rec-hist-${i}"></div>
     </div>`).join('');
 }
