@@ -1695,7 +1695,7 @@ function renderPerf(k,disc){
       <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
       <td data-label="Niveau">${lvl}</td>
       <td data-label="Lieu" style="color:#888;font-size:12px">${d.lieu||'—'}</td>
-      <td data-label="Action"><button class="btn-ghost" onclick="delPerf('${dk}','${k}','${disc}',${JSON.stringify(d.id)})">✕</button></td>
+      <td data-label="Action"><button class="btn-ghost" onclick="delPerf('${dk}','${k}','${disc}','${d.id}')">✕</button></td>
     </tr>`;
   }).join('');
   buildChart(k);
