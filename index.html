@@ -2014,14 +2014,14 @@ async function delHF(id){
 }
 
 async function removeDisc(disc){
-  showConfirm('Supprimer la discipline',`Supprimer la discipline "${disc}" et toutes ses données ?`,async()=>{
-    await sb.from('athlete_disciplines').delete().eq('athlete_id',currentAthlete).eq('discipline',disc);
-    await sb.from('performances').delete().eq('athlete_id',currentAthlete).eq('discipline',disc);
+  showConfirm('Masquer la discipline',`Masquer l'onglet "${disc}" ? Les performances enregistrées sont conservées et resteront visibles dans les Records.`,async()=>{
+    const {error}=await sb.from('athlete_disciplines').delete().eq('athlete_id',currentAthlete).eq('discipline',disc);
+    if(error){showMessage('Erreur','Impossible de masquer la discipline.','danger');return;}
     const ath=athletes[currentAthlete];
     ath.disciplines=ath.disciplines.filter(d=>d!==disc);
-    delete ath[dataKey(disc)];
     charts={};buildTabs();renderAll();
-    showMessage('Discipline supprimée','La discipline a bien été supprimée.');
+    broadcastChange();
+    showMessage('Discipline masquée',`L'onglet "${disc}" a été masqué. Les données sont conservées.`);
   },'danger');
 }
 
