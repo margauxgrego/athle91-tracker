@@ -1254,47 +1254,24 @@ function logout(){
 
 // ─── REALTIME ─────────────────────────────────────────────────────────────
 let realtimeChannel=null;
+let syncTimer=null;
+
+function syncFromServer(){
+  if(syncTimer)clearTimeout(syncTimer);
+  showSyncBanner();
+  syncTimer=setTimeout(()=>{
+    loadAllData()
+      .then(()=>{if(currentAthlete)renderAll();})
+      .catch(()=>{})
+      .finally(()=>hideSyncBanner());
+  },300);
+}
 
 function setupRealtime(){
   if(realtimeChannel)sb.removeChannel(realtimeChannel);
   realtimeChannel=sb.channel('athle91-live')
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'performances'},payload=>{
-      const p=payload.new;
-      if(!athletes[p.athlete_id])return;
-      const dk=dataKey(p.discipline);
-      const ath=athletes[p.athlete_id];
-      if(!ath[dk])ath[dk]=[];
-      if(!ath[dk].find(x=>x.id===p.id))
-        ath[dk].push({id:p.id,date:p.date,val:parseFloat(p.val),type:p.type,lieu:p.lieu||'',niveau:p.niveau||''});
-      if(p.athlete_id===currentAthlete){renderPerf(dataKey(p.discipline),p.discipline);updateHeaderKPIs();}
-    })
-    .on('postgres_changes',{event:'DELETE',schema:'public',table:'performances'},payload=>{
-      const id=payload.old.id;
-      Object.values(athletes).forEach(ath=>{
-        Object.keys(ath).filter(k=>Array.isArray(ath[k])).forEach(dk=>{
-          const before=ath[dk].length;
-          ath[dk]=ath[dk].filter(x=>x.id!==id);
-          if(ath[dk].length<before&&ath.id===currentAthlete)
-            ath.disciplines.forEach(d=>{if(dataKey(d)===dk)renderPerf(dk,d);});
-        });
-      });
-      if(currentAthlete)updateHeaderKPIs();
-    })
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'haies_franchies'},payload=>{
-      const h=payload.new;
-      if(!athletes[h.athlete_id])return;
-      const ath=athletes[h.athlete_id];
-      if(!ath.haiesFranchies.find(x=>x.id===h.id)){
-        ath.haiesFranchies.push({id:h.id,date:h.date,val:h.val,type:h.type,dist:h.dist||'',note:h.note||''});
-        ath.haiesFranchies.sort((a,b)=>a.date.localeCompare(b.date));
-      }
-      if(h.athlete_id===currentAthlete)renderHF();
-    })
-    .on('postgres_changes',{event:'DELETE',schema:'public',table:'haies_franchies'},payload=>{
-      const id=payload.old.id;
-      Object.values(athletes).forEach(ath=>{ath.haiesFranchies=(ath.haiesFranchies||[]).filter(x=>x.id!==id);});
-      if(currentAthlete)renderHF();
-    })
+    .on('postgres_changes',{event:'*',schema:'public',table:'performances'},()=>{syncFromServer();})
+    .on('postgres_changes',{event:'*',schema:'public',table:'haies_franchies'},()=>{syncFromServer();})
     .subscribe();
 }
 
