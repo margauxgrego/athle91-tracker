@@ -769,6 +769,63 @@ tr:hover td{background:#fafafa;}
   }
 }
 
+
+/* ═══ CORRECTION MOBILE V6 — scroll vertical fiable sur pages performances ═══════════════ */
+@media(max-width:640px){
+  html,
+  body{
+    height:auto!important;
+    min-height:100%!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y pinch-zoom!important;
+  }
+
+  #app,
+  .container,
+  .tab-content,
+  .tab-content.active,
+  .card,
+  .grid-2,
+  .stat-row,
+  .legend,
+  .chart-header,
+  .form-col,
+  .form-grid,
+  .form-row-2{
+    overflow:visible!important;
+    overscroll-behavior:contain!important;
+    touch-action:pan-y pinch-zoom!important;
+  }
+
+  /* Les historiques de performances ne doivent plus agir comme une zone de scroll interne.
+     On laisse la page entière gérer le swipe haut/bas, même au milieu des cartes. */
+  .table-wrap,
+  .table-wrap *,
+  .rec-history,
+  .rec-history *{
+    overflow-x:visible!important;
+    overflow-y:visible!important;
+    -webkit-overflow-scrolling:auto!important;
+    overscroll-behavior:contain!important;
+    touch-action:pan-y pinch-zoom!important;
+  }
+
+  /* On garde le scroll horizontal seulement là où il est utile : onglets + choix athlète. */
+  .tabs,
+  .topbar-left{
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-x pan-y pinch-zoom!important;
+  }
+
+  canvas{
+    touch-action:pan-y pinch-zoom!important;
+  }
+}
+
 </style>
 </head>
 <body>
