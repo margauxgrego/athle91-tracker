@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -1048,6 +1048,7 @@ tr:hover td{background:#fafafa;}
   <div id="tab-contents"></div>
 </div>
 
+
 <script>
 // ─── SUPABASE ──────────────────────────────────────────────────────────────
 const {createClient} = supabase;
@@ -1055,253 +1056,109 @@ const sb = createClient('https://jxuiltcgxnvsqxgydyxg.supabase.co','sb_publishab
 
 // ─── CONSTANTS ─────────────────────────────────────────────────────────────
 const DISCIPLINES_ALL = [
-  // Courses
   '50m','60m','100m','200m','400m','800m','1000m','1500m','3000m','5000m','10000m',
   '60m Haies','80m Haies','100m Haies','110m Haies','400m Haies',
   '2000m Steeple','3000m Steeple',
   'Relais 4x100m','Relais 4x400m',
   '20km Marche','50km Marche',
-  // Sauts
   'Hauteur','Perche','Longueur','Triple Saut',
-  // Lancers
   'Poids','Disque','Marteau','Javelot',
-  // Combinés
   'Pentathlon','Heptathlon','Décathlon',
-  // Cross/Route
   'Cross','Semi-marathon','Marathon',
 ];
 
 const CATS_ORDER = ['BB','EA','PO','BE','MI','CA','JU','ES','SE','M35','M40','M45','M50','M55','M60','M65','M70','M75'];
 
-const HIST = {
-  'Margaux': {
-    'Hauteur':[
-      {date:'2024-04-27',val:130,type:'compet',lieu:'Noisy Le Grand',niveau:'D3'},
-      {date:'2024-05-11',val:130,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {date:'2024-06-27',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-    ],
-    'Longueur':[
-      {date:'2017-05-01',val:359,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {date:'2017-06-04',val:348,type:'compet',lieu:'Vanves',niveau:'MI'},
-      {date:'2017-06-25',val:379,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {date:'2022-05-14',val:400,type:'compet',lieu:'Savigny Sur Orge',niveau:'D5'},
-      {date:'2022-05-21',val:400,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {date:'2022-05-29',val:400,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2023-05-08',val:460,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {date:'2023-05-13',val:460,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {date:'2023-05-28',val:460,type:'compet',lieu:'Lisses',niveau:'R5'},
-      {date:'2023-06-08',val:447,type:'compet',lieu:'Savigny Sur Orge',niveau:'R6'},
-      {date:'2023-06-28',val:469,type:'compet',lieu:'Lisses',niveau:'R5'},
-      {date:'2024-05-26',val:457,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {date:'2024-05-30',val:446,type:'compet',lieu:'Bondoufle',niveau:'R6'},
-      {date:'2024-06-06',val:448,type:'compet',lieu:'Saint Michel Sur Orge',niveau:'R6'},
-      {date:'2024-07-06',val:448,type:'compet',lieu:'Saint Michel Sur Orge',niveau:'R6'},
-    ],
-    'Triple Saut':[
-      {date:'2024-06-06',val:929,type:'compet',lieu:'Savigny sur Orge',niveau:'D1'},
-      {date:'2024-06-13',val:865,type:'compet',lieu:'Bretigny Sur Orge',niveau:'D3'},
-    ],
-    '100m':[
-      {date:'2017-06-25',val:15.64,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {date:'2022-05-14',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2022-05-28',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2022-06-23',val:14.30,type:'compet',lieu:'Bretigny sur Orge',niveau:'D1'},
-    ],
-    '200m':[
-      {date:'2022-05-16',val:29.76,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {date:'2022-06-30',val:30.56,type:'compet',lieu:'Longjumeau',niveau:'D1'},
-      {date:'2023-05-08',val:30.27,type:'compet',lieu:'Savigny Sur Orge',niveau:'R6'},
-      {date:'2023-05-13',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {date:'2023-05-28',val:29.81,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {date:'2023-05-28',val:30.57,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2023-06-08',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {date:'2023-06-29',val:29.36,type:'compet',lieu:'Longjumeau',niveau:'R5'},
-    ],
-    '400m':[
-      {date:'2023-06-15',val:69.44,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {date:'2023-06-22',val:69.01,type:'compet',lieu:'Savigny sur Orge',niveau:'R5'},
-    ],
-    '50m':[
-      {date:'2017-06-04',val:7.99,type:'compet',lieu:'Vanves',niveau:'MI'},
-      {date:'2017-06-25',val:8.17,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-    ],
-    'Disque':[
-      {date:'2022-04-14',val:1857,type:'compet',lieu:'Savigny Sur Orge',niveau:'D5'},
-      {date:'2022-05-14',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {date:'2022-05-21',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {date:'2022-05-29',val:2317,type:'compet',lieu:'Lisses',niveau:'D2'},
-      {date:'2022-06-05',val:2011,type:'compet',lieu:'Antony',niveau:'D4'},
-      {date:'2023-01-08',val:1971,type:'compet',lieu:'Montgeron',niveau:'D4'},
-      {date:'2023-05-06',val:1314,type:'compet',lieu:'Noisy Le Grand',niveau:'D7'},
-      {date:'2023-05-13',val:2195,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {date:'2023-05-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
-      {date:'2023-05-28',val:2579,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {date:'2023-06-08',val:2244,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {date:'2023-06-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
-      {date:'2023-06-17',val:2244,type:'compet',lieu:'Pontoise',niveau:'D3'},
-      {date:'2024-04-27',val:1951,type:'compet',lieu:'Noisy Le Grand',niveau:'D4'},
-      {date:'2024-05-11',val:2441,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
-      {date:'2025-05-17',val:2348,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
-    ],
-    'Poids':[
-      {date:'2017-05-01',val:729,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {date:'2017-06-04',val:732,type:'compet',lieu:'Vanves',niveau:'MI'},
-    ],
-    '80m Haies':[{date:'2017-05-01',val:17.02,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'}],
-  },
-  'Maria': {
-    '200m':[
-      {date:'2026-04-25',val:28.56,type:'compet',lieu:'Villejuif',niveau:'R3'},
-    ],
-  }
-};
+// ─── STATE ─────────────────────────────────────────────────────────────────
+const athletes = {};
+const users    = {};
+let currentUser=null, currentAthlete=null;
+let charts={}, chartFilters={}, selectedLoginCoach=null;
 
-const athletes = {
-  margaux:{id:'margaux',dbId:null,prenom:'Margaux',nom:'GREGO',annee:2002,cat:'SE',pw:'margaux91',
-    disciplines:['Hauteur','400m Haies'],sub:'Athlé 91 · SE · née 2002',
-    records:[
-      {disc:'50m',perf:'7"99',date:'4 Juin 2017',cat:'MI'},
-      {disc:'100m',perf:'14"30',date:'23 Juin 2022',cat:'ES'},
-      {disc:'200m',perf:'29"36',date:'29 Juin 2023',cat:'ES'},
-      {disc:'400m',perf:'69"01',date:'22 Juin 2023',cat:'ES'},
-      {disc:'80m Haies',perf:'17"02',date:'1 Mai 2017',cat:'MI'},
-      {disc:'Hauteur',perf:'1m40',date:'17 Mai 2025',cat:'SE'},
-      {disc:'Longueur',perf:'4m60',date:'28 Mai 2023',cat:'ES'},
-      {disc:'Triple Saut',perf:'9m29',date:'6 Juin 2024',cat:'ES'},
-      {disc:'Poids',perf:'7m32',date:'4 Juin 2017',cat:'MI'},
-      {disc:'Disque',perf:'25m79',date:'28 Mai 2023',cat:'ES'},
-    ],
-    hauteur:[
-      {id:1,date:'2024-04-27',val:130,type:'compet',lieu:'Noisy Le Grand',niveau:'D3'},
-      {id:2,date:'2024-05-11',val:130,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {id:3,date:'2024-06-27',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-      {id:4,date:'2025-05-03',val:130,type:'compet',lieu:'Mantes La Jolie',niveau:'D3'},
-      {id:5,date:'2025-05-17',val:140,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {id:6,date:'2025-05-24',val:140,type:'compet',lieu:'Montgeron',niveau:'R5'},
-      {id:7,date:'2025-06-21',val:132,type:'compet',lieu:'Viry Chatillon',niveau:'D2'},
-      {id:8,date:'2025-06-28',val:133,type:'compet',lieu:'Ivry Sur Seine',niveau:'D2'},
-      {id:9,date:'2025-12-07',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-    ],
-    haies:[],
-    // Pre-populated from HIST
-    m50:[
-      {id:50,date:'2017-06-04',val:7.99,type:'compet',lieu:'Vanves',niveau:'MI'},
-      {id:51,date:'2017-06-25',val:8.17,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-    ],
-    m100:[
-      {id:60,date:'2017-06-25',val:15.64,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {id:61,date:'2022-05-14',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {id:62,date:'2022-05-28',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {id:63,date:'2022-06-23',val:14.30,type:'compet',lieu:'Bretigny sur Orge',niveau:'D1'},
-    ],
-    m200:[
-      {id:70,date:'2022-05-16',val:29.76,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {id:71,date:'2022-06-30',val:30.56,type:'compet',lieu:'Longjumeau',niveau:'D1'},
-      {id:72,date:'2023-05-08',val:30.27,type:'compet',lieu:'Savigny Sur Orge',niveau:'R6'},
-      {id:73,date:'2023-05-13',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {id:74,date:'2023-05-28',val:29.81,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {id:75,date:'2023-06-08',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {id:76,date:'2023-06-29',val:29.36,type:'compet',lieu:'Longjumeau',niveau:'R5'},
-    ],
-    m400:[
-      {id:80,date:'2023-06-15',val:69.44,type:'compet',lieu:'Lisses',niveau:'R6'},
-      {id:81,date:'2023-06-22',val:69.01,type:'compet',lieu:'Savigny sur Orge',niveau:'R5'},
-    ],
-    m80haies:[
-      {id:90,date:'2017-05-01',val:17.02,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-    ],
-    poids:[
-      {id:100,date:'2017-05-01',val:729,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
-      {id:101,date:'2017-06-04',val:732,type:'compet',lieu:'Vanves',niveau:'MI'},
-    ],
-    disque:[
-      {id:110,date:'2022-04-14',val:1857,type:'compet',lieu:'Savigny Sur Orge',niveau:'D5'},
-      {id:111,date:'2022-05-14',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {id:112,date:'2022-05-21',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
-      {id:113,date:'2022-05-29',val:2317,type:'compet',lieu:'Lisses',niveau:'D2'},
-      {id:114,date:'2022-06-05',val:2011,type:'compet',lieu:'Antony',niveau:'D4'},
-      {id:115,date:'2023-01-08',val:1971,type:'compet',lieu:'Montgeron',niveau:'D4'},
-      {id:116,date:'2023-05-06',val:1314,type:'compet',lieu:'Noisy Le Grand',niveau:'D7'},
-      {id:117,date:'2023-05-13',val:2195,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {id:118,date:'2023-05-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
-      {id:119,date:'2023-05-28',val:2579,type:'compet',lieu:'Lisses',niveau:'D1'},
-      {id:120,date:'2023-06-08',val:2244,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {id:121,date:'2023-06-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
-      {id:122,date:'2023-06-17',val:2244,type:'compet',lieu:'Pontoise',niveau:'D3'},
-      {id:123,date:'2024-04-27',val:1951,type:'compet',lieu:'Noisy Le Grand',niveau:'D4'},
-      {id:124,date:'2024-05-11',val:2441,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
-      {id:125,date:'2025-05-17',val:2348,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
-    ],
-    triplesaut:[
-      {id:130,date:'2024-06-06',val:929,type:'compet',lieu:'Savigny sur Orge',niveau:'D1'},
-      {id:131,date:'2024-06-13',val:865,type:'compet',lieu:'Bretigny Sur Orge',niveau:'D3'},
-    ],
-    haiesFranchies:[{id:1,date:'2025-05-22',val:1,dist:'100m',type:'entrainement',note:'1ère haie franchie'}],
-    haiesTotalSince:'22 Mai 2025',
-  },
-  maria:{id:'maria',dbId:null,prenom:'Maria',nom:'KANTE',annee:2006,cat:'ES',pw:'maria91',
-    disciplines:['Hauteur','Longueur'],sub:'Athlé 91 · ES · née 2006',
-    records:[
-      {disc:'200m',perf:'28"56',date:'25 Avr. 2026',cat:'ES'},
-      {disc:'Hauteur',perf:'1m50',date:'17 Mai 2026',cat:'ES'},
-      {disc:'Longueur',perf:'4m67',date:'25 Avr. 2026',cat:'ES'},
-    ],
-    hauteur:[
-      // 2025
-      {id:10,date:'2025-06-12',val:110,type:'compet',lieu:'Viry Chatillon',niveau:'D7'},
-      {id:11,date:'2025-06-19',val:110,type:'compet',lieu:'Viry Chatillon',niveau:'D7'},
-      {id:12,date:'2025-06-21',val:132,type:'compet',lieu:'Viry Chatillon',niveau:'D2'},
-      {id:13,date:'2025-07-12',val:133,type:'compet',lieu:'Ivry Sur Seine',niveau:'D2'},
-      {id:14,date:'2025-12-07',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-      // 2026
-      {id:15,date:'2026-01-14',val:140,type:'compet',lieu:'Paris',niveau:'R5'},
-      {id:16,date:'2026-02-04',val:143,type:'compet',lieu:'Paris',niveau:'R4'},
-      {id:17,date:'2026-02-06',val:149,type:'compet',lieu:'Eaubonne',niveau:''},
-      {id:18,date:'2026-04-25',val:146,type:'compet',lieu:'Villejuif',niveau:'R3'},
-      {id:19,date:'2026-05-02',val:145,type:'compet',lieu:'Noisy Le Grand',niveau:'R3'},
-      {id:20,date:'2026-05-17',val:150,type:'compet',lieu:'Caen',niveau:'R1'},
-    ],
-    longueur:[
-      // 2024
-      {id:30,date:'2024-12-14',val:411,type:'compet',lieu:'Viry Chatillon',niveau:'D3'},
-      // 2025
-      {id:31,date:'2025-06-12',val:409,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {id:32,date:'2025-06-21',val:402,type:'compet',lieu:'Viry Chatillon',niveau:'D3'},
-      {id:33,date:'2025-12-06',val:432,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-      // 2026
-      {id:34,date:'2026-02-06',val:450,type:'compet',lieu:'Eaubonne',niveau:'R6'},
-      {id:35,date:'2026-04-25',val:467,type:'compet',lieu:'Villejuif',niveau:'R5'},
-      {id:36,date:'2026-05-02',val:445,type:'compet',lieu:'Noisy Le Grand',niveau:'R3'},
-    ],
-    haies:[],haiesFranchies:[],haiesTotalSince:null,
-  }
-};
-const users = {coach:{id:'coach',name:'Kevin DEI',pw:'coach91',dbId:null}};
-let currentUser=null,currentAthlete=null,nextId=500;
-let charts={};
-let chartFilters={}; // {key: {period:'tout', view:'les2'}}
-let selectedLoginCoach='coach';
-
-// Association par défaut des athlètes existants au coach Kevin
-Object.values(athletes).forEach(a=>{if(!a.coachId)a.coachId='coach';});
-
-// Sauvegarde locale simple pour conserver les coachs/athlètes ajoutés sur le même navigateur
-function saveLocalData(){
-  try{localStorage.setItem('athle91-data',JSON.stringify({users,athletes,nextId}));}catch(e){}
+// ─── CRYPTO — hachage SHA-256 côté client ──────────────────────────────────
+async function hashPassword(pw){
+  const data = new TextEncoder().encode(pw);
+  const buf  = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-function loadLocalData(){
+
+// ─── CHARGEMENT DEPUIS SUPABASE ────────────────────────────────────────────
+async function loadAllData(){
+  const {data:coachesData,error:e1}=await sb.from('coaches').select('*');
+  if(e1)throw e1;
+  coachesData.forEach(c=>{
+    users[c.id]={id:c.id,name:`${c.prenom} ${c.nom}`,password_hash:c.password_hash,dbId:c.id};
+  });
+
+  const {data:athData,error:e2}=await sb.from('athletes')
+    .select('*, athlete_disciplines(discipline,sort_order)');
+  if(e2)throw e2;
+  athData.forEach(a=>{
+    const discs=(a.athlete_disciplines||[])
+      .sort((x,y)=>x.sort_order-y.sort_order)
+      .map(d=>d.discipline);
+    athletes[a.id]={
+      id:a.id,dbId:a.id,coachId:a.coach_id,
+      prenom:a.prenom,nom:a.nom,annee:a.annee,cat:a.cat,
+      password_hash:a.password_hash,
+      disciplines:discs,
+      sub:`Athlé 91 · ${a.cat} · née ${a.annee}`,
+      records:[],haiesFranchies:[],haiesTotalSince:null
+    };
+  });
+
+  const {data:perfsData,error:e3}=await sb.from('performances').select('*');
+  if(e3)throw e3;
+  perfsData.forEach(p=>{
+    if(!athletes[p.athlete_id])return;
+    const dk=dataKey(p.discipline);
+    if(!athletes[p.athlete_id][dk])athletes[p.athlete_id][dk]=[];
+    athletes[p.athlete_id][dk].push({
+      id:p.id,date:p.date,val:parseFloat(p.val),
+      type:p.type,lieu:p.lieu||'',niveau:p.niveau||''
+    });
+  });
+
+  const {data:recsData,error:e4}=await sb.from('records').select('*');
+  if(e4)throw e4;
+  recsData.forEach(r=>{
+    if(!athletes[r.athlete_id])return;
+    athletes[r.athlete_id].records.push({
+      id:r.id,disc:r.disc,perf:r.perf,date:r.date,cat:r.cat
+    });
+  });
+
+  const {data:hfData,error:e5}=await sb.from('haies_franchies').select('*').order('date');
+  if(e5)throw e5;
+  hfData.forEach(h=>{
+    if(!athletes[h.athlete_id])return;
+    athletes[h.athlete_id].haiesFranchies.push({
+      id:h.id,date:h.date,val:h.val,
+      type:h.type,dist:h.dist||'',note:h.note||''
+    });
+    if(!athletes[h.athlete_id].haiesTotalSince)
+      athletes[h.athlete_id].haiesTotalSince=formatDate(h.date);
+  });
+}
+
+// ─── INIT APP ─────────────────────────────────────────────────────────────
+async function initApp(){
+  const box=document.querySelector('.login-box');
+  const orig=box.innerHTML;
+  box.innerHTML='<div style="text-align:center;padding:48px 0 40px"><div class="logo-badge" style="margin:0 auto 16px"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div><div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement...</div></div>';
   try{
-    const raw=localStorage.getItem('athle91-data');
-    if(!raw)return;
-    const data=JSON.parse(raw);
-    if(data.users)Object.assign(users,data.users);
-    if(data.athletes)Object.assign(athletes,data.athletes);
-    if(data.nextId)nextId=data.nextId;
-    Object.values(athletes).forEach(a=>{if(!a.coachId)a.coachId='coach';});
-  }catch(e){}
+    await loadAllData();
+    box.innerHTML=orig;
+    renderCoachLogin();
+    showStep(1);
+  }catch(err){
+    console.error('Erreur Supabase',err);
+    box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:13px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
+  }
 }
+
 function athletesForCoach(coachKey){
-  return Object.values(athletes).filter(a=>(a.coachId||'coach')===coachKey);
+  return Object.values(athletes).filter(a=>a.coachId===coachKey);
 }
 
 // ─── LOGIN ──────────────────────────────────────────────────────────────────
@@ -1324,7 +1181,7 @@ function renderCoachLogin(){
     '</div>';
 }
 
-function showAthletes(coachKey='coach'){
+function showAthletes(coachKey){
   selectedLoginCoach=coachKey;
   const coach=users[coachKey];
   const list=document.getElementById('athlete-list');
@@ -1355,11 +1212,15 @@ function selectRole(key){
 
 function backStep(n){showStep(n);}
 
-function doLogin(){
+async function doLogin(){
   const pw=document.getElementById('pw-input').value;
+  const hash=await hashPassword(pw);
   let ok=false;
-  if(users[loginTarget]&&pw===users[loginTarget].pw){ok=true;currentUser={type:'coach',key:loginTarget};}
-  else if(athletes[loginTarget]&&pw===athletes[loginTarget].pw){ok=true;currentUser={type:'athlete',key:loginTarget};}
+  if(users[loginTarget]&&hash===users[loginTarget].password_hash){
+    ok=true;currentUser={type:'coach',key:loginTarget};
+  }else if(athletes[loginTarget]&&hash===athletes[loginTarget].password_hash){
+    ok=true;currentUser={type:'athlete',key:loginTarget};
+  }
   if(!ok){document.getElementById('login-err').style.display='block';return;}
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
@@ -1380,16 +1241,12 @@ function logout(){
   showStep(1);
 }
 
-loadLocalData();
-setTimeout(renderCoachLogin,0);
+initApp();
 
 // ─── APP ──────────────────────────────────────────────────────────────────
 function buildApp(){
   buildSwitcher();
-  if(!currentAthlete){
-    showNoAthleteScreen();
-    return;
-  }
+  if(!currentAthlete){showNoAthleteScreen();return;}
   buildTabs();
   renderAll();
 }
@@ -1403,7 +1260,7 @@ function showNoAthleteScreen(){
   document.getElementById('tab-contents').innerHTML=`
     <div class="card">
       <div class="card-title">Espace coach</div>
-      <p style="font-size:13px;color:#888;margin-bottom:12px">Ce coach n’a pas encore d’athlète.</p>
+      <p style="font-size:13px;color:#888;margin-bottom:12px">Ce coach n'a pas encore d'athlète.</p>
       <button class="btn" onclick="openModal('modal-new-athlete')">+ Ajouter un athlète</button>
       <button class="btn" style="margin-top:10px;width:100%;background:#f0f0f0;color:#111;border:1px solid #ddd" onclick="openCoachProfile()">Modifier mon profil</button>
     </div>`;
@@ -1461,7 +1318,7 @@ function dataKey(d){
 function isDistDisc(d){return['Hauteur','Longueur','Triple Saut'].includes(d);}
 function isTimeDisc(d){return!isDistDisc(d)&&!d.includes('Poids')&&!d.includes('Disque')&&!d.includes('Marteau')&&!d.includes('Javelot');}
 
-// ─── DISC TAB BUILD ────────────────────────────────────────────────────────
+// ─── TAB BUILDERS ─────────────────────────────────────────────────────────
 function buildDiscTab(disc){
   const k=discKey(disc);
   const el=document.getElementById('tab-'+k);
@@ -1541,12 +1398,13 @@ function buildHFTab(){
               <option value="test">Test</option>
               <option value="echauffement">Échauffement</option>
             </select></div>
-            <div class="form-group"><label>Distance</label><select id="hf-dist">
+            <div class="form-group"><label>Distance</label>
+            <select id="hf-dist">
               <option value="100m">100m</option>
               <option value="400m">400m</option>
-              <option value="60m">60m</option>
               <option value="80m">80m</option>
-              <option value="autre">Autre</option>
+              <option value="110m">110m</option>
+              <option value="">Autre</option>
             </select></div>
           </div>
           <div class="form-group"><label>Note</label><input type="text" id="hf-note" placeholder="Remarque..."></div>
@@ -1632,7 +1490,7 @@ function buildParamTab(){
     </div>`:''}`;
 }
 
-// ─── SWITCH TAB ───────────────────────────────────────────────────────────
+// ─── NAVIGATION ───────────────────────────────────────────────────────────
 function switchTab(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
@@ -1691,7 +1549,7 @@ function filterByPeriod(data,period){
 // ─── CHARTS ──────────────────────────────────────────────────────────────
 const baseOpts={
   responsive:true,maintainAspectRatio:false,animation:false,
-  plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',borderColor:'#e0e0e0',borderWidth:1,titleFont:{family:'Barlow',size:11},bodyFont:{family:'Barlow Condensed',size:14},titleColor:'#999',bodyColor:'#111',padding:10,boxShadow:'0 4px 12px rgba(0,0,0,.1)'}},
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',borderColor:'#e0e0e0',borderWidth:1,titleFont:{family:'Barlow',size:11},bodyFont:{family:'Barlow Condensed',size:14},titleColor:'#999',bodyColor:'#111',padding:10}},
   scales:{
     x:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#999',font:{family:'Barlow',size:10}},border:{display:false}},
     y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#999',font:{family:'Barlow',size:10}},border:{display:false}}
@@ -1699,22 +1557,13 @@ const baseOpts={
 };
 
 function getGlobalYRange(disc){
-  // Compute min/max across ALL athletes for this discipline type
   const dk=dataKey(disc);
-  const dist=isDistDisc(disc);
-  const isTime=isTimeDisc(disc);
   let allVals=[];
-  Object.values(athletes).forEach(ath=>{
-    (ath[dk]||[]).forEach(d=>allVals.push(d.val));
-    // Also HIST
-    const hk=Object.keys(HIST).find(k=>ath.prenom.includes(k));
-    if(hk&&HIST[hk][disc])HIST[hk][disc].forEach(d=>allVals.push(d.val));
-  });
+  Object.values(athletes).forEach(ath=>{(ath[dk]||[]).forEach(d=>allVals.push(d.val));});
   if(!allVals.length)return null;
-  const mn=Math.min(...allVals);
-  const mx=Math.max(...allVals);
+  const mn=Math.min(...allVals),mx=Math.max(...allVals);
   const pad=(mx-mn)*0.15||5;
-  return{min:Math.floor(mn-pad), max:Math.ceil(mx+pad)};
+  return{min:Math.floor(mn-pad),max:Math.ceil(mx+pad)};
 }
 
 function buildChart(k){
@@ -1722,83 +1571,43 @@ function buildChart(k){
   const disc=ath.disciplines.find(d=>discKey(d)===k);
   if(!disc)return;
   const dk=dataKey(disc);
-  const allData=(ath[dk]||[]);
+  const allData=ath[dk]||[];
   if(!chartFilters[k])chartFilters[k]={period:'tout',view:'les2'};
   initFilter(k,allData);
-  const period=chartFilters[k].period;
-  const view=chartFilters[k].view;
-  const dist=isDistDisc(disc);
-  const isTime=isTimeDisc(disc);
-
+  const period=chartFilters[k].period,view=chartFilters[k].view;
+  const dist=isDistDisc(disc),isTime=isTimeDisc(disc);
   const filtered=filterByPeriod([...allData],period);
   const compet=filtered.filter(d=>d.type==='compet').sort((a,b)=>a.date.localeCompare(b.date));
   const train=filtered.filter(d=>d.type!=='compet').sort((a,b)=>a.date.localeCompare(b.date));
-
-  // Shared X axis: all unique dates sorted chronologically
   const allDates=[...new Set(filtered.map(d=>d.date))].sort((a,b)=>a.localeCompare(b));
   const labels=allDates.map(d=>formatDate(d));
-
-  // Map each dataset to the shared labels (null where no data)
-  const mapToLabels=(data)=>allDates.map(date=>{
-    const entry=data.find(d=>d.date===date);
-    return entry?entry.val:null;
-  });
-
+  const mapToLabels=data=>allDates.map(date=>{const e=data.find(d=>d.date===date);return e?e.val:null;});
   const ctx=document.getElementById('chart-'+k);
   if(!ctx)return;
   if(charts[k])charts[k].destroy();
-
   const datasets=[];
-  if(view==='les2'||view==='compet'){
-    datasets.push({
-      label:'Compétition',
-      data:mapToLabels(compet),
-      borderColor:'#ef4444',
-      backgroundColor:'rgba(239,68,68,.06)',
-      pointBackgroundColor: allDates.map(date=>compet.find(d=>d.date===date)?'#ef4444':'transparent'),
-      pointRadius: allDates.map(date=>compet.find(d=>d.date===date)?5:0),
-      pointHoverRadius:7,
-      tension:0.3,fill:false,borderWidth:2,
-      spanGaps:false,
-    });
-  }
-  if(view==='les2'||view==='entrainement'){
-    datasets.push({
-      label:'Entraînement',
-      data:mapToLabels(train),
-      borderColor:'#f5c400',
-      backgroundColor:'rgba(245,196,0,.06)',
-      pointBackgroundColor: allDates.map(date=>train.find(d=>d.date===date)?'#f5c400':'transparent'),
-      pointRadius: allDates.map(date=>train.find(d=>d.date===date)?5:0),
-      pointHoverRadius:7,
-      tension:0.3,fill:false,borderWidth:2,
-      spanGaps:false,
-    });
-  }
-
-  const fmtVal=v=>dist?cmToM(v):formatVal(disc,v);
-
+  if(view==='les2'||view==='compet')datasets.push({
+    label:'Compétition',data:mapToLabels(compet),
+    borderColor:'#e53935',backgroundColor:'rgba(229,57,53,.06)',
+    pointBackgroundColor:'#e53935',pointRadius:5,tension:0.3,fill:true,borderWidth:2,spanGaps:false
+  });
+  if(view==='les2'||view==='entrainement')datasets.push({
+    label:'Entraînement',data:mapToLabels(train),
+    borderColor:'#f5c400',backgroundColor:'rgba(245,196,0,.06)',
+    pointBackgroundColor:'#f5c400',pointRadius:5,tension:0.3,fill:true,borderWidth:2,spanGaps:false
+  });
   charts[k]=new Chart(ctx.getContext('2d'),{
-    type:'line',
-    data:{labels,datasets},
-    options:{...baseOpts,
-      plugins:{...baseOpts.plugins,
-        legend:{display:true,labels:{color:'#888',font:{family:'Barlow',size:11},boxWidth:10,padding:12}},
-        tooltip:{...baseOpts.plugins.tooltip,
-          mode:'index',intersect:false,
-          callbacks:{
-            label:c=>c.raw!=null?c.dataset.label+': '+fmtVal(c.raw):null,
-            filter:item=>item.raw!=null,
-          }
-        }
-      },
-      scales:{...baseOpts.scales,
+    type:'line',data:{labels,datasets},
+    options:{
+      ...baseOpts,
+      plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,
+        callbacks:{label:c=>`${c.dataset.label}: ${formatVal(disc,c.raw)}`}
+      }},
+      scales:{
         x:{...baseOpts.scales.x,ticks:{...baseOpts.scales.x.ticks,maxRotation:45,autoSkip:true,maxTicksLimit:10}},
         y:(()=>{
           const range=getGlobalYRange(disc);
-          return {
-            ...baseOpts.scales.y,
-            reverse:!dist&&isTime,
+          return{...baseOpts.scales.y,reverse:!dist&&isTime,
             ...(range?{min:range.min,max:range.max}:{}),
             ticks:{...baseOpts.scales.y.ticks,callback:v=>dist?v+' cm':formatVal(disc,v)}
           };
@@ -1830,16 +1639,13 @@ function buildChartHF(){
   });
 }
 
-// ─── RENDER ALL ───────────────────────────────────────────────────────────
+// ─── RENDER ───────────────────────────────────────────────────────────────
 function renderAll(){
   const ath=athletes[currentAthlete];
-  // Header
   const parts=ath.prenom.toUpperCase();
   document.getElementById('header-name').innerHTML=parts.slice(0,Math.ceil(parts.length/2))+'<span>'+parts.slice(Math.ceil(parts.length/2))+' '+ath.nom+'</span>';
   document.getElementById('header-sub').textContent=ath.sub;
-  // Update header PRs dynamically
   updateHeaderKPIs();
-  // Disciplines
   ath.disciplines.forEach(d=>renderPerf(discKey(d),d));
   renderHF();
   renderRecords();
@@ -1847,15 +1653,12 @@ function renderAll(){
 
 function updateHeaderKPIs(){
   const ath=athletes[currentAthlete];
-  // PR Hauteur
   const hData=ath.hauteur||[];
   const prH=hData.length?Math.max(...hData.map(d=>d.val)):0;
   document.getElementById('pr-hauteur').textContent=prH?cmToM(prH):'—';
-  // PR 400m Haies
   const haData=ath.haies||[];
   const prHa=haData.length?Math.min(...haData.map(d=>d.val)):0;
   document.getElementById('pr-400h').textContent=prHa?formatTime(prHa):'—';
-  // Compéts total
   const total=['hauteur','haies','longueur','triplesaut',...(ath.disciplines.map(d=>dataKey(d)))]
     .filter((v,i,a)=>a.indexOf(v)===i)
     .reduce((s,k)=>s+(ath[k]||[]).filter(d=>d.type==='compet').length,0);
@@ -1867,8 +1670,7 @@ function renderPerf(k,disc){
   const dk=dataKey(disc);
   const allData=ath[dk]||[];
   const sorted=[...allData].sort((a,b)=>b.date.localeCompare(a.date));
-  const dist=isDistDisc(disc);
-  const isTime=isTimeDisc(disc);
+  const dist=isDistDisc(disc),isTime=isTimeDisc(disc);
   const pr=allData.length?(dist?Math.max(...allData.map(d=>d.val)):isTime?Math.min(...allData.map(d=>d.val)):Math.max(...allData.map(d=>d.val))):0;
   const last=sorted[0],prev=sorted[1];
   const diff=last&&prev?+(last.val-prev.val).toFixed(2):0;
@@ -1916,24 +1718,23 @@ function renderHF(){
   buildChartHF();
 }
 
+function getAllDataForDisc(disc){
+  const ath=athletes[currentAthlete];
+  const dk=dataKey(disc);
+  return[...(ath[dk]||[])];
+}
+
 function renderRecords(){
   const ath=athletes[currentAthlete];
   const grid=document.getElementById('records-grid');
   const sel=document.getElementById('rec-year-filter');
   if(!grid||!sel)return;
-  // Build year options from performances + HIST
   const years=new Set();
-  ['hauteur','haies','longueur','triplesaut',...ath.disciplines.map(d=>dataKey(d))].forEach(k=>{
-    (ath[k]||[]).forEach(p=>years.add(p.date.split('-')[0]));
+  Object.values(ath).forEach(v=>{
+    if(Array.isArray(v))v.forEach(p=>{if(p&&p.date&&typeof p.date==='string')years.add(p.date.split('-')[0]);});
   });
-  // Also from HIST
-  const histKey=Object.keys(HIST).find(k=>ath.prenom.includes(k));
-  if(histKey){
-    Object.values(HIST[histKey]).forEach(arr=>arr.forEach(e=>years.add(e.date.split('-')[0])));
-  }
   const curVal=sel.value||'tout';
   sel.innerHTML='<option value="tout">Toutes</option>'+[...years].sort((a,b)=>b-a).map(y=>`<option value="${y}" ${curVal===y?'selected':''}>${y}</option>`).join('');
-
   const discDisplayNames={'Poids':'Poids 3kg','Disque':'Disque 1kg'};
   grid.innerHTML=ath.records.map((r,i)=>`
     <div class="rec-card" id="rec-${i}" onclick="toggleRecHistory(${i},'${r.disc}')">
@@ -1942,35 +1743,6 @@ function renderRecords(){
       <div class="meta">${r.date} · ${r.cat}</div>
       <div class="rec-history" id="rec-hist-${i}"></div>
     </div>`).join('');
-}
-
-function getAllDataForDisc(disc){
-  const ath=athletes[currentAthlete];
-  const dk=dataKey(disc);
-  let data=[...(ath[dk]||[])];
-  // Also check longueur for Maria (she has it directly)
-  // data is already pulled from dk
-
-  // Normalize disc name for HIST lookup — handle variations
-  const normalize=s=>s.toLowerCase()
-    .replace(/\s*\(.*?\)/g,'')  // remove parentheses
-    .replace(/[^a-z0-9]/g,'')   // remove special chars
-    .trim();
-
-  const histKey=Object.keys(HIST).find(k=>ath.prenom.includes(k));
-  if(histKey){
-    // Find matching key in HIST by normalized name
-    const normDisc=normalize(disc);
-    const matchKey=Object.keys(HIST[histKey]).find(k=>normalize(k)===normDisc);
-    if(matchKey){
-      HIST[histKey][matchKey].forEach(e=>{
-        if(!data.find(d=>d.date===e.date&&d.val===e.val)){
-          data.push({id:'h'+Math.random(),...e});
-        }
-      });
-    }
-  }
-  return data;
 }
 
 function toggleRecHistory(i,disc){
@@ -1995,98 +1767,114 @@ function toggleRecHistory(i,disc){
   el.classList.add('show');card.classList.add('open');
 }
 
-// ─── ACTIONS ─────────────────────────────────────────────────────────────
-function addPerf(k,disc){
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+async function addPerf(k,disc){
   const val=parseFloat(document.getElementById(k+'-val').value);
   const date=document.getElementById(k+'-date').value;
   const type=document.getElementById(k+'-type').value;
   const lieu=document.getElementById(k+'-lieu').value;
   const niveau=document.getElementById(k+'-niveau')?.value||'';
-  if(!date||!val){showMessage('Ajout impossible','Date et valeur requis.','danger');return;}
+  if(!date||isNaN(val)){showMessage('Ajout impossible','Date et valeur requis.','danger');return;}
+  const {data,error}=await sb.from('performances').insert({
+    athlete_id:currentAthlete,discipline:disc,val,date,type,lieu,niveau
+  }).select().single();
+  if(error){showMessage('Erreur','Impossible d\'ajouter la performance.','danger');return;}
   const dk=dataKey(disc);
   if(!athletes[currentAthlete][dk])athletes[currentAthlete][dk]=[];
-  athletes[currentAthlete][dk].push({id:nextId++,date,val,type,lieu,niveau});
+  athletes[currentAthlete][dk].push({id:data.id,date,val,type,lieu,niveau});
   document.getElementById(k+'-val').value='';
   document.getElementById(k+'-lieu').value='';
   if(document.getElementById(k+'-niveau'))document.getElementById(k+'-niveau').value='';
   renderPerf(k,disc);
 }
 
-function addHF(){
+async function addHF(){
   const date=document.getElementById('hf-date').value;
   const val=parseInt(document.getElementById('hf-val').value);
   const type=document.getElementById('hf-type').value;
   const dist=document.getElementById('hf-dist').value;
   const note=document.getElementById('hf-note').value;
   if(!date||!val||val<0){showMessage('Ajout impossible','Date et nombre de haies requis.','danger');return;}
+  const {data,error}=await sb.from('haies_franchies').insert({
+    athlete_id:currentAthlete,val,date,type,dist,note
+  }).select().single();
+  if(error){showMessage('Erreur','Impossible d\'ajouter.','danger');return;}
   if(!athletes[currentAthlete].haiesTotalSince)athletes[currentAthlete].haiesTotalSince=formatDate(date);
   if(!athletes[currentAthlete].haiesFranchies)athletes[currentAthlete].haiesFranchies=[];
-  athletes[currentAthlete].haiesFranchies.push({id:nextId++,date,val,type,dist,note});
+  athletes[currentAthlete].haiesFranchies.push({id:data.id,date,val,type,dist,note});
   document.getElementById('hf-val').value='';
   document.getElementById('hf-note').value='';
   renderHF();
 }
 
-function delPerf(dk,k,disc,id){
+async function delPerf(dk,k,disc,id){
+  const {error}=await sb.from('performances').delete().eq('id',id);
+  if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
   athletes[currentAthlete][dk]=(athletes[currentAthlete][dk]||[]).filter(d=>d.id!==id);
   renderPerf(k,disc);
 }
 
-function delHF(id){
+async function delHF(id){
+  const {error}=await sb.from('haies_franchies').delete().eq('id',id);
+  if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
   athletes[currentAthlete].haiesFranchies=(athletes[currentAthlete].haiesFranchies||[]).filter(d=>d.id!==id);
   renderHF();
 }
 
-function removeDisc(disc){
-  showConfirm('Supprimer la discipline',`Supprimer la discipline "${disc}" et toutes ses données ?`,()=>{
+async function removeDisc(disc){
+  showConfirm('Supprimer la discipline',`Supprimer la discipline "${disc}" et toutes ses données ?`,async()=>{
+    await sb.from('athlete_disciplines').delete().eq('athlete_id',currentAthlete).eq('discipline',disc);
+    await sb.from('performances').delete().eq('athlete_id',currentAthlete).eq('discipline',disc);
     const ath=athletes[currentAthlete];
     ath.disciplines=ath.disciplines.filter(d=>d!==disc);
-    const dk=dataKey(disc);
-    delete ath[dk];
-    saveLocalData();
-    charts={};
-    buildTabs();
-    renderAll();
+    delete ath[dataKey(disc)];
+    charts={};buildTabs();renderAll();
     showMessage('Discipline supprimée','La discipline a bien été supprimée.');
   },'danger');
 }
 
-function saveParams(){
+async function saveParams(){
   const ath=athletes[currentAthlete];
-  ath.prenom=document.getElementById('p-prenom').value.trim()||ath.prenom;
-  ath.nom=document.getElementById('p-nom').value.trim()||ath.nom;
-  ath.annee=parseInt(document.getElementById('p-annee').value)||ath.annee;
-  ath.cat=document.getElementById('p-cat').value;
-  ath.sub=`Athlé 91 · ${ath.cat} · née ${ath.annee}`;
-  saveLocalData();
+  const prenom=document.getElementById('p-prenom').value.trim()||ath.prenom;
+  const nom=document.getElementById('p-nom').value.trim()||ath.nom;
+  const annee=parseInt(document.getElementById('p-annee').value)||ath.annee;
+  const cat=document.getElementById('p-cat').value;
+  const {error}=await sb.from('athletes').update({prenom,nom,annee,cat}).eq('id',currentAthlete);
+  if(error){showMessage('Erreur','Impossible de modifier.','danger');return;}
+  ath.prenom=prenom;ath.nom=nom;ath.annee=annee;ath.cat=cat;
+  ath.sub=`Athlé 91 · ${cat} · née ${annee}`;
   buildSwitcher();buildTabs();renderAll();switchTab('parametres');
   showMessage('Informations mises à jour','Les informations ont bien été enregistrées.');
 }
 
-function changePassword(){
+async function changePassword(){
   const pw1=document.getElementById('p-pw1').value;
   const pw2=document.getElementById('p-pw2').value;
   const msg=document.getElementById('pw-msg');
   if(!pw1||pw1.length<4){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Min 4 caractères';return;}
   if(pw1!==pw2){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Les mots de passe ne correspondent pas';return;}
-  athletes[currentAthlete].pw=pw1;
-  saveLocalData();
+  const password_hash=await hashPassword(pw1);
+  const table=currentUser.type==='athlete'?'athletes':'coaches';
+  const id=currentUser.type==='athlete'?currentAthlete:currentUser.key;
+  const {error}=await sb.from(table).update({password_hash}).eq('id',id);
+  if(error){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Erreur lors du changement';return;}
+  if(currentUser.type==='athlete')athletes[currentAthlete].password_hash=password_hash;
+  else users[currentUser.key].password_hash=password_hash;
   msg.style.display='block';msg.style.color='var(--yellow)';msg.textContent='Mis à jour ✓';
   document.getElementById('p-pw1').value='';document.getElementById('p-pw2').value='';
 }
 
-function deleteAthlete(key){
+async function deleteAthlete(key){
   const ath=athletes[key];
   if(!ath)return;
-  showConfirm('Supprimer cet athlète',`Supprimer ${ath.prenom} ${ath.nom} ? Cette action est définitive.`,()=>{
+  showConfirm('Supprimer cet athlète',`Supprimer ${ath.prenom} ${ath.nom} ? Cette action est définitive.`,async()=>{
+    const {error}=await sb.from('athletes').delete().eq('id',key);
+    if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
     delete athletes[key];
-    saveLocalData();
     const remaining=athletesForCoach(currentUser.key).map(a=>a.id);
     if(!remaining.length){currentAthlete=null;buildApp();return;}
-    currentAthlete=remaining[0];
-    charts={};
-    buildApp();
-    showMessage('Athlète supprimé','L’athlète a bien été supprimé.');
+    currentAthlete=remaining[0];charts={};buildApp();
+    showMessage('Athlète supprimé','L\'athlète a bien été supprimé.');
   },'danger');
 }
 
@@ -2099,23 +1887,18 @@ function openAddDisc(){
   openModal('modal-add-disc');
 }
 
-function confirmAddDisc(){
+async function confirmAddDisc(){
   const selected=[...document.querySelectorAll('#disc-add-checkboxes input:checked')].map(i=>i.value);
   if(!selected.length){showMessage('Information manquante','Sélectionne au moins une discipline.','danger');return;}
   const ath=athletes[currentAthlete];
-  selected.forEach(d=>{
-    if(!ath.disciplines.includes(d)){
-      ath.disciplines.push(d);
-      // Inject historical data
-      const histKey=Object.keys(HIST).find(k=>ath.prenom.includes(k));
-      if(histKey&&HIST[histKey][d]){
-        const dk=dataKey(d);
-        if(!ath[dk])ath[dk]=[];
-        HIST[histKey][d].forEach(e=>ath[dk].push({id:nextId++,...e}));
-      }
-    }
-  });
-  saveLocalData();
+  const sortStart=ath.disciplines.length;
+  const inserts=selected
+    .filter(d=>!ath.disciplines.includes(d))
+    .map((d,i)=>({athlete_id:currentAthlete,discipline:d,sort_order:sortStart+i}));
+  if(!inserts.length){closeModal('modal-add-disc');return;}
+  const {error}=await sb.from('athlete_disciplines').insert(inserts);
+  if(error){showMessage('Erreur','Impossible d\'ajouter les disciplines.','danger');return;}
+  inserts.forEach(ins=>{if(!ath.disciplines.includes(ins.discipline))ath.disciplines.push(ins.discipline);});
   closeModal('modal-add-disc');
   charts={};buildTabs();renderAll();
 }
@@ -2124,7 +1907,7 @@ function confirmAddDisc(){
 function openModal(id){document.getElementById(id).classList.add('show');}
 function closeModal(id){document.getElementById(id).classList.remove('show');}
 
-function createAthlete(){
+async function createAthlete(){
   const prenom=document.getElementById('na-prenom').value.trim();
   const nom=document.getElementById('na-nom').value.trim();
   const annee=parseInt(document.getElementById('na-annee').value);
@@ -2132,32 +1915,33 @@ function createAthlete(){
   const pw=document.getElementById('na-pw').value;
   const discs=[...document.querySelectorAll('#disc-checkboxes input:checked')].map(i=>i.value);
   if(!prenom||!nom||!pw||!discs.length){showMessage('Information manquante','Prénom, nom, disciplines et mot de passe requis.','danger');return;}
-  const id=(prenom+nom).toLowerCase().replace(/\s/g,'');
-  athletes[id]={id,dbId:null,coachId:(currentUser&&currentUser.type==='coach')?currentUser.key:'coach',prenom,nom,annee,cat,pw,disciplines:discs,
-    sub:`Athlé 91 · ${cat} · née ${annee}`,records:[],
-    hauteur:[],haies:[],longueur:[],triplesaut:[],haiesFranchies:[],haiesTotalSince:null};
-  saveLocalData();
+  const password_hash=await hashPassword(pw);
+  const coachId=(currentUser&&currentUser.type==='coach')?currentUser.key:null;
+  const {data:newAth,error:e1}=await sb.from('athletes').insert({
+    coach_id:coachId,prenom,nom,annee,cat,password_hash
+  }).select().single();
+  if(e1){showMessage('Erreur','Impossible d\'ajouter l\'athlète.','danger');return;}
+  await sb.from('athlete_disciplines').insert(discs.map((d,i)=>({athlete_id:newAth.id,discipline:d,sort_order:i})));
+  athletes[newAth.id]={
+    id:newAth.id,dbId:newAth.id,coachId,prenom,nom,annee,cat,password_hash,
+    disciplines:discs,sub:`Athlé 91 · ${cat} · née ${annee}`,
+    records:[],haiesFranchies:[],haiesTotalSince:null
+  };
   closeModal('modal-new-athlete');
-  currentAthlete=id;
+  currentAthlete=newAth.id;
   buildApp();
   ['na-prenom','na-nom','na-annee','na-pw'].forEach(i=>document.getElementById(i).value='');
 }
-
-
-
-
 
 function showMessage(title,message,type='info'){
   const modal=document.getElementById('modal-confirm');
   const icon=document.getElementById('confirm-icon');
   const actions=document.getElementById('confirm-actions');
-
   document.getElementById('confirm-title').textContent=title;
   document.getElementById('confirm-message').textContent=message;
   icon.textContent=type==='danger'?'!':'✓';
   icon.style.background=type==='danger'?'var(--red)':'var(--yellow)';
   icon.style.color=type==='danger'?'#fff':'#000';
-
   actions.innerHTML=`<button class="btn" style="width:auto" onclick="closeThemedMessage()">OK</button>`;
   modal.classList.add('show');
 }
@@ -2166,15 +1950,12 @@ function showConfirm(title,message,onConfirm,type='danger'){
   const modal=document.getElementById('modal-confirm');
   const icon=document.getElementById('confirm-icon');
   const actions=document.getElementById('confirm-actions');
-
   document.getElementById('confirm-title').textContent=title;
   document.getElementById('confirm-message').textContent=message;
   icon.textContent='!';
   icon.style.background=type==='danger'?'var(--red)':'var(--yellow)';
   icon.style.color=type==='danger'?'#fff':'#000';
-
   window.__athleConfirmAction=onConfirm;
-
   actions.innerHTML=`
     <button class="btn-cancel" onclick="closeThemedMessage()">Annuler</button>
     <button class="btn-danger" style="width:auto" onclick="runThemedConfirm()">Confirmer</button>
@@ -2199,57 +1980,38 @@ document.getElementById('modal-confirm').addEventListener('click',function(e){
 });
 
 function openCoachProfile(){
-  if(!currentUser || currentUser.type!=='coach')return;
+  if(!currentUser||currentUser.type!=='coach')return;
   const coach=users[currentUser.key];
   if(!coach)return;
-
   const parts=coach.name.trim().split(/\s+/);
   const prenom=parts.shift()||'';
   const nom=parts.join(' ')||'';
-
   document.getElementById('ec-prenom').value=prenom;
   document.getElementById('ec-nom').value=nom;
   document.getElementById('ec-pw1').value='';
   document.getElementById('ec-pw2').value='';
-
   openModal('modal-edit-coach');
 }
 
-function saveCoachProfile(){
-  if(!currentUser || currentUser.type!=='coach')return;
-
+async function saveCoachProfile(){
+  if(!currentUser||currentUser.type!=='coach')return;
   const coach=users[currentUser.key];
   if(!coach)return;
-
   const prenom=document.getElementById('ec-prenom').value.trim();
   const nom=document.getElementById('ec-nom').value.trim();
   const pw1=document.getElementById('ec-pw1').value;
   const pw2=document.getElementById('ec-pw2').value;
-
-  if(!prenom || !nom){
-    showMessage('Information manquante','Prénom et nom requis.','danger');
-    return;
-  }
-
-  if((pw1 || pw2) && pw1!==pw2){
-    showMessage('Mot de passe incorrect','Les mots de passe ne correspondent pas.','danger');
-    return;
-  }
-
+  if(!prenom||!nom){showMessage('Information manquante','Prénom et nom requis.','danger');return;}
+  if((pw1||pw2)&&pw1!==pw2){showMessage('Mot de passe incorrect','Les mots de passe ne correspondent pas.','danger');return;}
+  const updateData={prenom,nom};
+  if(pw1)updateData.password_hash=await hashPassword(pw1);
+  const {error}=await sb.from('coaches').update(updateData).eq('id',currentUser.key);
+  if(error){showMessage('Erreur','Impossible de modifier.','danger');return;}
   coach.name=`${prenom} ${nom}`;
-
-  if(pw1){
-    coach.pw=pw1;
-  }
-
-  saveLocalData();
+  if(pw1)coach.password_hash=updateData.password_hash;
   closeModal('modal-edit-coach');
-
   buildSwitcher();
-  if(!currentAthlete){
-    showNoAthleteScreen();
-  }
-
+  if(!currentAthlete)showNoAthleteScreen();
   showMessage('Profil mis à jour','Le profil coach a bien été modifié.');
 }
 
@@ -2257,66 +2019,53 @@ document.getElementById('modal-edit-coach').addEventListener('click',function(e)
   if(e.target===this)closeModal('modal-edit-coach');
 });
 
-function deleteCoach(){
-  if(!currentUser || currentUser.type!=='coach')return;
-
+async function deleteCoach(){
+  if(!currentUser||currentUser.type!=='coach')return;
   const coachKey=currentUser.key;
-
-  if(coachKey==='coach'){
-    showMessage('Action impossible','Le coach principal ne peut pas être supprimé.','danger');
+  if(Object.keys(users).length<=1){
+    showMessage('Action impossible','Vous êtes le seul coach, impossible de supprimer ce compte.','danger');
     return;
   }
-
   const coachAthletes=athletesForCoach(coachKey);
   const message=coachAthletes.length
-    ? 'Supprimer ce compte coach supprimera également ses athlètes. Cette action est définitive.'
-    : 'Supprimer ce compte coach ? Cette action est définitive.';
-
-  showConfirm('Supprimer mon compte coach',message,()=>{
-    coachAthletes.forEach(a=>{
-      delete athletes[a.id];
-    });
-
+    ?'Supprimer ce compte coach supprimera également ses athlètes. Cette action est définitive.'
+    :'Supprimer ce compte coach ? Cette action est définitive.';
+  showConfirm('Supprimer mon compte coach',message,async()=>{
+    const {error}=await sb.from('coaches').delete().eq('id',coachKey);
+    if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
+    coachAthletes.forEach(a=>delete athletes[a.id]);
     delete users[coachKey];
-
-    saveLocalData();
-
     closeModal('modal-edit-coach');
-
     showMessage('Compte supprimé','Le compte coach a bien été supprimé.');
-
     setTimeout(()=>logout(),700);
   },'danger');
-}
-
-function createCoach(){
-  const prenom=document.getElementById('nc-prenom').value.trim();
-  const nom=document.getElementById('nc-nom').value.trim();
-  const pw=document.getElementById('nc-pw').value;
-  if(!prenom||!nom||!pw){showMessage('Information manquante','Prénom, nom et mot de passe requis.','danger');return;}
-  let id=(prenom+nom).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
-  if(!id)id='coach'+Date.now();
-  let base=id,n=2;
-  while(users[id])id=base+n++;
-  users[id]={id,name:`${prenom} ${nom}`,pw,dbId:null};
-  saveLocalData();
-  closeModal('modal-new-coach');
-  ['nc-prenom','nc-nom','nc-pw'].forEach(i=>document.getElementById(i).value='');
-  showMessage('Coach ajouté','Il apparaîtra sur l’écran de connexion.');
 }
 
 document.getElementById('modal-new-coach').addEventListener('click',function(e){
   if(e.target===this)closeModal('modal-new-coach');
 });
 
-// ─── MODAL DISCIPLINE CHECKBOXES BUILD ────────────────────────────────────
 document.getElementById('modal-new-athlete').addEventListener('click',function(e){
   if(e.target===this)closeModal('modal-new-athlete');
 });
-// Build discipline checkboxes for new athlete modal
+
 function buildDiscCheckboxes(){
   document.getElementById('disc-checkboxes').innerHTML=DISCIPLINES_ALL.map(d=>`
     <div class="disc-pill"><label><input type="checkbox" value="${d}"><span> ${d}</span></label></div>`).join('');
+}
+
+async function createCoach(){
+  const prenom=document.getElementById('nc-prenom').value.trim();
+  const nom=document.getElementById('nc-nom').value.trim();
+  const pw=document.getElementById('nc-pw').value;
+  if(!prenom||!nom||!pw){showMessage('Information manquante','Prénom, nom et mot de passe requis.','danger');return;}
+  const password_hash=await hashPassword(pw);
+  const {data:newCoach,error}=await sb.from('coaches').insert({prenom,nom,password_hash}).select().single();
+  if(error){showMessage('Erreur','Impossible d\'ajouter le coach.','danger');return;}
+  users[newCoach.id]={id:newCoach.id,name:`${prenom} ${nom}`,password_hash,dbId:newCoach.id};
+  closeModal('modal-new-coach');
+  ['nc-prenom','nc-nom','nc-pw'].forEach(i=>document.getElementById(i).value='');
+  showMessage('Coach ajouté','Il apparaîtra sur l\'écran de connexion.');
 }
 
 // ─── UTILS ──────────────────────────────────────────────────────────────
@@ -2340,8 +2089,6 @@ function formatVal(disc,v){
 Chart.defaults.animation=false;
 const today=new Date().toISOString().split('T')[0];
 
-// Open new athlete modal → build checkboxes
-document.getElementById('modal-new-athlete').addEventListener('transitionend',()=>{});
 const origOpenModal=openModal;
 window.openModal=function(id){
   if(id==='modal-new-athlete')buildDiscCheckboxes();
