@@ -2,179 +2,349 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="theme-color" content="#f5a623">
+<meta name="theme-color" content="#f5c400">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Athlé 91">
 <link rel="manifest" href="/manifest.json">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Athlé 91 — Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --bg:#111111; --surface:#1c1c1c; --card:#242424; --border:#333333;
-  --accent:#f5a623; --accent2:#f5c400; --accent3:#ffffff; --red:#e53935;
-  --text:#ffffff; --muted:#888888;
+:root{
+  --bg:#f5f5f5;--surface:#fff;--card:#fff;--border:#e0e0e0;
+  --red:#e53935;--yellow:#f5c400;--orange:#f5a623;
+  --text:#111;--muted:#888;--accent:#f5c400;--accent2:#f5a623;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 0% 0%,rgba(245,166,35,.06) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 100% 100%,rgba(245,166,35,.04) 0%,transparent 50%);pointer-events:none;z-index:0;}
-.container{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
 
-/* LOGIN */
-#login-screen{position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+/* ── LOGIN ─────────────────────────────── */
+#login-screen{position:fixed;inset:0;background:#ececec;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:#fff;border:1px solid #e0e0e0;border-radius:20px;padding:36px 28px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,.12);}
+.logo-badge{display:inline-flex;align-items:stretch;border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.logo-athle{background:#f5c400;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;padding:8px 16px;letter-spacing:3px;line-height:1;}
+.logo-91{background:#f5a623;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;padding:8px 14px;line-height:1;}
+.login-subtitle{font-size:10px;color:#999;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;font-weight:600;}
+.login-step{display:none;flex-direction:column;gap:8px;}
+.login-step.show{display:flex;}
+.login-user{display:flex;align-items:center;justify-content:space-between;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .2s;}
+.login-user:hover{border-color:var(--yellow);background:rgba(245,196,0,.1);}
+.login-user .uname{font-size:14px;font-weight:600;color:#111;}
+.login-user .urole{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.login-back{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;text-align:left;margin-bottom:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+.login-back:hover{color:var(--text);}
+.login-pw-wrap{display:flex;flex-direction:column;gap:10px;}
+.login-err{color:var(--red);font-size:11px;display:none;}
 
-/* LOGO BADGE — ATHLÉ 91 OFFICIEL */
-.logo-badge{
-  display:inline-flex;
-  align-items:center;
-  border-radius:14px;
-  overflow:hidden;
-  box-shadow:0 6px 24px rgba(0,0,0,.6);
-  margin-bottom:14px;
-  font-family:'Barlow Condensed',Impact,sans-serif;
-  font-weight:900;
-  line-height:1;
-}
-.logo-athle{
-  background:#f5c400;
-  color:#ffffff;
-  padding:10px 18px;
-  font-size:32px;
-  letter-spacing:3px;
-}
-.logo-91{
-  background:#f5a623;
-  color:#000000;
-  padding:10px 18px;
-  font-size:32px;
-  letter-spacing:3px;
-}
-.login-subtitle{
-  font-family:'Barlow',sans-serif !important;
-  font-size:11px !important;
-  color:#888 !important;
-  letter-spacing:3px !important;
-  text-transform:uppercase;
-  margin-bottom:28px !important;
-  font-weight:600;
-}
-@media(max-width:480px){
-  .logo-athle{font-size:24px;padding:8px 14px;letter-spacing:2px;}
-  .logo-91{font-size:24px;padding:8px 14px;letter-spacing:2px;}
-}
-.login-box{background:#1c1c1c;border:1px solid #333;border-radius:20px;padding:40px 32px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
-.login-box .club-logo{margin-bottom:4px;}
-.login-box p{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;}
-.login-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
-.login-user{display:flex;align-items:center;justify-content:space-between;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .2s;}
-.login-user:hover{border-color:var(--accent);background:rgba(245,166,35,.1);}
-.login-user .uname{font-family:'Roboto Mono',monospace;font-size:13px;}
-.login-user .urole{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
-.login-pw{display:none;flex-direction:column;gap:12px;}
-.login-pw.show{display:flex;}
-.login-pw .back{background:none;border:none;color:var(--muted);font-family:'Roboto Mono',monospace;font-size:11px;cursor:pointer;text-align:left;letter-spacing:1px;margin-bottom:4px;}
-.login-pw .back:hover{color:var(--text);}
-.login-err{color:var(--red);font-family:'Roboto Mono',monospace;font-size:11px;display:none;}
-
-/* TOP BAR */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 0;flex-wrap:wrap;gap:10px;border-bottom:2px solid var(--accent);margin-bottom:0;}
-.topbar-left{display:flex;gap:8px;flex-wrap:wrap;}
-.ath-btn{font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;padding:7px 14px;background:#222;border:1.5px solid #333;color:#aaa;cursor:pointer;border-radius:6px;transition:all .2s;}
-.ath-btn.active{background:var(--accent);border-color:var(--accent);color:#000;}
-.ath-btn:hover{color:var(--text);}
-.ath-btn.coach-add{border-color:var(--accent);color:var(--accent);background:rgba(245,166,35,.1);}
-.logout-btn{font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:6px 14px;background:none;border:1.5px solid #333;color:var(--muted);cursor:pointer;border-radius:6px;transition:all .2s;}
+/* ── TOPBAR ─────────────────────────────── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:2px solid var(--yellow);gap:8px;flex-wrap:wrap;background:var(--bg);}
+.topbar-left{display:flex;gap:6px;flex-wrap:wrap;}
+.ath-btn{font-size:12px;font-weight:700;text-transform:uppercase;padding:6px 14px;background:#f0f0f0;border:1.5px solid #ddd;color:#888;cursor:pointer;border-radius:6px;transition:all .2s;letter-spacing:.3px;}
+.ath-btn.active{background:var(--yellow);border-color:var(--yellow);color:#000;}
+.ath-btn:hover{color:#111;}
+.ath-btn.coach-add{border-color:var(--yellow);color:var(--yellow);}
+.logout-btn{font-size:11px;font-weight:700;text-transform:uppercase;padding:6px 14px;background:none;border:1.5px solid #ddd;color:#888;cursor:pointer;border-radius:6px;letter-spacing:.5px;}
 .logout-btn:hover{border-color:var(--red);color:var(--red);}
 
-header{padding:16px 0 20px;border-bottom:1px solid #2a2a2a;margin-bottom:20px;border-left:4px solid var(--accent);padding-left:16px;}
-.header-inner{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
-.logo-block h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,6vw,68px);line-height:.9;letter-spacing:2px;}
-.logo-block h1 span{color:var(--accent);}
-.logo-block p{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:8px;}
-.header-records{display:flex;gap:12px;flex-wrap:wrap;}
-.record-pill{background:rgba(255,255,255,.05);border:1px solid rgba(245,166,35,.2);border-radius:12px;padding:10px 16px;text-align:center;}
-.record-pill .val{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:var(--accent2);line-height:1;font-weight:800;}
-.record-pill .label{font-family:'Barlow',sans-serif;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+/* ── HEADER ─────────────────────────────── */
+header{padding:14px 0 16px;border-bottom:1px solid #e0e0e0;margin-bottom:16px;border-left:3px solid var(--yellow);padding-left:24px;}
+.header-inner{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.logo-block{display:flex;flex-direction:column;gap:4px;}
+.logo-inline{display:inline-flex;align-items:stretch;border-radius:6px;overflow:hidden;margin-bottom:4px;}
+.logo-inline .la{background:var(--yellow);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;padding:3px 7px;letter-spacing:2px;line-height:1;}
+.logo-inline .l9{background:var(--orange);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;padding:3px 7px;line-height:1;}
+.header-name{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,6vw,64px);font-weight:900;line-height:1;letter-spacing:1px;color:#111;}
+.header-name span{color:var(--yellow);}
+.header-sub{font-size:10px;color:#999;letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.header-records{display:flex;gap:8px;flex-wrap:wrap;}
+.record-pill{background:#fff;border:2px solid var(--yellow);border-radius:8px;padding:8px 14px;text-align:center;min-width:80px;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.record-pill .val{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--yellow);line-height:1;}
+.record-pill .label{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;font-weight:700;}
 
-.tabs{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--border);overflow-x:auto;padding-bottom:0;}
-.tab{font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:10px 14px;background:none;border:none;color:var(--muted);cursor:pointer;position:relative;transition:all .2s;white-space:nowrap;}
-.tab.active{color:#000;background:var(--accent);}
-.tab.active::after{display:none;}
-.tab:hover{color:#fff;}
-.tab-content{display:none;}
-.tab-content.active{display:block;}
+/* ── TABS ─────────────────────────────── */
+.tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #e0e0e0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;background:none;border:none;color:#888;cursor:pointer;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s;}
+.tab.active{color:#000;background:var(--yellow);border-bottom-color:var(--yellow);font-weight:800;}
+.tab:hover:not(.active){color:#111;}
+.tab-content{display:none;width:100%;}
+.tab-content.active{display:block;width:100%;}
 
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
-@media(max-width:700px){.grid-2{grid-template-columns:1fr;}}
-.card{background:#1c1c1c;border:1px solid #2e2e2e;border-radius:12px;padding:20px;margin-bottom:16px;border-top:3px solid var(--accent);}
-.card-title{font-family:'Barlow',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;}
-.chart-wrap{position:relative;height:250px;}
+/* ── GRID ─────────────────────────────── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.card{background:#fff;border:1px solid #e8e8e8;border-top:3px solid var(--yellow);border-radius:10px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.card-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:14px;}
+.chart-wrap{position:relative;height:260px;}
 
-/* CHART FILTER */
-.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
-.filter-btns{display:flex;gap:4px;}
-.filter-btn{font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:4px 12px;background:none;border:1.5px solid #333;color:var(--muted);cursor:pointer;border-radius:4px;transition:all .15s;}
-.filter-btn.active{border-color:var(--accent);color:#000;background:var(--accent);}
-.filter-btn:hover{color:var(--text);}
+/* ── CHART FILTERS ─────────────────── */
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.filter-row{display:flex;gap:4px;flex-wrap:wrap;}
+.filter-btn{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;background:none;border:1.5px solid #ddd;color:#999;cursor:pointer;border-radius:4px;transition:all .15s;}
+.filter-btn.active{border-color:var(--yellow);color:#000;background:var(--yellow);}
+.filter-btn.f-compet.active{background:var(--red);border-color:var(--red);color:#fff;}
+.filter-btn.f-entrainement.active{background:var(--yellow);border-color:var(--yellow);color:#000;}
 
-table{width:100%;border-collapse:collapse;font-size:13px;}
-th{font-family:'Barlow',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);text-align:left;padding:8px 10px;border-bottom:2px solid var(--accent);}
-td{padding:10px 10px;border-bottom:1px solid #2a2a2a;font-size:13px;}
+/* ── TABLE ─────────────────────────── */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;scrollbar-width:none;}
+.table-wrap::-webkit-scrollbar{display:none;}
+table{width:100%;min-width:440px;border-collapse:collapse;font-size:13px;}
+th{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);text-align:left;padding:8px 10px;border-bottom:2px solid var(--yellow);white-space:nowrap;}
+td{padding:10px 10px;border-bottom:1px solid #efefef;font-size:13px;vertical-align:middle;white-space:nowrap;color:#111;}
 tr:last-child td{border-bottom:none;}
-.perf-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--accent2);}
-.badge{display:inline-block;font-family:'Barlow',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:50px;text-transform:uppercase;}
-.badge-r1,.badge-r2,.badge-r3,.badge-r4,.badge-r5,.badge-r6{background:rgba(245,166,35,.15);color:var(--accent);border:1px solid rgba(245,166,35,.4);}
-.badge-d1,.badge-d2,.badge-d3,.badge-d7{background:rgba(245,166,35,.12);color:var(--accent2);border:1px solid rgba(245,166,35,.3);}
-.rp-badge{display:inline-block;background:var(--accent);color:#000;border:none;font-weight:800;font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:1px;padding:1px 5px;border-radius:2px;text-transform:uppercase;margin-left:6px;vertical-align:middle;}
+tr:hover td{background:#fafafa;}
+.perf-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--yellow);}
+.badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.5px;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
+.badge-r1,.badge-r2,.badge-r3,.badge-r4,.badge-r5,.badge-r6{background:rgba(245,196,0,.15);color:var(--yellow);border:1px solid rgba(245,196,0,.4);}
+.badge-d1,.badge-d2,.badge-d3,.badge-d7,.badge-d{background:rgba(245,166,35,.12);color:var(--orange);border:1px solid rgba(245,166,35,.3);}
+.rp-badge{display:inline-block;background:var(--yellow);color:#000;font-size:8px;font-weight:900;padding:1px 5px;border-radius:2px;text-transform:uppercase;margin-left:5px;vertical-align:middle;letter-spacing:.5px;}
 
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-.form-group label{display:block;font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
-.form-group input,.form-group select{width:100%;background:#111;border:1.5px solid #333;border-radius:8px;padding:10px 13px;color:var(--text);font-family:'Roboto Mono',monospace;font-size:12px;outline:none;transition:border-color .2s;}
-.form-group input:focus,.form-group select:focus{border-color:var(--accent);background:#1a1a1a;outline:none;}
-.form-group select option{background:var(--surface);}
-.btn{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#1a0a2e;border:none;border-radius:50px;padding:10px 22px;font-weight:700;font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-weight:500;transition:opacity .2s,transform .1s;white-space:nowrap;}
+/* ── TYPE COLORS ─────────────────── */
+.type-compet{color:var(--red);font-size:11px;font-weight:700;}
+.type-entrainement{color:var(--yellow);font-size:11px;font-weight:700;}
+
+/* ── FORMS ─────────────────────── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.form-group label{display:block;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:4px;}
+.form-group input,.form-group select{width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .2s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--yellow);}
+.form-group select option{background:#fff;color:#111;}
+.btn{background:var(--yellow);color:#000;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;width:100%;margin-top:4px;}
 .btn:hover{opacity:.85;}
 .btn:active{transform:scale(.98);}
-.btn-ghost{background:none;color:var(--red);border:1px solid rgba(204,34,0,.3);padding:4px 8px;font-size:10px;}
-.btn-ghost:hover{background:rgba(239,68,68,.1);opacity:1;}
-.btn-edit{background:none;color:#f97316;border:1px solid rgba(249,115,22,.3);padding:4px 8px;font-size:10px;margin-right:4px;}
-.btn-edit:hover{background:rgba(59,130,246,.1);opacity:1;}
+.btn-ghost{background:none;color:var(--red);border:1px solid rgba(239,68,68,.35);padding:4px 8px;font-size:11px;border-radius:4px;cursor:pointer;font-weight:700;}
+.btn-ghost:hover{background:rgba(239,68,68,.1);}
+.btn-cancel{background:none;color:#888;border:1px solid #ddd;border-radius:6px;padding:9px 18px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
+.btn-danger{background:var(--red);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
 
-.stat-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
-.stat{flex:1;min-width:85px;background:#111;border:1px solid #2a2a2a;border-radius:10px;padding:12px 14px;border-left:3px solid var(--accent);}
-.stat .n{font-family:'Barlow Condensed',sans-serif;font-size:30px;line-height:1;color:var(--accent2);font-weight:800;}
-.stat .l{font-family:'Barlow',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
-.trend-up{color:var(--accent)!important;}
+/* ── STATS ─────────────────────── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.stat{background:#f9f9f9;border:1px solid #e8e8e8;border-left:3px solid var(--yellow);border-radius:8px;padding:12px 14px;}
+.stat .n{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;line-height:1;color:var(--yellow);}
+.stat .l{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-top:3px;}
+.trend-up{color:var(--yellow)!important;}
 .trend-down{color:var(--red)!important;}
 
-.records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;}
-.rec-card{background:#111;border:1px solid #2a2a2a;border-radius:10px;padding:14px 16px;border-bottom:3px solid var(--accent);}
-.rec-card .disc{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
-.rec-card .perf{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:var(--accent2);line-height:1;margin:4px 0;font-weight:800;}
-.rec-card .meta{font-size:11px;color:var(--muted);}
-
-.hurdles-hero{text-align:center;padding:32px 0 24px;}
-.hurdles-counter{font-family:'Barlow Condensed',sans-serif;font-size:100px;line-height:1;color:var(--accent);font-weight:900;}
-.hurdles-label{font-family:'Roboto Mono',monospace;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-top:8px;}
-.hurdles-since{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--muted);margin-top:10px;}
-
+/* ── LEGEND ─────────────────────── */
 .legend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
-.legend-item{display:flex;align-items:center;gap:6px;font-family:'Roboto Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
-.legend-dot{width:9px;height:9px;border-radius:50%;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#999;font-weight:600;}
+.legend-dot{width:10px;height:10px;border-radius:50%;}
 
-.empty-state{text-align:center;padding:36px;color:var(--muted);font-family:'Roboto Mono',monospace;font-size:12px;letter-spacing:1px;}
+/* ── RECORDS ─────────────────────── */
+.records-filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.records-filters label{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
+.records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+.rec-card{background:#fff;border:1px solid #e8e8e8;border-bottom:3px solid var(--yellow);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.rec-card:hover{border-color:var(--yellow);background:#fffbf0;box-shadow:0 2px 8px rgba(245,196,0,.15);}
+.rec-card.open{border-color:var(--orange);}
+.rec-card .disc{font-size:10px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+.rec-card .disc-label{font-size:10px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+.rec-card .perf{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;color:var(--yellow);line-height:1;margin:4px 0;}
+.rec-card .meta{font-size:10px;color:#888;}
+.rec-history{display:none;background:#fafafa;border:1px solid #efefef;border-radius:8px;padding:12px;margin-top:8px;}
+.rec-history.show{display:block;}
+.rec-history table{min-width:0;width:100%;}
+.rec-history th,.rec-history td{font-size:11px;padding:6px 8px;}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center;}
+/* ── HAIES ─────────────────────── */
+.hurdles-hero{text-align:center;padding:28px 0 20px;}
+.hurdles-counter{font-family:'Barlow Condensed',sans-serif;font-size:96px;font-weight:900;line-height:1;color:var(--orange);}
+.hurdles-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#888;margin-top:6px;font-weight:700;}
+.hurdles-since{font-size:11px;color:#888;margin-top:8px;}
+
+/* ── MODAL ─────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.show{display:flex;}
-.modal{background:#1c1c1c;border:1px solid #333;border-top:4px solid var(--accent);border-radius:12px;padding:32px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.8);}
-.modal h3{font-family:'Barlow Condensed',sans-serif;font-size:32px;color:#fff;margin-bottom:20px;font-weight:800;}
-.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
-.btn-cancel{background:none;color:var(--muted);border:1px solid var(--border);border-radius:50px;padding:10px 18px;font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;}
-.btn-cancel:hover{color:var(--text);}
+.modal{background:#fff;border:1px solid #e8e8e8;border-top:3px solid var(--yellow);border-radius:12px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+.modal h3{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#111;margin-bottom:18px;}
+.modal-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
+.disc-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.disc-pill label{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#888;cursor:pointer;background:#f5f5f5;border:1px solid #ddd;padding:5px 10px;border-radius:4px;transition:all .15s;}
+.disc-pill label:hover{border-color:var(--yellow);color:#111;}
+.disc-pill input:checked+span{color:var(--yellow);}
+.disc-pill label:has(input:checked){background:rgba(245,196,0,.1);border-color:var(--yellow);}
+
+/* ── EMPTY STATE ─────────────────── */
+.empty-state{text-align:center;padding:36px;color:#888;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+
+/* ── PARAMS ─────────────────────── */
+.danger-zone{border:1px solid rgba(229,57,53,.25);background:#fff5f5;border-radius:8px;padding:16px;margin-top:8px;}
+.danger-zone p{font-size:13px;color:#888;margin-bottom:14px;}
+
+/* ═══ DESKTOP LARGE (>1200px) ═══════════════ */
+@media(min-width:1200px){
+  .container{padding:0 40px;}
+  .chart-wrap{height:320px;}
+  .stat .n{font-size:36px;}
+  .grid-2{gap:24px;}
+  .stat-row{grid-template-columns:repeat(4,1fr);gap:12px;}
+  .records-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
+  header{padding:20px 0 22px;margin-bottom:24px;}
+  .tabs{margin-bottom:20px;}
+  .tab{font-size:13px;padding:12px 18px;}
+  .card{padding:22px;margin-bottom:20px;}
+  table{font-size:14px;}
+  th{font-size:10px;padding:10px 14px;}
+  td{padding:12px 14px;font-size:14px;}
+}
+
+/* ═══ DESKTOP STANDARD (768px–1200px) ═══════════════ */
+@media(min-width:768px) and (max-width:1199px){
+  .container{padding:0 24px;}
+  .chart-wrap{height:280px;}
+  .stat-row{grid-template-columns:repeat(4,1fr);gap:10px;}
+  .stat .n{font-size:30px;}
+  .records-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
+}
+
+/* ═══ TABLET (641px–767px) ═══════════════ */
+@media(min-width:641px) and (max-width:767px){
+  .container{padding:0 16px;}
+  .chart-wrap{height:240px;}
+  .grid-2{grid-template-columns:1fr 1fr;gap:12px;}
+  .stat-row{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .stat .n{font-size:26px;}
+  .records-grid{grid-template-columns:repeat(3,1fr);}
+  .tab{font-size:11px;padding:9px 12px;}
+}
+
+/* ═══ MOBILE (≤640px) ═══════════════ */
+@media(max-width:640px){
+  /* Globals */
+  .container{padding:0 10px;}
+  
+  /* Login */
+  .login-box{padding:24px 16px;margin:0;border-radius:16px;}
+  .logo-athle,.logo-91{font-size:22px;padding:6px 12px;}
+  .login-subtitle{font-size:9px;margin-bottom:18px;}
+  .login-user{padding:10px 14px;border-radius:8px;}
+  .login-user .uname{font-size:13px;}
+  .login-user .urole{font-size:9px;}
+
+  /* Topbar */
+  .topbar{padding:8px 0;gap:6px;}
+  .topbar-left{gap:4px;flex-wrap:wrap;}
+  .ath-btn{font-size:10px;padding:5px 10px;border-radius:5px;}
+  .logout-btn{font-size:10px;padding:5px 10px;border-radius:5px;}
+
+  /* Header */
+  header{padding:10px 10px 12px;margin-bottom:12px;border-left-width:3px;}
+  .header-inner{flex-direction:column;align-items:stretch;gap:8px;}
+  .header-name{font-size:clamp(22px,8vw,32px);}
+  .header-sub{font-size:9px;}
+  .header-records{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+    width:100%;
+  }
+  .record-pill{min-width:0;padding:7px 5px;border-width:1.5px;border-radius:6px;}
+  .record-pill .val{font-size:16px;}
+  .record-pill .label{font-size:7px;letter-spacing:.3px;}
+
+  /* Tabs */
+  .tabs{margin-bottom:12px;border-bottom-width:1.5px;}
+  .tab{font-size:11px;padding:8px 10px;letter-spacing:.3px;}
+
+  /* Grid → colonne unique */
+  .grid-2{grid-template-columns:1fr;gap:10px;margin-bottom:10px;}
+
+  /* Cards */
+  .card{padding:12px;margin-bottom:10px;border-top-width:2px;border-radius:8px;}
+  .card-title{font-size:9px;letter-spacing:1.5px;margin-bottom:10px;}
+
+  /* Stats → 2 colonnes */
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:6px;
+    margin-bottom:10px;
+  }
+  .stat{padding:10px 10px;border-left-width:2px;border-radius:6px;}
+  .stat .n{font-size:21px;}
+  .stat .l{font-size:8px;letter-spacing:.8px;}
+
+  /* Chart */
+  .chart-wrap{height:190px;}
+  .chart-header{flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:8px;}
+  .filter-row{gap:3px;flex-wrap:wrap;}
+  .filter-btn{font-size:9px;padding:3px 8px;letter-spacing:0;}
+
+  /* Legend */
+  .legend{gap:10px;margin-bottom:8px;}
+  .legend-item{font-size:10px;}
+
+  /* Table — scrollable horizontal */
+  .table-wrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    margin:0 -12px;
+    padding:0 12px;
+  }
+  .table-wrap::-webkit-scrollbar{display:none;}
+  table{min-width:400px;font-size:12px;}
+  th{font-size:8px;padding:6px 8px;letter-spacing:.8px;}
+  td{font-size:12px;padding:8px 8px;}
+  .perf-val{font-size:13px;}
+  .badge{font-size:8px;padding:1px 5px;}
+  .rp-badge{font-size:7px;padding:1px 4px;}
+  .btn-ghost{padding:3px 7px;font-size:10px;}
+  .type-compet,.type-entrainement{font-size:10px;}
+
+  /* Forms */
+  .form-grid{grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;}
+  .form-group label{font-size:8px;letter-spacing:1px;margin-bottom:3px;}
+  .form-group input,.form-group select{padding:8px 9px;font-size:13px;border-radius:5px;}
+  .btn{padding:9px 16px;font-size:11px;border-radius:5px;margin-top:6px;}
+
+  /* Haies franchies */
+  .hurdles-hero{padding:20px 0 14px;}
+  .hurdles-counter{font-size:64px;}
+  .hurdles-label{font-size:10px;letter-spacing:2px;}
+  .hurdles-since{font-size:10px;}
+
+  /* Records */
+  .records-filters{gap:6px;margin-bottom:10px;}
+  .records-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .rec-card{padding:10px 12px;border-radius:6px;}
+  .rec-card .disc{font-size:9px;}
+  .rec-card .perf{font-size:19px;}
+  .rec-card .meta{font-size:9px;}
+  .rec-history{padding:8px;}
+  .rec-history th,.rec-history td{font-size:10px;padding:5px 6px;}
+
+  /* Modal */
+  .modal{padding:18px 14px;border-radius:10px;margin:8px;max-width:calc(100% - 16px);}
+  .modal h3{font-size:24px;margin-bottom:14px;}
+  .modal-actions{flex-direction:column-reverse;gap:6px;}
+  .modal-actions .btn,.modal-actions .btn-cancel{width:100%;text-align:center;}
+  .disc-pills{gap:4px;}
+  .disc-pill label{font-size:10px;padding:4px 8px;}
+
+  /* Params */
+  .danger-zone{padding:12px;}
+  .danger-zone p{font-size:12px;}
+}
+
+/* ═══ TRÈS PETIT (≤380px — iPhone SE) ═══════════════ */
+@media(max-width:380px){
+  .container{padding:0 8px;}
+  .tab{font-size:10px;padding:7px 8px;}
+  .stat .n{font-size:18px;}
+  .header-name{font-size:22px;}
+  .record-pill .val{font-size:14px;}
+  .record-pill .label{font-size:6px;}
+  th{font-size:7px;padding:5px 6px;}
+  td{font-size:11px;padding:7px 6px;}
+  .chart-wrap{height:170px;}
+  .hurdles-counter{font-size:52px;}
+  .records-grid{grid-template-columns:repeat(2,1fr);gap:6px;}
+  .rec-card .perf{font-size:17px;}
+  .ath-btn{font-size:9px;padding:4px 8px;}
+}
 </style>
 </head>
 <body>
@@ -182,27 +352,37 @@ tr:last-child td{border-bottom:none;}
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-
-    <!-- LOGO ATHLÉ 91 -->
-    <div class="logo-badge">
-      <span class="logo-athle">ATHLÉ</span>
-      <span class="logo-91">91</span>
+    <div class="logo-badge"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div>
+    <p class="login-subtitle">Viry-Châtillon · Tracker</p>
+    <!-- Étape 1 : choix coach/athlète -->
+    <div class="login-step show" id="step1">
+      <div class="login-user" onclick="selectRole('coach')">
+        <span class="uname">Kevin DEI</span>
+        <span class="urole">Coach</span>
+      </div>
+      <div class="login-user" onclick="showAthletes()">
+        <span class="uname">Athlètes</span>
+        <span class="urole">Se connecter →</span>
+      </div>
     </div>
-
-    <p class="login-subtitle">Viry-Châtillon · Choisir un profil</p>
-
-    <div class="login-list" id="login-list"></div>
-
-    <div class="login-pw" id="login-pw">
-      <button class="back" onclick="backToList()">← Retour</button>
-      <div class="form-group"><label>Mot de passe</label><input type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
-      <div class="login-err" id="login-err">Mot de passe incorrect</div>
-      <button class="btn" onclick="doLogin()">Connexion</button>
+    <!-- Étape 2 : liste athlètes -->
+    <div class="login-step" id="step2">
+      <button class="login-back" onclick="backStep(1)">← Retour</button>
+      <div id="athlete-list"></div>
+    </div>
+    <!-- Étape 3 : mot de passe -->
+    <div class="login-step" id="step3">
+      <button class="login-back" onclick="backStep(2)" id="back-btn-3">← Retour</button>
+      <div class="login-pw-wrap">
+        <div class="form-group"><label>Mot de passe</label><input type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="login-err" id="login-err">Mot de passe incorrect</div>
+        <button class="btn" onclick="doLogin()">Connexion</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL NOUVEL ATHLÈTE (coach only) -->
+<!-- MODAL NOUVEL ATHLÈTE -->
 <div class="modal-overlay" id="modal-new-athlete">
   <div class="modal">
     <h3>Nouvel athlète</h3>
@@ -210,15 +390,36 @@ tr:last-child td{border-bottom:none;}
       <div class="form-group"><label>Prénom</label><input type="text" id="na-prenom" placeholder="Marie"></div>
       <div class="form-group"><label>Nom</label><input type="text" id="na-nom" placeholder="Dupont"></div>
       <div class="form-group"><label>Née en</label><input type="number" id="na-annee" placeholder="2003"></div>
-      <div class="form-group"><label>Catégorie</label><select id="na-cat"><option>ES</option><option>SE</option><option>JU</option><option>CA</option><option>MI</option></select></div>
+      <div class="form-group"><label>Catégorie</label>
+        <select id="na-cat">
+          <option value="BB">Bébé Athlé (BB)</option>
+          <option value="EA">École d'Athlé (EA)</option>
+          <option value="PO">Poussin (PO)</option>
+          <option value="BE">Benjamin (BE)</option>
+          <option value="MI">Minime (MI)</option>
+          <option value="CA">Cadet (CA)</option>
+          <option value="JU">Junior (JU)</option>
+          <option value="ES">Espoir (ES)</option>
+          <option value="SE">Senior (SE)</option>
+          <option value="M35">Master 35 (M35)</option>
+          <option value="M40">Master 40 (M40)</option>
+          <option value="M45">Master 45 (M45)</option>
+          <option value="M50">Master 50 (M50)</option>
+          <option value="M55">Master 55 (M55)</option>
+          <option value="M60">Master 60 (M60)</option>
+          <option value="M65">Master 65 (M65)</option>
+          <option value="M70">Master 70 (M70)</option>
+          <option value="M75">Master 75+ (M75)</option>
+        </select>
+      </div>
     </div>
     <div class="form-group" style="margin-bottom:10px"><label>Disciplines</label>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;" id="disc-checkboxes"></div>
+      <div class="disc-pills" id="disc-checkboxes"></div>
     </div>
-    <div class="form-group" style="margin-bottom:10px"><label>Mot de passe initial</label><input type="password" id="na-pw" placeholder="••••••"></div>
+    <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><input type="password" id="na-pw" placeholder="••••••"></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
-      <button class="btn" onclick="createAthlete()">Créer</button>
+      <button class="btn" style="width:auto" onclick="createAthlete()">Créer</button>
     </div>
   </div>
 </div>
@@ -227,58 +428,151 @@ tr:last-child td{border-bottom:none;}
 <div class="modal-overlay" id="modal-add-disc">
   <div class="modal">
     <h3>Ajouter une discipline</h3>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;" id="disc-add-checkboxes"></div>
+    <div class="disc-pills" id="disc-add-checkboxes"></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-add-disc')">Annuler</button>
-      <button class="btn" onclick="confirmAddDisc()">Ajouter</button>
+      <button class="btn" style="width:auto" onclick="confirmAddDisc()">Ajouter</button>
     </div>
   </div>
 </div>
 
+<!-- APP -->
 <div class="container" id="app" style="display:none">
   <div class="topbar">
     <div class="topbar-left" id="athlete-switcher"></div>
     <button class="logout-btn" onclick="logout()">Déconnexion</button>
   </div>
-
   <header>
     <div class="header-inner">
       <div class="logo-block">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap">
-          <div style="display:inline-flex;align-items:stretch;border-radius:6px;overflow:hidden;flex-shrink:0">
-            <div style="background:var(--accent2);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;line-height:1;padding:4px 8px;letter-spacing:2px;display:flex;align-items:center">ATHLÉ</div>
-            <div style="background:var(--accent);color:#1a0a2e;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;line-height:1;padding:2px 8px;display:flex;align-items:center">91</div>
-          </div>
-          <h1 id="header-name" style="margin:0;line-height:1">—</h1>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px">
+          <div class="logo-inline"><span class="la">ATHLÉ</span><span class="l9">91</span></div>
+          <div class="header-name" id="header-name">—</div>
         </div>
-        <p id="header-sub">—</p>
+        <div class="header-sub" id="header-sub">—</div>
       </div>
-      <div class="header-records">
-        <div class="record-pill"><div class="val" id="pr-hauteur">—</div><div class="label">PR Hauteur</div></div>
-        <div class="record-pill"><div class="val" id="pr-400h">—</div><div class="label">PR 400m H.</div></div>
-        <div class="record-pill"><div class="val" id="nb-comps">—</div><div class="label">Compétitions</div></div>
+      <div class="header-records" id="header-records">
+        <div class="record-pill"><div class="val" id="pr-hauteur">—</div><div class="label">RP Hauteur</div></div>
+        <div class="record-pill"><div class="val" id="pr-400h">—</div><div class="label">RP 400m H.</div></div>
+        <div class="record-pill"><div class="val" id="nb-comps">—</div><div class="label">Compéts.</div></div>
       </div>
     </div>
   </header>
-
   <div class="tabs" id="main-tabs"></div>
   <div id="tab-contents"></div>
 </div>
 
 <script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
+// ─── SUPABASE ──────────────────────────────────────────────────────────────
+const {createClient} = supabase;
+const sb = createClient('https://jxuiltcgxnvsqxgydyxg.supabase.co','sb_publishable_1xOdv8qQMV-JoTHBuxRZdg_FmwuzeOd');
 
-const DISCIPLINES_ALL = ['Hauteur','400m Haies','Longueur','Triple Saut','100m','200m','400m','80m Haies','Disque','Poids','Javelot'];
+// ─── CONSTANTS ─────────────────────────────────────────────────────────────
+const DISCIPLINES_ALL = [
+  // Courses
+  '50m','60m','100m','200m','400m','800m','1000m','1500m','3000m','5000m','10000m',
+  '60m Haies','80m Haies','100m Haies','110m Haies','400m Haies',
+  '2000m Steeple','3000m Steeple',
+  'Relais 4x100m','Relais 4x400m',
+  '20km Marche','50km Marche',
+  // Sauts
+  'Hauteur','Perche','Longueur','Triple Saut',
+  // Lancers
+  'Poids','Disque','Marteau','Javelot',
+  // Combinés
+  'Pentathlon','Heptathlon','Décathlon',
+  // Cross/Route
+  'Cross','Semi-marathon','Marathon',
+];
 
-const users = {
-  coach: { name:'Kevin DEI', role:'coach', pw:'coach91', color:'#ef4444' },
+const CATS_ORDER = ['BB','EA','PO','BE','MI','CA','JU','ES','SE','M35','M40','M45','M50','M55','M60','M65','M70','M75'];
+
+const HIST = {
+  'Margaux': {
+    'Hauteur':[
+      {date:'2024-04-27',val:130,type:'compet',lieu:'Noisy Le Grand',niveau:'D3'},
+      {date:'2024-05-11',val:130,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
+      {date:'2024-06-27',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
+    ],
+    'Longueur':[
+      {date:'2017-05-01',val:359,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
+      {date:'2017-06-04',val:348,type:'compet',lieu:'Vanves',niveau:'MI'},
+      {date:'2017-06-25',val:379,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
+      {date:'2022-05-14',val:400,type:'compet',lieu:'Savigny Sur Orge',niveau:'D5'},
+      {date:'2022-05-21',val:400,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
+      {date:'2022-05-29',val:400,type:'compet',lieu:'Lisses',niveau:'D1'},
+      {date:'2023-05-08',val:460,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
+      {date:'2023-05-13',val:460,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
+      {date:'2023-05-28',val:460,type:'compet',lieu:'Lisses',niveau:'R5'},
+      {date:'2023-06-08',val:447,type:'compet',lieu:'Savigny Sur Orge',niveau:'R6'},
+      {date:'2023-06-28',val:469,type:'compet',lieu:'Lisses',niveau:'R5'},
+      {date:'2024-05-26',val:457,type:'compet',lieu:'Lisses',niveau:'R6'},
+      {date:'2024-05-30',val:446,type:'compet',lieu:'Bondoufle',niveau:'R6'},
+      {date:'2024-06-06',val:448,type:'compet',lieu:'Saint Michel Sur Orge',niveau:'R6'},
+      {date:'2024-07-06',val:448,type:'compet',lieu:'Saint Michel Sur Orge',niveau:'R6'},
+    ],
+    'Triple Saut':[
+      {date:'2024-06-06',val:929,type:'compet',lieu:'Savigny sur Orge',niveau:'D1'},
+      {date:'2024-06-13',val:865,type:'compet',lieu:'Bretigny Sur Orge',niveau:'D3'},
+    ],
+    '100m':[
+      {date:'2017-06-25',val:15.64,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
+      {date:'2022-05-14',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
+      {date:'2022-05-28',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
+      {date:'2022-06-23',val:14.30,type:'compet',lieu:'Bretigny sur Orge',niveau:'D1'},
+    ],
+    '200m':[
+      {date:'2022-05-16',val:29.76,type:'compet',lieu:'Lisses',niveau:'R6'},
+      {date:'2022-06-30',val:30.56,type:'compet',lieu:'Longjumeau',niveau:'D1'},
+      {date:'2023-05-08',val:30.27,type:'compet',lieu:'Savigny Sur Orge',niveau:'R6'},
+      {date:'2023-05-13',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
+      {date:'2023-05-28',val:29.81,type:'compet',lieu:'Lisses',niveau:'R6'},
+      {date:'2023-05-28',val:30.57,type:'compet',lieu:'Lisses',niveau:'D1'},
+      {date:'2023-06-08',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
+      {date:'2023-06-29',val:29.36,type:'compet',lieu:'Longjumeau',niveau:'R5'},
+    ],
+    '400m':[
+      {date:'2023-06-15',val:69.44,type:'compet',lieu:'Lisses',niveau:'R6'},
+      {date:'2023-06-22',val:69.01,type:'compet',lieu:'Savigny sur Orge',niveau:'R5'},
+    ],
+    '50m':[
+      {date:'2017-06-04',val:7.99,type:'compet',lieu:'Vanves',niveau:'MI'},
+      {date:'2017-06-25',val:8.17,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
+    ],
+    'Disque':[
+      {date:'2022-04-14',val:1857,type:'compet',lieu:'Savigny Sur Orge',niveau:'D5'},
+      {date:'2022-05-14',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
+      {date:'2022-05-21',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
+      {date:'2022-05-29',val:2317,type:'compet',lieu:'Lisses',niveau:'D2'},
+      {date:'2022-06-05',val:2011,type:'compet',lieu:'Antony',niveau:'D4'},
+      {date:'2023-01-08',val:1971,type:'compet',lieu:'Montgeron',niveau:'D4'},
+      {date:'2023-05-06',val:1314,type:'compet',lieu:'Noisy Le Grand',niveau:'D7'},
+      {date:'2023-05-13',val:2195,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
+      {date:'2023-05-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
+      {date:'2023-05-28',val:2579,type:'compet',lieu:'Lisses',niveau:'D1'},
+      {date:'2023-06-08',val:2244,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
+      {date:'2023-06-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
+      {date:'2023-06-17',val:2244,type:'compet',lieu:'Pontoise',niveau:'D3'},
+      {date:'2024-04-27',val:1951,type:'compet',lieu:'Noisy Le Grand',niveau:'D4'},
+      {date:'2024-05-11',val:2441,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
+      {date:'2025-05-17',val:2348,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
+    ],
+    'Poids':[
+      {date:'2017-05-01',val:729,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
+      {date:'2017-06-04',val:732,type:'compet',lieu:'Vanves',niveau:'MI'},
+    ],
+    '80m Haies':[{date:'2017-05-01',val:17.02,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'}],
+  },
+  'Maria': {
+    '200m':[
+      {date:'2026-04-25',val:28.56,type:'compet',lieu:'Villejuif',niveau:'R3'},
+    ],
+  }
 };
 
 const athletes = {
-  margaux: {
-    id:'margaux', prenom:'Margaux', nom:'GREGO', annee:2002, cat:'SE', pw:'margaux91',
-    disciplines:['Hauteur','400m Haies'],
-    sub:'Athlé 91 · SE · née 2002',
+  margaux:{id:'margaux',dbId:null,prenom:'Margaux',nom:'GREGO',annee:2002,cat:'SE',pw:'margaux91',
+    disciplines:['Hauteur','400m Haies'],sub:'Athlé 91 · SE · née 2002',
     records:[
       {disc:'50m',perf:'7"99',date:'4 Juin 2017',cat:'MI'},
       {disc:'100m',perf:'14"30',date:'23 Juin 2022',cat:'ES'},
@@ -287,226 +581,275 @@ const athletes = {
       {disc:'80m Haies',perf:'17"02',date:'1 Mai 2017',cat:'MI'},
       {disc:'Hauteur',perf:'1m40',date:'17 Mai 2025',cat:'SE'},
       {disc:'Longueur',perf:'4m60',date:'28 Mai 2023',cat:'ES'},
-      {disc:'Triple saut',perf:'9m29',date:'6 Juin 2024',cat:'ES'},
-      {disc:'Poids 3kg',perf:'7m32',date:'4 Juin 2017',cat:'MI'},
-      {disc:'Disque 1kg',perf:'25m79',date:'28 Mai 2023',cat:'ES'},
+      {disc:'Triple Saut',perf:'9m29',date:'6 Juin 2024',cat:'ES'},
+      {disc:'Poids',perf:'7m32',date:'4 Juin 2017',cat:'MI'},
+      {disc:'Disque',perf:'25m79',date:'28 Mai 2023',cat:'ES'},
     ],
     hauteur:[
-      {id:1,date:'2025-05-03',val:130,type:'compet',lieu:'Mantes La Jolie',niveau:'D3'},
-      {id:2,date:'2025-05-17',val:140,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
-      {id:3,date:'2025-05-24',val:140,type:'compet',lieu:'Montgeron',niveau:'R5'},
-      {id:4,date:'2025-06-21',val:132,type:'compet',lieu:'Viry Chatillon',niveau:'D2'},
-      {id:5,date:'2025-06-28',val:133,type:'compet',lieu:'Ivry Sur Seine',niveau:'D2'},
-      {id:6,date:'2025-12-07',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
+      {id:1,date:'2024-04-27',val:130,type:'compet',lieu:'Noisy Le Grand',niveau:'D3'},
+      {id:2,date:'2024-05-11',val:130,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
+      {id:3,date:'2024-06-27',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
+      {id:4,date:'2025-05-03',val:130,type:'compet',lieu:'Mantes La Jolie',niveau:'D3'},
+      {id:5,date:'2025-05-17',val:140,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
+      {id:6,date:'2025-05-24',val:140,type:'compet',lieu:'Montgeron',niveau:'R5'},
+      {id:7,date:'2025-06-21',val:132,type:'compet',lieu:'Viry Chatillon',niveau:'D2'},
+      {id:8,date:'2025-06-28',val:133,type:'compet',lieu:'Ivry Sur Seine',niveau:'D2'},
+      {id:9,date:'2025-12-07',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
     ],
     haies:[],
+    // Pre-populated from HIST
+    m50:[
+      {id:50,date:'2017-06-04',val:7.99,type:'compet',lieu:'Vanves',niveau:'MI'},
+      {id:51,date:'2017-06-25',val:8.17,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
+    ],
+    m100:[
+      {id:60,date:'2017-06-25',val:15.64,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
+      {id:61,date:'2022-05-14',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
+      {id:62,date:'2022-05-28',val:14.44,type:'compet',lieu:'Lisses',niveau:'D1'},
+      {id:63,date:'2022-06-23',val:14.30,type:'compet',lieu:'Bretigny sur Orge',niveau:'D1'},
+    ],
+    m200:[
+      {id:70,date:'2022-05-16',val:29.76,type:'compet',lieu:'Lisses',niveau:'R6'},
+      {id:71,date:'2022-06-30',val:30.56,type:'compet',lieu:'Longjumeau',niveau:'D1'},
+      {id:72,date:'2023-05-08',val:30.27,type:'compet',lieu:'Savigny Sur Orge',niveau:'R6'},
+      {id:73,date:'2023-05-13',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
+      {id:74,date:'2023-05-28',val:29.81,type:'compet',lieu:'Lisses',niveau:'R6'},
+      {id:75,date:'2023-06-08',val:29.47,type:'compet',lieu:'Savigny Sur Orge',niveau:'R5'},
+      {id:76,date:'2023-06-29',val:29.36,type:'compet',lieu:'Longjumeau',niveau:'R5'},
+    ],
+    m400:[
+      {id:80,date:'2023-06-15',val:69.44,type:'compet',lieu:'Lisses',niveau:'R6'},
+      {id:81,date:'2023-06-22',val:69.01,type:'compet',lieu:'Savigny sur Orge',niveau:'R5'},
+    ],
+    m80haies:[
+      {id:90,date:'2017-05-01',val:17.02,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
+    ],
+    poids:[
+      {id:100,date:'2017-05-01',val:729,type:'compet',lieu:'Le Plessis Robinson',niveau:'MI'},
+      {id:101,date:'2017-06-04',val:732,type:'compet',lieu:'Vanves',niveau:'MI'},
+    ],
+    disque:[
+      {id:110,date:'2022-04-14',val:1857,type:'compet',lieu:'Savigny Sur Orge',niveau:'D5'},
+      {id:111,date:'2022-05-14',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
+      {id:112,date:'2022-05-21',val:1900,type:'compet',lieu:'Savigny Sur Orge',niveau:'D4'},
+      {id:113,date:'2022-05-29',val:2317,type:'compet',lieu:'Lisses',niveau:'D2'},
+      {id:114,date:'2022-06-05',val:2011,type:'compet',lieu:'Antony',niveau:'D4'},
+      {id:115,date:'2023-01-08',val:1971,type:'compet',lieu:'Montgeron',niveau:'D4'},
+      {id:116,date:'2023-05-06',val:1314,type:'compet',lieu:'Noisy Le Grand',niveau:'D7'},
+      {id:117,date:'2023-05-13',val:2195,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
+      {id:118,date:'2023-05-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
+      {id:119,date:'2023-05-28',val:2579,type:'compet',lieu:'Lisses',niveau:'D1'},
+      {id:120,date:'2023-06-08',val:2244,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
+      {id:121,date:'2023-06-15',val:2231,type:'compet',lieu:'Lisses',niveau:'D3'},
+      {id:122,date:'2023-06-17',val:2244,type:'compet',lieu:'Pontoise',niveau:'D3'},
+      {id:123,date:'2024-04-27',val:1951,type:'compet',lieu:'Noisy Le Grand',niveau:'D4'},
+      {id:124,date:'2024-05-11',val:2441,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
+      {id:125,date:'2025-05-17',val:2348,type:'compet',lieu:'Savigny Sur Orge',niveau:'D2'},
+    ],
+    triplesaut:[
+      {id:130,date:'2024-06-06',val:929,type:'compet',lieu:'Savigny sur Orge',niveau:'D1'},
+      {id:131,date:'2024-06-13',val:865,type:'compet',lieu:'Bretigny Sur Orge',niveau:'D3'},
+    ],
     haiesFranchies:[{id:1,date:'2025-05-22',val:1,dist:'100m',type:'entrainement',note:'1ère haie franchie'}],
     haiesTotalSince:'22 Mai 2025',
   },
-  maria: {
-    id:'maria', prenom:'Maria', nom:'KANTE', annee:2006, cat:'ES', pw:'maria91',
-    disciplines:['Hauteur','Longueur'],
-    sub:'Athlé 91 · ES · née 2006',
+  maria:{id:'maria',dbId:null,prenom:'Maria',nom:'KANTE',annee:2006,cat:'ES',pw:'maria91',
+    disciplines:['Hauteur','Longueur'],sub:'Athlé 91 · ES · née 2006',
     records:[
       {disc:'200m',perf:'28"56',date:'25 Avr. 2026',cat:'ES'},
       {disc:'Hauteur',perf:'1m50',date:'17 Mai 2026',cat:'ES'},
       {disc:'Longueur',perf:'4m67',date:'25 Avr. 2026',cat:'ES'},
     ],
     hauteur:[
-      {id:1,date:'2026-01-14',val:140,type:'compet',lieu:'Paris',niveau:'R5'},
-      {id:2,date:'2026-02-04',val:143,type:'compet',lieu:'Paris',niveau:'R4'},
-      {id:3,date:'2026-02-06',val:149,type:'compet',lieu:'Eaubonne',niveau:''},
-      {id:4,date:'2026-04-25',val:146,type:'compet',lieu:'Villejuif',niveau:'R3'},
-      {id:5,date:'2026-05-02',val:145,type:'compet',lieu:'Noisy Le Grand',niveau:'R3'},
-      {id:6,date:'2026-05-17',val:150,type:'compet',lieu:'Caen',niveau:'R1'},
-      {id:7,date:'2025-06-19',val:110,type:'compet',lieu:'Viry Chatillon',niveau:'D7'},
-      {id:8,date:'2025-06-21',val:132,type:'compet',lieu:'Viry Chatillon',niveau:'D2'},
-      {id:9,date:'2025-07-12',val:133,type:'compet',lieu:'Ivry Sur Seine',niveau:'D2'},
-      {id:10,date:'2025-12-07',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
+      // 2025
+      {id:10,date:'2025-06-12',val:110,type:'compet',lieu:'Viry Chatillon',niveau:'D7'},
+      {id:11,date:'2025-06-19',val:110,type:'compet',lieu:'Viry Chatillon',niveau:'D7'},
+      {id:12,date:'2025-06-21',val:132,type:'compet',lieu:'Viry Chatillon',niveau:'D2'},
+      {id:13,date:'2025-07-12',val:133,type:'compet',lieu:'Ivry Sur Seine',niveau:'D2'},
+      {id:14,date:'2025-12-07',val:135,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
+      // 2026
+      {id:15,date:'2026-01-14',val:140,type:'compet',lieu:'Paris',niveau:'R5'},
+      {id:16,date:'2026-02-04',val:143,type:'compet',lieu:'Paris',niveau:'R4'},
+      {id:17,date:'2026-02-06',val:149,type:'compet',lieu:'Eaubonne',niveau:''},
+      {id:18,date:'2026-04-25',val:146,type:'compet',lieu:'Villejuif',niveau:'R3'},
+      {id:19,date:'2026-05-02',val:145,type:'compet',lieu:'Noisy Le Grand',niveau:'R3'},
+      {id:20,date:'2026-05-17',val:150,type:'compet',lieu:'Caen',niveau:'R1'},
     ],
     longueur:[
-      {id:20,date:'2024-12-14',val:411,type:'compet',lieu:'Viry Chatillon',niveau:'D3'},
-      {id:21,date:'2025-06-12',val:409,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
-      {id:22,date:'2025-06-21',val:402,type:'compet',lieu:'Viry Chatillon',niveau:'D3'},
-      {id:23,date:'2025-12-06',val:432,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
-      {id:24,date:'2026-02-06',val:450,type:'compet',lieu:'Eaubonne',niveau:'R6'},
-      {id:25,date:'2026-04-25',val:467,type:'compet',lieu:'Villejuif',niveau:'R5'},
+      // 2024
+      {id:30,date:'2024-12-14',val:411,type:'compet',lieu:'Viry Chatillon',niveau:'D3'},
+      // 2025
+      {id:31,date:'2025-06-12',val:409,type:'compet',lieu:'Savigny Sur Orge',niveau:'D3'},
+      {id:32,date:'2025-06-21',val:402,type:'compet',lieu:'Viry Chatillon',niveau:'D3'},
+      {id:33,date:'2025-12-06',val:432,type:'compet',lieu:'Viry Chatillon',niveau:'D1'},
+      // 2026
+      {id:34,date:'2026-02-06',val:450,type:'compet',lieu:'Eaubonne',niveau:'R6'},
+      {id:35,date:'2026-04-25',val:467,type:'compet',lieu:'Villejuif',niveau:'R5'},
+      {id:36,date:'2026-05-02',val:445,type:'compet',lieu:'Noisy Le Grand',niveau:'R3'},
     ],
-    haies:[],
-    haiesFranchies:[],
-    haiesTotalSince:null,
+    haies:[],haiesFranchies:[],haiesTotalSince:null,
   }
 };
+const users = {coach:{name:'Kevin DEI',pw:'coach91',dbId:null}};
+let currentUser=null,currentAthlete=null,nextId=500;
+let charts={};
+let chartFilters={}; // {key: {period:'tout', view:'les2'}}
 
-let currentUser = null;
-let currentAthlete = null;
-let nextId = 500;
-let chartFilters = { hauteur:'tout', haies:'tout', hf:'tout' };
-let charts = {};
+// ─── LOGIN ──────────────────────────────────────────────────────────────────
+let loginTarget=null;
 
-// ─── LOGIN ───────────────────────────────────────────────────────────────────
-
-let loginTarget = null;
-
-function buildLoginList() {
-  const list = document.getElementById('login-list');
-  const all = [
-    { key:'coach', name:'Kevin DEI', role:'Coach' },
-    ...Object.values(athletes).map(a => ({ key:a.id, name:a.prenom+' '+a.nom, role:'Athlète · '+a.cat }))
-  ];
-  list.innerHTML = all.map(u => `
-    <div class="login-user" onclick="selectUser('${u.key}')">
-      <span class="uname">${u.name}</span>
-      <span class="urole">${u.role}</span>
-    </div>`).join('');
+function showStep(n){
+  document.querySelectorAll('.login-step').forEach(s=>s.classList.remove('show'));
+  document.getElementById('step'+n).classList.add('show');
 }
 
-function selectUser(key) {
-  loginTarget = key;
-  document.getElementById('login-list').style.display = 'none';
-  const pw = document.getElementById('login-pw');
-  pw.classList.add('show');
-  document.getElementById('pw-input').value = '';
-  document.getElementById('login-err').style.display = 'none';
-  setTimeout(() => document.getElementById('pw-input').focus(), 50);
+function showAthletes(){
+  const list=document.getElementById('athlete-list');
+  list.innerHTML='<div style="display:flex;flex-direction:column;gap:6px">'+
+    Object.values(athletes).map(a=>`
+      <div class="login-user" onclick="selectRole('${a.id}')">
+        <span class="uname">${a.prenom} ${a.nom}</span>
+        <span class="urole">Athlète · ${a.cat}</span>
+      </div>`).join('')+'</div>';
+  showStep(2);
 }
 
-function backToList() {
-  loginTarget = null;
-  document.getElementById('login-list').style.display = 'flex';
-  document.getElementById('login-list').style.flexDirection = 'column';
-  document.getElementById('login-pw').classList.remove('show');
+function selectRole(key){
+  loginTarget=key;
+  document.getElementById('pw-input').value='';
+  document.getElementById('login-err').style.display='none';
+  document.getElementById('back-btn-3').onclick=()=>backStep(key==='coach'?1:2);
+  showStep(3);
+  setTimeout(()=>document.getElementById('pw-input').focus(),100);
 }
 
-function doLogin() {
-  const pw = document.getElementById('pw-input').value;
-  let ok = false;
-  if (loginTarget === 'coach' && pw === users.coach.pw) { ok = true; currentUser = {type:'coach', key:'coach'}; }
-  else if (athletes[loginTarget] && pw === athletes[loginTarget].pw) { ok = true; currentUser = {type:'athlete', key:loginTarget}; }
+function backStep(n){showStep(n);}
 
-  if (!ok) { document.getElementById('login-err').style.display = 'block'; return; }
-
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-
-  if (currentUser.type === 'athlete') {
-    currentAthlete = loginTarget;
-    buildApp();
-  } else {
-    currentAthlete = Object.keys(athletes)[0];
-    buildApp();
-  }
+function doLogin(){
+  const pw=document.getElementById('pw-input').value;
+  let ok=false;
+  if(loginTarget==='coach'&&pw===users.coach.pw){ok=true;currentUser={type:'coach',key:'coach'};}
+  else if(athletes[loginTarget]&&pw===athletes[loginTarget].pw){ok=true;currentUser={type:'athlete',key:loginTarget};}
+  if(!ok){document.getElementById('login-err').style.display='block';return;}
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  currentAthlete=currentUser.type==='athlete'?loginTarget:Object.keys(athletes)[0];
+  buildApp();
 }
 
-function logout() {
-  currentUser = null; currentAthlete = null;
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-list').style.display = 'flex';
-  document.getElementById('login-list').style.flexDirection = 'column';
-  document.getElementById('login-pw').classList.remove('show');
-  buildLoginList();
+function logout(){
+  currentUser=null;currentAthlete=null;charts={};
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  showStep(1);
 }
 
-// ─── APP BUILD ───────────────────────────────────────────────────────────────
+// ─── APP ──────────────────────────────────────────────────────────────────
+function buildApp(){buildSwitcher();buildTabs();renderAll();}
 
-function buildApp() {
-  buildSwitcher();
-  buildTabs();
-  renderAll();
-}
-
-function buildSwitcher() {
-  const sw = document.getElementById('athlete-switcher');
-  if (currentUser.type === 'coach') {
-    sw.innerHTML = Object.values(athletes).map(a =>
+function buildSwitcher(){
+  const sw=document.getElementById('athlete-switcher');
+  if(currentUser.type==='coach'){
+    sw.innerHTML=Object.values(athletes).map(a=>
       `<button class="ath-btn ${a.id===currentAthlete?'active':''}" onclick="switchAthlete('${a.id}')">${a.prenom} ${a.nom}</button>`
-    ).join('') + `<button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>`;
-  } else {
-    sw.innerHTML = `<span style="font-family:'Roboto Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;padding:8px 0">Mon espace</span>`;
+    ).join('')+`<button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>`;
+  }else{
+    sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
   }
 }
 
-function buildTabs() {
-  const ath = athletes[currentAthlete];
-  const tabs = document.getElementById('main-tabs');
-  const contents = document.getElementById('tab-contents');
-
-  const hasHaies = ath.disciplines.some(d => d.toLowerCase().includes('haies'));
-  const extraTabs = hasHaies ? ['haies_franchies','records','parametres'] : ['records','parametres'];
-  const extraLabels = hasHaies ? ['Haies Franchies','Records','Paramètres'] : ['Records','Paramètres'];
-  const tabList = ath.disciplines.map(d => d.toLowerCase().replace(/ /g,'_')).concat(extraTabs);
-  const tabLabels = ath.disciplines.concat(extraLabels);
-
-  tabs.innerHTML = tabLabels.map((l,i) =>
-    `<button class="tab ${i===0?'active':''}" onclick="switchTab('${tabList[i]}')">${l}</button>`
-  ).join('') + `<button class="tab" onclick="openAddDisc()" style="color:var(--accent);border-left:1px solid var(--border);margin-left:4px">+ Discipline</button>`;
-
-  contents.innerHTML = tabList.map((t,i) => `<div class="tab-content ${i===0?'active':''}" id="tab-${t}"></div>`).join('');
-
-  ath.disciplines.forEach(d => buildDiscTab(d));
-  if (hasHaies) buildHFTab();
+function buildTabs(){
+  const ath=athletes[currentAthlete];
+  const hasHaies=ath.disciplines.some(d=>d.toLowerCase().includes('haies'));
+  const tabList=ath.disciplines.map(d=>discKey(d)).concat(hasHaies?['haies_franchies','records','parametres']:['records','parametres']);
+  const tabLabels=ath.disciplines.concat(hasHaies?['Haies Franchies','Records','Paramètres']:['Records','Paramètres']);
+  document.getElementById('main-tabs').innerHTML=
+    tabLabels.map((l,i)=>`<button class="tab ${i===0?'active':''}" onclick="switchTab('${tabList[i]}')">${l}</button>`).join('')+
+    `<button class="tab" onclick="openAddDisc()" style="color:var(--yellow)">+ Discipline</button>`;
+  document.getElementById('tab-contents').innerHTML=
+    tabList.map((t,i)=>`<div class="tab-content ${i===0?'active':''}" id="tab-${t}"></div>`).join('');
+  ath.disciplines.forEach(d=>buildDiscTab(d));
+  if(hasHaies)buildHFTab();
   buildRecordsTab();
   buildParamTab();
 }
 
-function buildDiscTab(disc) {
-  const key = disc.toLowerCase().replace(' ','_');
-  const el = document.getElementById('tab-' + key);
-  if (!disc.includes('Haies') || disc === '400m Haies') {
-    // Standard perf discipline
-    const isTime = disc.includes('Haies') || disc.includes('m') && !disc.includes('Hauteur') && !disc.includes('Longueur') && !disc.includes('Saut');
-    const color = disc === 'Hauteur' ? '#f5a623' : '#ef4444';
-    el.innerHTML = `
-      <div class="stat-row" id="stats-${key}"></div>
-      <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:${color}"></div>Compétition</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Entraînement</div>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="chart-header">
-            <div class="card-title" style="margin:0">Progression</div>
-            <div class="filter-btns" id="filters-${key}"></div>
+function discKey(d){return d.toLowerCase().replace(/ /g,'_').replace(/[^a-z0-9_]/g,'');}
+function dataKey(d){
+  const k=discKey(d);
+  if(k==='hauteur')return'hauteur';
+  if(k==='longueur')return'longueur';
+  if(k==='triple_saut'||k==='triplesaut')return'triplesaut';
+  if(k==='400m_haies'||k==='400mhaies')return'haies';
+  if(k==='80m_haies'||k==='80mhaies')return'm80haies';
+  if(k==='100m')return'm100';
+  if(k==='200m')return'm200';
+  if(k==='400m')return'm400';
+  if(k==='50m')return'm50';
+  if(k==='poids')return'poids';
+  if(k==='disque')return'disque';
+  if(k.includes('haies'))return'haies';
+  return k;
+}
+function isDistDisc(d){return['Hauteur','Longueur','Triple Saut'].includes(d);}
+function isTimeDisc(d){return!isDistDisc(d)&&!d.includes('Poids')&&!d.includes('Disque')&&!d.includes('Marteau')&&!d.includes('Javelot');}
+
+// ─── DISC TAB BUILD ────────────────────────────────────────────────────────
+function buildDiscTab(disc){
+  const k=discKey(disc);
+  const el=document.getElementById('tab-'+k);
+  if(!el)return;
+  const valLabel=isDistDisc(disc)?disc+' (cm)':isTimeDisc(disc)?'Temps (s)':disc+' (cm)';
+  const valPh=disc==='Hauteur'?'140':disc==='Longueur'?'460':disc==='Triple Saut'?'900':disc.includes('m')&&!disc.includes('Haies')?'65.0':'100';
+  el.innerHTML=`
+    <div class="stat-row" id="stats-${k}"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Compétition</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Entraînement</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-header">
+          <div class="card-title" style="margin:0">Progression</div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+            <div class="filter-row" id="period-filters-${k}"></div>
+            <div class="filter-row">
+              <button class="filter-btn active" onclick="setView('${k}','les2',this)">Les 2</button>
+              <button class="filter-btn f-compet" onclick="setView('${k}','compet',this)">Compét.</button>
+              <button class="filter-btn f-entrainement" onclick="setView('${k}','entrainement',this)">Entraîn.</button>
+            </div>
           </div>
-          <div class="chart-wrap"><canvas id="chart-${key}"></canvas></div>
         </div>
-        <div class="card">
-          <div class="card-title">Ajouter</div>
-          ${buildForm(key, disc)}
-        </div>
+        <div class="chart-wrap"><canvas id="chart-${k}"></canvas></div>
       </div>
       <div class="card">
-        <div class="card-title">Historique</div>
-        <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th><th></th></tr></thead>
-        <tbody id="table-${key}"></tbody></table>
-      </div>`;
-  }
-}
-
-function buildForm(key, disc) {
-  const isDistDisc = ['Hauteur','Longueur','Triple Saut'].includes(disc);
-  const valLabel = isDistDisc ? disc+' (cm)' : 'Temps (secondes)';
-  const valPlaceholder = disc==='Hauteur'?'140':disc==='Longueur'?'460':disc==='Triple Saut'?'900':'65.0';
-  const step = isDistDisc ? '1' : '0.01';
-  return `
-    <div class="form-grid">
-      <div class="form-group"><label>Date</label><input type="date" id="${key}-date"></div>
-      <div class="form-group"><label>${valLabel}</label><input type="number" id="${key}-val" placeholder="${valPlaceholder}" step="${step}"></div>
-      <div class="form-group"><label>Type</label><select id="${key}-type">
-        <option value="compet">Compétition</option>
-        <option value="entrainement">Entraînement</option>
-      </select></div>
-      <div class="form-group"><label>Lieu</label><input type="text" id="${key}-lieu" placeholder="Lieu..."></div>
+        <div class="card-title">Ajouter</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Date</label><input type="date" id="${k}-date" value="${today}"></div>
+          <div class="form-group"><label>${valLabel}</label><input type="number" id="${k}-val" placeholder="${valPh}" step="${isTimeDisc(disc)?'0.01':'1'}"></div>
+          <div class="form-group"><label>Type</label><select id="${k}-type">
+            <option value="compet">Compétition</option>
+            <option value="entrainement">Entraînement</option>
+          </select></div>
+          <div class="form-group"><label>Lieu</label><input type="text" id="${k}-lieu" placeholder="Lieu..."></div>
+        </div>
+        <div class="form-group" style="margin-bottom:8px"><label>Niveau</label><input type="text" id="${k}-niveau" placeholder="R5, D2..."></div>
+        <button class="btn" onclick="addPerf('${k}','${disc}')">+ Ajouter</button>
+      </div>
     </div>
-    <div class="form-group" style="margin-bottom:12px"><label>Niveau</label><input type="text" id="${key}-niveau" placeholder="R5, D2..."></div>
-    <button class="btn" onclick="addPerf('${key}','${disc}')">+ Ajouter</button>`;
+    <div class="card">
+      <div class="card-title">Historique</div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th><th></th></tr></thead>
+        <tbody id="table-${k}"></tbody></table>
+      </div>
+    </div>`;
 }
 
-function buildHFTab() {
-  const el = document.getElementById('tab-haies_franchies');
-  if (!el) return;
-  el.innerHTML = `
+function buildHFTab(){
+  const el=document.getElementById('tab-haies_franchies');
+  if(!el)return;
+  el.innerHTML=`
     <div class="hurdles-hero">
       <div class="hurdles-counter" id="hurdles-count">0</div>
       <div class="hurdles-label">Haies franchies au total</div>
@@ -516,7 +859,7 @@ function buildHFTab() {
       <div class="card">
         <div class="card-title">Ajouter une séance</div>
         <div class="form-grid">
-          <div class="form-group"><label>Date</label><input type="date" id="hf-date"></div>
+          <div class="form-group"><label>Date</label><input type="date" id="hf-date" value="${today}"></div>
           <div class="form-group"><label>Haies franchies</label><input type="number" id="hf-val" placeholder="5" min="0"></div>
           <div class="form-group"><label>Type</label><select id="hf-type">
             <option value="entrainement">Entraînement</option>
@@ -528,39 +871,52 @@ function buildHFTab() {
             <option value="100m">100m</option>
             <option value="400m">400m</option>
             <option value="60m">60m</option>
+            <option value="80m">80m</option>
             <option value="autre">Autre</option>
           </select></div>
         </div>
-        <div class="form-group" style="margin-bottom:12px"><label>Note</label><input type="text" id="hf-note" placeholder="Remarque..."></div>
+        <div class="form-group" style="margin-bottom:8px"><label>Note</label><input type="text" id="hf-note" placeholder="Remarque..."></div>
         <button class="btn" onclick="addHF()">+ Ajouter</button>
       </div>
       <div class="card">
         <div class="chart-header">
           <div class="card-title" style="margin:0">Progression cumulée</div>
-          <div class="filter-btns" id="filters-hf"></div>
+          <div class="filter-row" id="period-filters-hf"></div>
         </div>
         <div class="chart-wrap"><canvas id="chart-hf"></canvas></div>
       </div>
     </div>
     <div class="card">
       <div class="card-title">Journal</div>
-      <table><thead><tr><th>Date</th><th>Haies</th><th>Type</th><th>Distance</th><th>Note</th><th></th></tr></thead>
-      <tbody id="table-hf"></tbody></table>
+      <div class="table-wrap">
+        <table><thead><tr><th>Date</th><th>Haies</th><th>Type</th><th>Distance</th><th>Note</th><th></th></tr></thead>
+        <tbody id="table-hf"></tbody></table>
+      </div>
     </div>`;
 }
 
-function buildRecordsTab() {
-  const el = document.getElementById('tab-records');
-  if (!el) return;
-  el.innerHTML = `<div class="card"><div class="card-title">Records personnels</div><div class="records-grid" id="records-grid"></div></div>`;
+function buildRecordsTab(){
+  const el=document.getElementById('tab-records');
+  if(!el)return;
+  el.innerHTML=`
+    <div class="card">
+      <div class="card-title">Records personnels</div>
+      <div class="records-filters">
+        <label>Filtrer par année :</label>
+        <select id="rec-year-filter" onchange="renderRecords()" style="background:#f5f5f5;border:1px solid #ddd;color:#111;padding:4px 10px;border-radius:4px;font-size:12px;font-weight:700">
+          <option value="tout">Toutes</option>
+        </select>
+      </div>
+      <div class="records-grid" id="records-grid"></div>
+    </div>`;
 }
 
-function buildParamTab() {
-  const el = document.getElementById('tab-parametres');
-  if (!el) return;
-  const ath = athletes[currentAthlete];
-  const isCoach = currentUser.type === 'coach';
-  el.innerHTML = `
+function buildParamTab(){
+  const el=document.getElementById('tab-parametres');
+  if(!el)return;
+  const ath=athletes[currentAthlete];
+  const isCoach=currentUser.type==='coach';
+  el.innerHTML=`
     <div class="grid-2">
       <div class="card">
         <div class="card-title">Informations</div>
@@ -569,537 +925,580 @@ function buildParamTab() {
           <div class="form-group"><label>Nom</label><input type="text" id="p-nom" value="${ath.nom}"></div>
           <div class="form-group"><label>Née en</label><input type="number" id="p-annee" value="${ath.annee||''}"></div>
           <div class="form-group"><label>Catégorie</label>
-            <select id="p-cat">
-              ${['SE','ES','JU','CA','MI'].map(c=>`<option ${ath.cat===c?'selected':''}>${c}</option>`).join('')}
-            </select>
+            <select id="p-cat">${CATS_ORDER.map(c=>`<option ${ath.cat===c?'selected':''}>${c}</option>`).join('')}</select>
           </div>
         </div>
         <button class="btn" onclick="saveParams()">Enregistrer</button>
       </div>
       <div class="card">
         <div class="card-title">Mot de passe</div>
-        <div class="form-group" style="margin-bottom:10px"><label>Nouveau mot de passe</label><input type="password" id="p-pw1" placeholder="••••••"></div>
-        <div class="form-group" style="margin-bottom:14px"><label>Confirmer</label><input type="password" id="p-pw2" placeholder="••••••"></div>
+        <div class="form-group" style="margin-bottom:8px"><label>Nouveau</label><input type="password" id="p-pw1" placeholder="••••••"></div>
+        <div class="form-group" style="margin-bottom:12px"><label>Confirmer</label><input type="password" id="p-pw2" placeholder="••••••"></div>
         <button class="btn" onclick="changePassword()">Changer</button>
-        <div id="pw-msg" style="font-family:'Roboto Mono',monospace;font-size:11px;margin-top:10px;display:none"></div>
+        <div id="pw-msg" style="font-size:11px;margin-top:8px;display:none"></div>
       </div>
     </div>
     <div class="card">
       <div class="card-title">Disciplines actives</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
-        ${ath.disciplines.map(d=>`<span style="background:rgba(249,115,22,.15);color:var(--accent2);border:1px solid rgba(249,115,22,.3);font-family:'Roboto Mono',monospace;font-size:11px;padding:5px 12px;border-radius:3px">${d}</span>`).join('')}
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+        ${ath.disciplines.map(d=>`
+          <span style="background:rgba(245,196,0,.1);color:var(--yellow);border:1px solid rgba(245,196,0,.3);font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:6px">
+            ${d}
+            <button onclick="removeDisc('${d}')" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:13px;line-height:1;padding:0">×</button>
+          </span>`).join('')}
       </div>
-      <button class="btn" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)" onclick="openAddDisc()">+ Ajouter une discipline</button>
+      <button class="btn" onclick="openAddDisc()">+ Ajouter une discipline</button>
     </div>
-    ${isCoach ? `
-    <div class="card" style="border-color:rgba(239,68,68,.3)">
+    ${isCoach?`
+    <div class="card danger-zone">
       <div class="card-title" style="color:var(--red)">Zone dangereuse</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Supprimer définitivement le compte de ${ath.prenom} ${ath.nom} et toutes ses données.</p>
-      <button class="btn" style="background:var(--red);color:#fff" onclick="deleteAthlete('${ath.id}')">Supprimer ce compte</button>
-    </div>` : ''}
-  `;
+      <p>Supprimer définitivement le compte de ${ath.prenom} ${ath.nom}.</p>
+      <button class="btn-danger" onclick="deleteAthlete('${ath.id}')">Supprimer ce compte</button>
+    </div>`:''}`;
 }
 
-// ─── TABS ───────────────────────────────────────────────────────────────────
-
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  const tabEl = [...document.querySelectorAll('.tab')].find(t => t.getAttribute('onclick').includes("'"+name+"'"));
-  if (tabEl) tabEl.classList.add('active');
-  const content = document.getElementById('tab-'+name);
-  if (content) content.classList.add('active');
-  setTimeout(() => {
-    if (name === 'haies_franchies') buildChartHF();
-    else if (document.getElementById('chart-'+name)) buildChart(name);
-  }, 50);
+// ─── SWITCH TAB ───────────────────────────────────────────────────────────
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  const btn=[...document.querySelectorAll('.tab')].find(t=>t.getAttribute('onclick')?.includes("'"+name+"'"));
+  if(btn)btn.classList.add('active');
+  const el=document.getElementById('tab-'+name);
+  if(el)el.classList.add('active');
+  setTimeout(()=>{
+    if(name==='haies_franchies')buildChartHF();
+    else{
+      const ath=athletes[currentAthlete];
+      if(ath.disciplines.map(d=>discKey(d)).includes(name))buildChart(name);
+    }
+  },50);
 }
 
-// ─── FILTER ─────────────────────────────────────────────────────────────────
-
-function buildFilters(key, dataArr) {
-  const el = document.getElementById('filters-'+key);
-  if (!el) return;
-  const years = [...new Set(dataArr.map(d => d.date.split('-')[0]))].sort((a,b)=>b-a);
-  const current = chartFilters[key] || 'tout';
-  el.innerHTML = `
-    <button class="filter-btn ${current==='tout'?'active':''}" onclick="setFilter('${key}','tout',this)">Tout</button>
-    <button class="filter-btn ${current==='mois'?'active':''}" onclick="setFilter('${key}','mois',this)">Mois</button>
-    ${years.map(y=>`<button class="filter-btn ${current===y?'active':''}" onclick="setFilter('${key}','${y}',this)">${y}</button>`).join('')}
-  `;
+function switchAthlete(key){
+  currentAthlete=key;charts={};chartFilters={};
+  document.querySelectorAll('.ath-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick')?.includes("'"+key+"'")));
+  buildTabs();renderAll();
 }
 
-function setFilter(key, val, btn) {
-  chartFilters[key] = val;
-  btn.closest('.filter-btns').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+// ─── FILTERS ──────────────────────────────────────────────────────────────
+function initFilter(k,data){
+  if(!chartFilters[k])chartFilters[k]={period:'tout',view:'les2'};
+  const years=[...new Set(data.map(d=>d.date.split('-')[0]))].sort((a,b)=>b-a);
+  const el=document.getElementById('period-filters-'+k);
+  if(!el)return;
+  const cur=chartFilters[k].period;
+  el.innerHTML=`<button class="filter-btn ${cur==='tout'?'active':''}" onclick="setPeriod('${k}','tout',this)">Tout</button>`+
+    years.map(y=>`<button class="filter-btn ${cur===y?'active':''}" onclick="setPeriod('${k}','${y}',this)">${y}</button>`).join('');
+}
+
+function setPeriod(k,val,btn){
+  if(!chartFilters[k])chartFilters[k]={period:'tout',view:'les2'};
+  chartFilters[k].period=val;
+  btn.closest('.filter-row').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  if (key === 'hf') buildChartHF();
-  else buildChart(key);
+  if(k==='hf')buildChartHF();else buildChart(k);
 }
 
-function filterData(data, filter) {
-  const now = new Date();
-  if (filter === 'mois') {
-    return data.filter(d => {
-      const dd = new Date(d.date);
-      return dd.getFullYear() === now.getFullYear() && dd.getMonth() === now.getMonth();
-    });
-  } else if (/^\d{4}$/.test(filter)) {
-    return data.filter(d => d.date.startsWith(filter));
-  }
+function setView(k,val,btn){
+  if(!chartFilters[k])chartFilters[k]={period:'tout',view:'les2'};
+  chartFilters[k].view=val;
+  btn.closest('.filter-row').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildChart(k);
+}
+
+function filterByPeriod(data,period){
+  if(/^\d{4}$/.test(period))return data.filter(d=>d.date.startsWith(period));
   return data;
 }
 
-// ─── CHARTS ─────────────────────────────────────────────────────────────────
-
-const baseOpts = {
-  responsive:true, maintainAspectRatio:false,
-  plugins:{legend:{display:false},tooltip:{backgroundColor:'#16161f',borderColor:'#2a2a3a',borderWidth:1,titleFont:{family:'DM Mono',size:10},bodyFont:{family:'DM Mono',size:12},titleColor:'#6b6b8a',padding:12}},
+// ─── CHARTS ──────────────────────────────────────────────────────────────
+const baseOpts={
+  responsive:true,maintainAspectRatio:false,animation:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',borderColor:'#e0e0e0',borderWidth:1,titleFont:{family:'Barlow',size:11},bodyFont:{family:'Barlow Condensed',size:14},titleColor:'#999',bodyColor:'#111',padding:10,boxShadow:'0 4px 12px rgba(0,0,0,.1)'}},
   scales:{
-    x:{grid:{color:'rgba(42,42,58,.5)'},ticks:{color:'#6b6b8a',font:{family:'DM Mono',size:10}},border:{display:false}},
-    y:{grid:{color:'rgba(42,42,58,.5)'},ticks:{color:'#6b6b8a',font:{family:'DM Mono',size:10}},border:{display:false}}
+    x:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#999',font:{family:'Barlow',size:10}},border:{display:false}},
+    y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#999',font:{family:'Barlow',size:10}},border:{display:false}}
   }
 };
 
-function buildChart(key) {
-  const ath = athletes[currentAthlete];
-  const isHeight = ['hauteur','longueur','triple_saut'].includes(key);
-  const keyMap2 = {hauteur:'hauteur', longueur:'longueur', triple_saut:'triplesaut', '400m_haies':'haies'};
-  const rawData = ath[keyMap2[key] || key] || [];
-  const data = filterData([...rawData], chartFilters[key] || 'tout').sort((a,b) => a.date.localeCompare(b.date));
-  if (!data.length) return;
+function getGlobalYRange(disc){
+  // Compute min/max across ALL athletes for this discipline type
+  const dk=dataKey(disc);
+  const dist=isDistDisc(disc);
+  const isTime=isTimeDisc(disc);
+  let allVals=[];
+  Object.values(athletes).forEach(ath=>{
+    (ath[dk]||[]).forEach(d=>allVals.push(d.val));
+    // Also HIST
+    const hk=Object.keys(HIST).find(k=>ath.prenom.includes(k));
+    if(hk&&HIST[hk][disc])HIST[hk][disc].forEach(d=>allVals.push(d.val));
+  });
+  if(!allVals.length)return null;
+  const mn=Math.min(...allVals);
+  const mx=Math.max(...allVals);
+  const pad=(mx-mn)*0.15||5;
+  return{min:Math.floor(mn-pad), max:Math.ceil(mx+pad)};
+}
 
-  const color = isHeight ? '#f5a623' : '#ef4444';
-  const pr = isHeight ? Math.max(...data.map(d=>d.val)) : Math.min(...data.map(d=>d.val));
+function buildChart(k){
+  const ath=athletes[currentAthlete];
+  const disc=ath.disciplines.find(d=>discKey(d)===k);
+  if(!disc)return;
+  const dk=dataKey(disc);
+  const allData=(ath[dk]||[]);
+  if(!chartFilters[k])chartFilters[k]={period:'tout',view:'les2'};
+  initFilter(k,allData);
+  const period=chartFilters[k].period;
+  const view=chartFilters[k].view;
+  const dist=isDistDisc(disc);
+  const isTime=isTimeDisc(disc);
 
-  buildFilters(key, rawData);
-  const ctx = document.getElementById('chart-'+key);
-  if (!ctx) return;
-  if (charts[key]) charts[key].destroy();
+  const filtered=filterByPeriod([...allData],period);
+  const compet=filtered.filter(d=>d.type==='compet').sort((a,b)=>a.date.localeCompare(b.date));
+  const train=filtered.filter(d=>d.type!=='compet').sort((a,b)=>a.date.localeCompare(b.date));
 
-  charts[key] = new Chart(ctx.getContext('2d'), {
+  // Shared X axis: all unique dates sorted chronologically
+  const allDates=[...new Set(filtered.map(d=>d.date))].sort((a,b)=>a.localeCompare(b));
+  const labels=allDates.map(d=>formatDate(d));
+
+  // Map each dataset to the shared labels (null where no data)
+  const mapToLabels=(data)=>allDates.map(date=>{
+    const entry=data.find(d=>d.date===date);
+    return entry?entry.val:null;
+  });
+
+  const ctx=document.getElementById('chart-'+k);
+  if(!ctx)return;
+  if(charts[k])charts[k].destroy();
+
+  const datasets=[];
+  if(view==='les2'||view==='compet'){
+    datasets.push({
+      label:'Compétition',
+      data:mapToLabels(compet),
+      borderColor:'#ef4444',
+      backgroundColor:'rgba(239,68,68,.06)',
+      pointBackgroundColor: allDates.map(date=>compet.find(d=>d.date===date)?'#ef4444':'transparent'),
+      pointRadius: allDates.map(date=>compet.find(d=>d.date===date)?5:0),
+      pointHoverRadius:7,
+      tension:0.3,fill:false,borderWidth:2,
+      spanGaps:false,
+    });
+  }
+  if(view==='les2'||view==='entrainement'){
+    datasets.push({
+      label:'Entraînement',
+      data:mapToLabels(train),
+      borderColor:'#f5c400',
+      backgroundColor:'rgba(245,196,0,.06)',
+      pointBackgroundColor: allDates.map(date=>train.find(d=>d.date===date)?'#f5c400':'transparent'),
+      pointRadius: allDates.map(date=>train.find(d=>d.date===date)?5:0),
+      pointHoverRadius:7,
+      tension:0.3,fill:false,borderWidth:2,
+      spanGaps:false,
+    });
+  }
+
+  const fmtVal=v=>dist?cmToM(v):formatVal(disc,v);
+
+  charts[k]=new Chart(ctx.getContext('2d'),{
     type:'line',
-    data:{
-      labels: data.map(d => formatDate(d.date)),
-      datasets:[{
-        data: data.map(d => d.val),
-        borderColor: '#888',
-        backgroundColor:'transparent',
-        pointBackgroundColor: data.map(d => d.type==='compet'?color:'#ef4444'),
-        pointBorderColor: data.map(d => d.type==='compet'?color:'#ef4444'),
-        pointRadius: data.map(d => d.val===pr?7:4),
-        tension:0.3, fill:false, borderWidth:1.5,
-        segment:{ borderColor: ctx2 => data[ctx2.p0DataIndex]?.type==='compet'?color:'#ef4444' }
-      }]
-    },
-    options:{
-      ...baseOpts,
-      plugins:{...baseOpts.plugins, tooltip:{...baseOpts.plugins.tooltip, bodyColor:color,
-        callbacks:{label:c => isHeight ? c.raw+' cm' : formatTime(c.raw)}}},
-      scales:{...baseOpts.scales, y:{...baseOpts.scales.y,
-        reverse: !isHeight,
-        ticks:{...baseOpts.scales.y.ticks, callback:v => isHeight?v+' cm':formatTime(v)}}}
+    data:{labels,datasets},
+    options:{...baseOpts,
+      plugins:{...baseOpts.plugins,
+        legend:{display:true,labels:{color:'#888',font:{family:'Barlow',size:11},boxWidth:10,padding:12}},
+        tooltip:{...baseOpts.plugins.tooltip,
+          mode:'index',intersect:false,
+          callbacks:{
+            label:c=>c.raw!=null?c.dataset.label+': '+fmtVal(c.raw):null,
+            filter:item=>item.raw!=null,
+          }
+        }
+      },
+      scales:{...baseOpts.scales,
+        x:{...baseOpts.scales.x,ticks:{...baseOpts.scales.x.ticks,maxRotation:45,autoSkip:true,maxTicksLimit:10}},
+        y:(()=>{
+          const range=getGlobalYRange(disc);
+          return {
+            ...baseOpts.scales.y,
+            reverse:!dist&&isTime,
+            ...(range?{min:range.min,max:range.max}:{}),
+            ticks:{...baseOpts.scales.y.ticks,callback:v=>dist?v+' cm':formatVal(disc,v)}
+          };
+        })()
+      }
     }
   });
 }
 
-function buildChartHF() {
-  const ath = athletes[currentAthlete];
-  const rawData = filterData([...ath.haiesFranchies], chartFilters['hf'] || 'tout').sort((a,b) => a.date.localeCompare(b.date));
-  const ctx = document.getElementById('chart-hf');
-  if (!ctx) return;
-  buildFilters('hf', ath.haiesFranchies);
-  if (charts['hf']) charts['hf'].destroy();
-  if (!rawData.length) return;
-  let cumul = 0;
-  const cumulData = rawData.map(d => { cumul += d.val; return cumul; });
-  charts['hf'] = new Chart(ctx.getContext('2d'), {
+function buildChartHF(){
+  const ath=athletes[currentAthlete];
+  if(!chartFilters['hf'])chartFilters['hf']={period:'tout',view:'les2'};
+  const allData=ath.haiesFranchies||[];
+  initFilter('hf',allData);
+  const filtered=filterByPeriod([...allData],chartFilters['hf'].period).sort((a,b)=>a.date.localeCompare(b.date));
+  const ctx=document.getElementById('chart-hf');
+  if(!ctx)return;
+  if(charts['hf'])charts['hf'].destroy();
+  if(!filtered.length)return;
+  let cum=0;
+  const cumulData=filtered.map(d=>{cum+=d.val;return cum;});
+  charts['hf']=new Chart(ctx.getContext('2d'),{
     type:'line',
-    data:{
-      labels: rawData.map(d => formatDate(d.date)),
-      datasets:[{data:cumulData, borderColor:'#f5a623', backgroundColor:'rgba(245,166,35,.07)', pointBackgroundColor:'#f5a623', pointRadius:5, tension:0.3, fill:true, borderWidth:2}]
-    },
-    options:{...baseOpts, plugins:{...baseOpts.plugins, tooltip:{...baseOpts.plugins.tooltip, bodyColor:'#f5a623', callbacks:{label:c=>c.raw+' haies cumulées'}}}}
+    data:{labels:filtered.map(d=>formatDate(d.date)),datasets:[{
+      data:cumulData,borderColor:'#f5c400',backgroundColor:'rgba(245,196,0,.06)',
+      pointBackgroundColor:'#f5c400',pointRadius:5,tension:0.3,fill:true,borderWidth:2,
+    }]},
+    options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:c=>c.raw+' haies cumulées'}}}}
   });
 }
 
-// ─── RENDER ─────────────────────────────────────────────────────────────────
-
-function renderAll() {
-  const ath = athletes[currentAthlete];
+// ─── RENDER ALL ───────────────────────────────────────────────────────────
+function renderAll(){
+  const ath=athletes[currentAthlete];
   // Header
-  const parts = ath.prenom.toUpperCase().split('');
-  const mid = Math.floor(parts.length/2);
-  document.getElementById('header-name').innerHTML = ath.prenom.toUpperCase().slice(0,mid)+'<span>'+ath.prenom.toUpperCase().slice(mid)+' '+ath.nom+'</span>';
-  document.getElementById('header-sub').textContent = ath.sub;
-
-  ath.disciplines.forEach(d => {
-    const key = d.toLowerCase().replace(/ /g,'_').replace('é','e');
-    const distDiscs = ['Hauteur','Longueur','Triple Saut'];
-    renderPerf(key, distDiscs.includes(d));
-  });
+  const parts=ath.prenom.toUpperCase();
+  document.getElementById('header-name').innerHTML=parts.slice(0,Math.ceil(parts.length/2))+'<span>'+parts.slice(Math.ceil(parts.length/2))+' '+ath.nom+'</span>';
+  document.getElementById('header-sub').textContent=ath.sub;
+  // Update header PRs dynamically
+  updateHeaderKPIs();
+  // Disciplines
+  ath.disciplines.forEach(d=>renderPerf(discKey(d),d));
   renderHF();
   renderRecords();
-  updateHeader();
 }
 
-function renderPerf(key, isHeight) {
-  const ath = athletes[currentAthlete];
-  const isDistField = ['hauteur','longueur','triplesaut'].includes(key);
-  const dataKey = key === 'hauteur' ? 'hauteur' : key === 'longueur' ? 'longueur' : key === 'triple_saut' ? 'triplesaut' : 'haies';
-  const sorted = [...(ath[dataKey]||[])].sort((a,b) => b.date.localeCompare(a.date));
-  const pr = sorted.length ? (isDistField ? Math.max(...sorted.map(d=>d.val)) : Math.min(...sorted.map(d=>d.val))) : 0;
-  const last = sorted[0], prev = sorted[1];
-  const diff = last && prev ? +(last.val - prev.val).toFixed(isHeight?0:2) : 0;
-  const color = isHeight ? '#f5a623' : '#ef4444';
+function updateHeaderKPIs(){
+  const ath=athletes[currentAthlete];
+  // PR Hauteur
+  const hData=ath.hauteur||[];
+  const prH=hData.length?Math.max(...hData.map(d=>d.val)):0;
+  document.getElementById('pr-hauteur').textContent=prH?cmToM(prH):'—';
+  // PR 400m Haies
+  const haData=ath.haies||[];
+  const prHa=haData.length?Math.min(...haData.map(d=>d.val)):0;
+  document.getElementById('pr-400h').textContent=prHa?formatTime(prHa):'—';
+  // Compéts total
+  const total=['hauteur','haies','longueur','triplesaut',...(ath.disciplines.map(d=>dataKey(d)))]
+    .filter((v,i,a)=>a.indexOf(v)===i)
+    .reduce((s,k)=>s+(ath[k]||[]).filter(d=>d.type==='compet').length,0);
+  document.getElementById('nb-comps').textContent=total||'—';
+}
 
-  if (key === 'hauteur') document.getElementById('pr-hauteur').textContent = pr ? cmToM(pr) : '—';
-  else if (key === '400m_haies') document.getElementById('pr-400h').textContent = pr ? formatTime(pr) : '—';
-
-  const fmtVal = v => isDistField ? cmToM(v) : formatTime(v);
-  const statsEl = document.getElementById('stats-'+key);
-  if (statsEl) statsEl.innerHTML = `
-    <div class="stat"><div class="n" style="color:${color}">${pr?fmtVal(pr):'—'}</div><div class="l">Record perso</div></div>
-    <div class="stat"><div class="n">${last?fmtVal(last.val):'—'}</div><div class="l">Dernière perf.</div></div>
-    <div class="stat"><div class="n ${diff>0&&isDistField?'trend-up':diff<0&&!isDistField?'trend-up':diff!==0?'trend-down':''}">${diff>0?'+':''}${diff||'—'}</div><div class="l">vs précédente</div></div>
-    <div class="stat"><div class="n">${(ath[dataKey]||[]).filter(d=>d.type==='compet').length}</div><div class="l">Compétitions</div></div>`;
-
-  const tbody = document.getElementById('table-'+key);
-  if (tbody) tbody.innerHTML = sorted.map(d => {
-    const isPR = d.val === pr;
-    const lvl = d.niveau ? `<span class="badge badge-${d.niveau.toLowerCase()}">${d.niveau}</span>` : '—';
-    const typeColor = d.type==='compet'?color:'#ef4444';
-    return `<tr>
+function renderPerf(k,disc){
+  const ath=athletes[currentAthlete];
+  const dk=dataKey(disc);
+  const allData=ath[dk]||[];
+  const sorted=[...allData].sort((a,b)=>b.date.localeCompare(a.date));
+  const dist=isDistDisc(disc);
+  const isTime=isTimeDisc(disc);
+  const pr=allData.length?(dist?Math.max(...allData.map(d=>d.val)):isTime?Math.min(...allData.map(d=>d.val)):Math.max(...allData.map(d=>d.val))):0;
+  const last=sorted[0],prev=sorted[1];
+  const diff=last&&prev?+(last.val-prev.val).toFixed(2):0;
+  const fmtPr=v=>dist?cmToM(v):isTime?formatTime(v):v+' cm';
+  const statsEl=document.getElementById('stats-'+k);
+  if(statsEl)statsEl.innerHTML=`
+    <div class="stat"><div class="n">${pr?fmtPr(pr):'—'}</div><div class="l">Record perso</div></div>
+    <div class="stat"><div class="n">${last?fmtPr(last.val):'—'}</div><div class="l">Dernière perf.</div></div>
+    <div class="stat"><div class="n ${diff>0&&(dist||!isTime)?'trend-up':diff<0&&isTime?'trend-up':diff!==0?'trend-down':''}">${diff>0?'+':''}${diff||'—'}</div><div class="l">vs précédente</div></div>
+    <div class="stat"><div class="n">${allData.filter(d=>d.type==='compet').length}</div><div class="l">Compétitions</div></div>`;
+  const tbody=document.getElementById('table-'+k);
+  if(tbody)tbody.innerHTML=sorted.map(d=>{
+    const isRP=d.val===pr;
+    const lvl=d.niveau?`<span class="badge badge-${d.niveau.toLowerCase()}">${d.niveau}</span>`:'—';
+    return`<tr>
       <td>${formatDate(d.date)}</td>
-      <td><span class="perf-val" style="color:${color}">${isDistField?cmToM(d.val):formatTime(d.val)}</span>${isPR?'<span class="rp-badge">RP</span>':''}</td>
-      <td><span style="font-size:11px;color:${typeColor}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
+      <td><span class="perf-val">${fmtPr(d.val)}</span>${isRP?'<span class="rp-badge">RP</span>':''}</td>
+      <td><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
       <td>${lvl}</td>
-      <td style="color:var(--muted);font-size:12px">${d.lieu||'—'}</td>
-      <td><button class="btn btn-ghost" onclick="delPerf('${dataKey}',${d.id})">✕</button></td>
+      <td style="color:#888;font-size:12px">${d.lieu||'—'}</td>
+      <td><button class="btn-ghost" onclick="delPerf('${dk}','${k}','${disc}',${JSON.stringify(d.id)})">✕</button></td>
     </tr>`;
   }).join('');
-
-  buildChart(key);
+  buildChart(k);
+  updateHeaderKPIs();
 }
 
-function renderHF() {
-  const ath = athletes[currentAthlete];
-  const sorted = [...ath.haiesFranchies].sort((a,b) => a.date.localeCompare(b.date));
-  const total = ath.haiesFranchies.reduce((s,d)=>s+d.val,0);
-  const countEl = document.getElementById('hurdles-count');
-  const sinceEl = document.getElementById('hurdles-since');
-  const tbody = document.getElementById('table-hf');
-  if (!countEl) return;
-  countEl.textContent = total;
-  if (sinceEl) sinceEl.textContent = ath.haiesTotalSince ? 'Depuis le '+ath.haiesTotalSince : '';
-  if (tbody) tbody.innerHTML = [...sorted].reverse().map(d => `<tr>
+function renderHF(){
+  const ath=athletes[currentAthlete];
+  const sorted=[...(ath.haiesFranchies||[])].sort((a,b)=>a.date.localeCompare(b.date));
+  const total=sorted.reduce((s,d)=>s+d.val,0);
+  const countEl=document.getElementById('hurdles-count');
+  const sinceEl=document.getElementById('hurdles-since');
+  const tbody=document.getElementById('table-hf');
+  if(countEl)countEl.textContent=total;
+  if(sinceEl)sinceEl.textContent=ath.haiesTotalSince?'Depuis le '+ath.haiesTotalSince:'';
+  if(tbody)tbody.innerHTML=[...sorted].reverse().map(d=>`<tr>
     <td>${formatDate(d.date)}</td>
     <td><span class="perf-val">+${d.val}</span></td>
-    <td><span style="font-size:11px;color:var(--muted)">${d.type||'—'}</span></td>
-    <td style="font-family:'Roboto Mono',monospace;font-size:11px;color:var(--muted)">${d.dist}</td>
-    <td style="color:var(--muted);font-size:12px">${d.note||'—'}</td>
-    <td><button class="btn btn-ghost" onclick="delHF(${d.id})">✕</button></td>
-  </tr>`).join('') || '<tr><td colspan="6" class="empty-state">Aucune entrée</td></tr>';
+    <td><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type}</span></td>
+    <td style="color:#888;font-size:12px">${d.dist}</td>
+    <td style="color:#888;font-size:12px">${d.note||'—'}</td>
+    <td><button class="btn-ghost" onclick="delHF(${JSON.stringify(d.id)})">✕</button></td>
+  </tr>`).join('')||'<tr><td colspan="6" class="empty-state">Aucune entrée</td></tr>';
   buildChartHF();
 }
 
-function renderRecords() {
-  const el = document.getElementById('records-grid');
-  if (!el) return;
-  el.innerHTML = athletes[currentAthlete].records.map(r => `
-    <div class="rec-card"><div class="disc">${r.disc}</div><div class="perf">${r.perf}</div><div class="meta">${r.date} · ${r.cat}</div></div>`).join('');
+function renderRecords(){
+  const ath=athletes[currentAthlete];
+  const grid=document.getElementById('records-grid');
+  const sel=document.getElementById('rec-year-filter');
+  if(!grid||!sel)return;
+  // Build year options from performances + HIST
+  const years=new Set();
+  ['hauteur','haies','longueur','triplesaut',...ath.disciplines.map(d=>dataKey(d))].forEach(k=>{
+    (ath[k]||[]).forEach(p=>years.add(p.date.split('-')[0]));
+  });
+  // Also from HIST
+  const histKey=Object.keys(HIST).find(k=>ath.prenom.includes(k));
+  if(histKey){
+    Object.values(HIST[histKey]).forEach(arr=>arr.forEach(e=>years.add(e.date.split('-')[0])));
+  }
+  const curVal=sel.value||'tout';
+  sel.innerHTML='<option value="tout">Toutes</option>'+[...years].sort((a,b)=>b-a).map(y=>`<option value="${y}" ${curVal===y?'selected':''}>${y}</option>`).join('');
+
+  const discDisplayNames={'Poids':'Poids 3kg','Disque':'Disque 1kg'};
+  grid.innerHTML=ath.records.map((r,i)=>`
+    <div class="rec-card" id="rec-${i}" onclick="toggleRecHistory(${i},'${r.disc}')">
+      <div class="disc">${discDisplayNames[r.disc]||r.disc}</div>
+      <div class="perf">${r.perf}</div>
+      <div class="meta">${r.date} · ${r.cat}</div>
+      <div class="rec-history" id="rec-hist-${i}"></div>
+    </div>`).join('');
 }
 
-function updateHeader() {
-  const ath = athletes[currentAthlete];
-  const total = ['hauteur','longueur','triplesaut','haies'].reduce((s,k)=>(s + (ath[k]||[]).filter(d=>d.type==='compet').length),0);
-  document.getElementById('nb-comps').textContent = total;
+function getAllDataForDisc(disc){
+  const ath=athletes[currentAthlete];
+  const dk=dataKey(disc);
+  let data=[...(ath[dk]||[])];
+  // Also check longueur for Maria (she has it directly)
+  // data is already pulled from dk
+
+  // Normalize disc name for HIST lookup — handle variations
+  const normalize=s=>s.toLowerCase()
+    .replace(/\s*\(.*?\)/g,'')  // remove parentheses
+    .replace(/[^a-z0-9]/g,'')   // remove special chars
+    .trim();
+
+  const histKey=Object.keys(HIST).find(k=>ath.prenom.includes(k));
+  if(histKey){
+    // Find matching key in HIST by normalized name
+    const normDisc=normalize(disc);
+    const matchKey=Object.keys(HIST[histKey]).find(k=>normalize(k)===normDisc);
+    if(matchKey){
+      HIST[histKey][matchKey].forEach(e=>{
+        if(!data.find(d=>d.date===e.date&&d.val===e.val)){
+          data.push({id:'h'+Math.random(),...e});
+        }
+      });
+    }
+  }
+  return data;
 }
 
-// ─── ACTIONS ────────────────────────────────────────────────────────────────
-
-function addPerf(key, disc) {
-  const isHeight = disc === 'Hauteur';
-  const date = document.getElementById(key+'-date').value;
-  const val = parseFloat(document.getElementById(key+'-val').value);
-  const type = document.getElementById(key+'-type').value;
-  const lieu = document.getElementById(key+'-lieu').value;
-  const niveau = document.getElementById(key+'-niveau')?.value || '';
-  if (!date || !val) { alert('Date et valeur requis'); return; }
-  const dataKey = disc === 'Hauteur' ? 'hauteur' : disc === 'Longueur' ? 'longueur' : disc === 'Triple Saut' ? 'triplesaut' : 'haies';
-  if (!athletes[currentAthlete][dataKey]) athletes[currentAthlete][dataKey] = [];
-  athletes[currentAthlete][dataKey].push({id:nextId++,date,val,type,lieu,niveau});
-  document.getElementById(key+'-val').value='';
-  document.getElementById(key+'-lieu').value='';
-  if (document.getElementById(key+'-niveau')) document.getElementById(key+'-niveau').value='';
-  renderPerf(key, isHeight);
-  updateHeader();
+function toggleRecHistory(i,disc){
+  const el=document.getElementById('rec-hist-'+i);
+  const card=document.getElementById('rec-'+i);
+  if(el.classList.contains('show')){el.classList.remove('show');card.classList.remove('open');return;}
+  const year=document.getElementById('rec-year-filter')?.value||'tout';
+  let data=getAllDataForDisc(disc);
+  if(year!=='tout')data=data.filter(d=>d.date.startsWith(year));
+  data=[...data].sort((a,b)=>b.date.localeCompare(a.date));
+  if(!data.length){el.innerHTML='<div class="empty-state" style="padding:12px">Aucune donnée</div>';el.classList.add('show');card.classList.add('open');return;}
+  const dist=isDistDisc(disc),isTime=isTimeDisc(disc);
+  const fmt=v=>dist?cmToM(v):isTime?formatTime(v):v;
+  el.innerHTML=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="min-width:0;width:100%;min-width:260px">
+    <thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Lieu</th></tr></thead>
+    <tbody>${data.map(d=>`<tr>
+      <td style="white-space:nowrap">${formatDate(d.date)}</td>
+      <td><span class="perf-val" style="font-size:13px">${fmt(d.val)}</span></td>
+      <td><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
+      <td style="color:#888;font-size:11px">${d.lieu||'—'}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+  el.classList.add('show');card.classList.add('open');
 }
 
-function addHF() {
-  const date = document.getElementById('hf-date').value;
-  const val = parseInt(document.getElementById('hf-val').value);
-  const type = document.getElementById('hf-type').value;
-  const dist = document.getElementById('hf-dist').value;
-  const note = document.getElementById('hf-note').value;
-  if (!date || !val || val<0) { alert('Date et nombre de haies requis'); return; }
-  if (!athletes[currentAthlete].haiesTotalSince) athletes[currentAthlete].haiesTotalSince = formatDate(date);
+// ─── ACTIONS ─────────────────────────────────────────────────────────────
+function addPerf(k,disc){
+  const val=parseFloat(document.getElementById(k+'-val').value);
+  const date=document.getElementById(k+'-date').value;
+  const type=document.getElementById(k+'-type').value;
+  const lieu=document.getElementById(k+'-lieu').value;
+  const niveau=document.getElementById(k+'-niveau')?.value||'';
+  if(!date||!val){alert('Date et valeur requis');return;}
+  const dk=dataKey(disc);
+  if(!athletes[currentAthlete][dk])athletes[currentAthlete][dk]=[];
+  athletes[currentAthlete][dk].push({id:nextId++,date,val,type,lieu,niveau});
+  document.getElementById(k+'-val').value='';
+  document.getElementById(k+'-lieu').value='';
+  if(document.getElementById(k+'-niveau'))document.getElementById(k+'-niveau').value='';
+  renderPerf(k,disc);
+}
+
+function addHF(){
+  const date=document.getElementById('hf-date').value;
+  const val=parseInt(document.getElementById('hf-val').value);
+  const type=document.getElementById('hf-type').value;
+  const dist=document.getElementById('hf-dist').value;
+  const note=document.getElementById('hf-note').value;
+  if(!date||!val||val<0){alert('Date et nombre de haies requis');return;}
+  if(!athletes[currentAthlete].haiesTotalSince)athletes[currentAthlete].haiesTotalSince=formatDate(date);
+  if(!athletes[currentAthlete].haiesFranchies)athletes[currentAthlete].haiesFranchies=[];
   athletes[currentAthlete].haiesFranchies.push({id:nextId++,date,val,type,dist,note});
   document.getElementById('hf-val').value='';
   document.getElementById('hf-note').value='';
   renderHF();
 }
 
-function delPerf(dataKey, id) {
-  athletes[currentAthlete][dataKey] = (athletes[currentAthlete][dataKey]||[]).filter(d=>d.id!==id);
-  const keyMap = {hauteur:'hauteur', longueur:'longueur', triplesaut:'triple_saut', haies:'400m_haies'};
-  renderPerf(keyMap[dataKey]||dataKey, ['hauteur','longueur','triplesaut'].includes(dataKey));
-  updateHeader();
+function delPerf(dk,k,disc,id){
+  athletes[currentAthlete][dk]=(athletes[currentAthlete][dk]||[]).filter(d=>d.id!==id);
+  renderPerf(k,disc);
 }
 
-function delHF(id) {
-  athletes[currentAthlete].haiesFranchies = athletes[currentAthlete].haiesFranchies.filter(d=>d.id!==id);
+function delHF(id){
+  athletes[currentAthlete].haiesFranchies=(athletes[currentAthlete].haiesFranchies||[]).filter(d=>d.id!==id);
   renderHF();
 }
 
-// ─── ATHLETE SWITCH ──────────────────────────────────────────────────────────
-
-function switchAthlete(key) {
-  currentAthlete = key;
-  charts = {};
-  document.querySelectorAll('.ath-btn').forEach(b => {
-    b.classList.toggle('active', b.getAttribute('onclick').includes("'"+key+"'"));
-  });
+function removeDisc(disc){
+  if(!confirm(`Supprimer la discipline "${disc}" et toutes ses données ?`))return;
+  const ath=athletes[currentAthlete];
+  ath.disciplines=ath.disciplines.filter(d=>d!==disc);
+  const dk=dataKey(disc);
+  ath[dk]=[];
+  charts={};
   buildTabs();
   renderAll();
 }
 
-// ─── COACH: NOUVEL ATHLÈTE ───────────────────────────────────────────────────
-
-function openModal(id) {
-  // Build discipline checkboxes
-  const wrap = document.getElementById('disc-checkboxes');
-  if (wrap) wrap.innerHTML = DISCIPLINES_ALL.map(d => `
-    <label style="display:flex;align-items:center;gap:5px;font-family:'Roboto Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;background:var(--surface);border:1px solid var(--border);padding:5px 10px;border-radius:3px;">
-      <input type="checkbox" value="${d}" style="accent-color:var(--accent)"> ${d}
-    </label>`).join('');
-  document.getElementById(id).classList.add('show');
+// ─── PARAMS ──────────────────────────────────────────────────────────────
+function saveParams(){
+  const ath=athletes[currentAthlete];
+  ath.prenom=document.getElementById('p-prenom').value.trim()||ath.prenom;
+  ath.nom=document.getElementById('p-nom').value.trim()||ath.nom;
+  ath.annee=parseInt(document.getElementById('p-annee').value)||ath.annee;
+  ath.cat=document.getElementById('p-cat').value;
+  ath.sub=`Athlé 91 · ${ath.cat} · née ${ath.annee}`;
+  buildSwitcher();buildTabs();renderAll();switchTab('parametres');
+  alert('Informations mises à jour');
 }
 
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function changePassword(){
+  const pw1=document.getElementById('p-pw1').value;
+  const pw2=document.getElementById('p-pw2').value;
+  const msg=document.getElementById('pw-msg');
+  if(!pw1||pw1.length<4){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Min 4 caractères';return;}
+  if(pw1!==pw2){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Les mots de passe ne correspondent pas';return;}
+  athletes[currentAthlete].pw=pw1;
+  msg.style.display='block';msg.style.color='var(--yellow)';msg.textContent='Mis à jour ✓';
+  document.getElementById('p-pw1').value='';document.getElementById('p-pw2').value='';
+}
 
-function createAthlete() {
-  const prenom = document.getElementById('na-prenom').value.trim();
-  const nom = document.getElementById('na-nom').value.trim();
-  const annee = parseInt(document.getElementById('na-annee').value);
-  const cat = document.getElementById('na-cat').value;
-  const pw = document.getElementById('na-pw').value;
-  const discs = [...document.querySelectorAll('#disc-checkboxes input:checked')].map(i=>i.value);
+function deleteAthlete(key){
+  if(!confirm(`Supprimer ${athletes[key].prenom} ${athletes[key].nom} ?`))return;
+  delete athletes[key];
+  const remaining=Object.keys(athletes);
+  if(!remaining.length){logout();return;}
+  currentAthlete=remaining[0];
+  buildSwitcher();buildTabs();renderAll();
+}
 
-  if (!prenom || !nom || !pw || !discs.length) { alert('Prénom, nom, disciplines et mot de passe requis'); return; }
+// ─── ADD/REMOVE DISCIPLINE ────────────────────────────────────────────────
+function openAddDisc(){
+  const ath=athletes[currentAthlete];
+  const avail=DISCIPLINES_ALL.filter(d=>!ath.disciplines.includes(d));
+  if(!avail.length){alert('Toutes les disciplines sont déjà ajoutées');return;}
+  document.getElementById('disc-add-checkboxes').innerHTML=avail.map(d=>`
+    <div class="disc-pill"><label><input type="checkbox" value="${d}"><span> ${d}</span></label></div>`).join('');
+  openModal('modal-add-disc');
+}
 
-  const id = (prenom+nom).toLowerCase().replace(/\s/g,'');
-  athletes[id] = {
-    id, prenom, nom, annee, cat, pw,
-    disciplines: discs,
-    sub: `Athlé 91 · ${cat} · née ${annee}`,
-    records:[], hauteur:[], haies:[], haiesFranchies:[], haiesTotalSince:null
-  };
+function confirmAddDisc(){
+  const selected=[...document.querySelectorAll('#disc-add-checkboxes input:checked')].map(i=>i.value);
+  if(!selected.length){alert('Sélectionne au moins une discipline');return;}
+  const ath=athletes[currentAthlete];
+  selected.forEach(d=>{
+    if(!ath.disciplines.includes(d)){
+      ath.disciplines.push(d);
+      // Inject historical data
+      const histKey=Object.keys(HIST).find(k=>ath.prenom.includes(k));
+      if(histKey&&HIST[histKey][d]){
+        const dk=dataKey(d);
+        if(!ath[dk])ath[dk]=[];
+        HIST[histKey][d].forEach(e=>ath[dk].push({id:nextId++,...e}));
+      }
+    }
+  });
+  closeModal('modal-add-disc');
+  charts={};buildTabs();renderAll();
+}
 
+// ─── MODALS ──────────────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+
+function createAthlete(){
+  const prenom=document.getElementById('na-prenom').value.trim();
+  const nom=document.getElementById('na-nom').value.trim();
+  const annee=parseInt(document.getElementById('na-annee').value);
+  const cat=document.getElementById('na-cat').value;
+  const pw=document.getElementById('na-pw').value;
+  const discs=[...document.querySelectorAll('#disc-checkboxes input:checked')].map(i=>i.value);
+  if(!prenom||!nom||!pw||!discs.length){alert('Prénom, nom, disciplines et mot de passe requis');return;}
+  const id=(prenom+nom).toLowerCase().replace(/\s/g,'');
+  athletes[id]={id,dbId:null,prenom,nom,annee,cat,pw,disciplines:discs,
+    sub:`Athlé 91 · ${cat} · née ${annee}`,records:[],
+    hauteur:[],haies:[],longueur:[],triplesaut:[],haiesFranchies:[],haiesTotalSince:null};
   closeModal('modal-new-athlete');
-  buildSwitcher();
-  switchAthlete(id);
-  buildLoginList();
-
-  // Clear form
-  ['na-prenom','na-nom','na-annee','na-pw'].forEach(i => document.getElementById(i).value='');
+  buildSwitcher();switchAthlete(id);
+  ['na-prenom','na-nom','na-annee','na-pw'].forEach(i=>document.getElementById(i).value='');
 }
 
-// ─── UTILS ───────────────────────────────────────────────────────────────────
+// ─── MODAL DISCIPLINE CHECKBOXES BUILD ────────────────────────────────────
+document.getElementById('modal-new-athlete').addEventListener('click',function(e){
+  if(e.target===this)closeModal('modal-new-athlete');
+});
+// Build discipline checkboxes for new athlete modal
+function buildDiscCheckboxes(){
+  document.getElementById('disc-checkboxes').innerHTML=DISCIPLINES_ALL.map(d=>`
+    <div class="disc-pill"><label><input type="checkbox" value="${d}"><span> ${d}</span></label></div>`).join('');
+}
 
+// ─── UTILS ──────────────────────────────────────────────────────────────
 function cmToM(cm){return Math.floor(cm/100)+'m'+String(cm%100).padStart(2,'0');}
 function formatDate(d){
   const [y,m,day]=d.split('-');
   const M=['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
-  return `${parseInt(day)} ${M[parseInt(m)-1]} ${y}`;
+  return`${parseInt(day)} ${M[parseInt(m)-1]} ${y}`;
 }
 function formatTime(s){
   const min=Math.floor(s/60),sec=(s%60).toFixed(2).padStart(5,'0');
   return min>0?`${min}'${sec}"`:parseFloat(s).toFixed(2)+'"';
 }
-
-// ─── PARAMS ──────────────────────────────────────────────────────────────────
-
-function saveParams() {
-  const ath = athletes[currentAthlete];
-  ath.prenom = document.getElementById('p-prenom').value.trim() || ath.prenom;
-  ath.nom = document.getElementById('p-nom').value.trim() || ath.nom;
-  ath.annee = parseInt(document.getElementById('p-annee').value) || ath.annee;
-  ath.cat = document.getElementById('p-cat').value;
-  ath.sub = `Athlé 91 · ${ath.cat} · née ${ath.annee}`;
-  buildSwitcher();
-  buildTabs();
-  renderAll();
-  switchTab('parametres');
-  alert('Informations mises à jour');
+function formatVal(disc,v){
+  if(isDistDisc(disc))return cmToM(v);
+  if(isTimeDisc(disc))return formatTime(v);
+  return v+' cm';
 }
 
-function changePassword() {
-  const pw1 = document.getElementById('p-pw1').value;
-  const pw2 = document.getElementById('p-pw2').value;
-  const msg = document.getElementById('pw-msg');
-  if (!pw1 || pw1.length < 4) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='Mot de passe trop court (min 4 caractères)'; return; }
-  if (pw1 !== pw2) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='Les mots de passe ne correspondent pas'; return; }
-  athletes[currentAthlete].pw = pw1;
-  buildLoginList();
-  msg.style.display='block'; msg.style.color='var(--accent)'; msg.textContent='Mot de passe mis à jour ✓';
-  document.getElementById('p-pw1').value=''; document.getElementById('p-pw2').value='';
-}
+// ─── INIT ────────────────────────────────────────────────────────────────
+Chart.defaults.animation=false;
+const today=new Date().toISOString().split('T')[0];
 
-// ─── DELETE ATHLETE ──────────────────────────────────────────────────────────
-
-function deleteAthlete(key) {
-  const a = athletes[key];
-  if (!confirm(`Supprimer ${a.prenom} ${a.nom} et toutes ses données ?`)) return;
-  delete athletes[key];
-  // Switch to first remaining athlete
-  const remaining = Object.keys(athletes);
-  if (!remaining.length) { logout(); return; }
-  currentAthlete = remaining[0];
-  buildSwitcher();
-  buildTabs();
-  renderAll();
-  buildLoginList();
-}
-
-// ─── HISTORICAL DATA ─────────────────────────────────────────────────────────
-
-const HISTORICAL_DATA = {
-  'Margaux': {
-    'Longueur': [
-      {date:'2023-05-28', val:460, type:'compet', lieu:'Lisses', niveau:'ES'},
-    ],
-    'Triple Saut': [
-      {date:'2024-06-06', val:929, type:'compet', lieu:'Savigny sur Orge', niveau:'ES'},
-    ],
-    '100m': [
-      {date:'2022-06-23', val:14.30, type:'compet', lieu:'Bretigny sur Orge', niveau:'ES'},
-    ],
-    '200m': [
-      {date:'2023-06-29', val:29.36, type:'compet', lieu:'Longjumeau', niveau:'ES'},
-    ],
-    '400m': [
-      {date:'2023-06-22', val:69.01, type:'compet', lieu:'Savigny sur Orge', niveau:'ES'},
-    ],
-    'Disque': [
-      {date:'2023-05-28', val:2579, type:'compet', lieu:'Lisses', niveau:'ES'},
-      {date:'2025-05-17', val:2348, type:'compet', lieu:'Savigny Sur Orge', niveau:'D2'},
-      {date:'2025-05-25', val:2500, type:'compet', lieu:'Montgeron', niveau:''},
-    ],
-    'Poids': [
-      {date:'2017-06-04', val:732, type:'compet', lieu:'Vanves', niveau:'MI'},
-    ],
-    '80m Haies': [
-      {date:'2017-05-01', val:17.02, type:'compet', lieu:'Le Plessis Robinson', niveau:'MI'},
-    ],
-  },
-  'Maria': {
-    '200m': [
-      {date:'2026-04-25', val:28.56, type:'compet', lieu:'Villejuif', niveau:'R3'},
-    ],
-  }
+// Open new athlete modal → build checkboxes
+document.getElementById('modal-new-athlete').addEventListener('transitionend',()=>{});
+const origOpenModal=openModal;
+window.openModal=function(id){
+  if(id==='modal-new-athlete')buildDiscCheckboxes();
+  origOpenModal(id);
 };
 
-async function injectHistoricalData(athleteKey, disc) {
-  const ath = athletes[athleteKey];
-  if (!ath) return;
-  const histKey = Object.keys(HISTORICAL_DATA).find(k => ath.prenom.includes(k));
-  if (!histKey || !HISTORICAL_DATA[histKey][disc]) return;
-
-  const entries = HISTORICAL_DATA[histKey][disc];
-  const dataKey = disc === 'Hauteur' ? 'hauteur'
-    : disc === 'Longueur' ? 'longueur'
-    : disc === 'Triple Saut' ? 'triplesaut'
-    : disc.includes('Haies') ? 'haies'
-    : disc.toLowerCase().replace(/ /g,'_');
-
-  if (!ath[dataKey]) ath[dataKey] = [];
-
-  for (const e of entries) {
-    let entry = {id: nextId++, ...e};
-    // Save to Supabase
-    const discMap = {'hauteur':'Hauteur','longueur':'Longueur','haies':'400m Haies','triplesaut':'Triple Saut'};
-    const discName = discMap[dataKey] || disc;
-    if (ath.dbId) {
-      const {data} = await sb.from('performances').insert({
-        athlete_id: ath.dbId,
-        discipline: discName,
-        val: entry.val, date: entry.date, type: entry.type,
-        lieu: entry.lieu || null, niveau: entry.niveau || null
-      }).select().single();
-      if (data) entry.id = data.id;
-    }
-    ath[dataKey].push(entry);
-  }
-}
-
-// ─── ADD DISCIPLINE ──────────────────────────────────────────────────────────
-
-function openAddDisc() {
-  const ath = athletes[currentAthlete];
-  const wrap = document.getElementById('disc-add-checkboxes');
-  const available = DISCIPLINES_ALL.filter(d => !ath.disciplines.includes(d));
-  if (!available.length) { alert('Toutes les disciplines sont déjà ajoutées'); return; }
-  wrap.innerHTML = available.map(d => `
-    <label style="display:flex;align-items:center;gap:5px;font-family:'Roboto Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;background:var(--surface);border:1px solid var(--border);padding:5px 10px;border-radius:3px;">
-      <input type="checkbox" value="${d}" style="accent-color:var(--accent)"> ${d}
-    </label>`).join('');
-  openModal('modal-add-disc');
-}
-
-async function confirmAddDisc() {
-  const selected = [...document.querySelectorAll('#disc-add-checkboxes input:checked')].map(i=>i.value);
-  if (!selected.length) { alert('Sélectionne au moins une discipline'); return; }
-  closeModal('modal-add-disc');
-  for (const d of selected) {
-    if (!athletes[currentAthlete].disciplines.includes(d)) {
-      athletes[currentAthlete].disciplines.push(d);
-      // Update disciplines in Supabase
-      if (athletes[currentAthlete].dbId) {
-        await sb.from('athletes').update({disciplines: athletes[currentAthlete].disciplines})
-          .eq('id', athletes[currentAthlete].dbId);
-      }
-      // Inject historical data if available
-      await injectHistoricalData(currentAthlete, d);
-    }
-  }
-  charts = {};
-  buildTabs();
-  renderAll();
-}
-
-// ─── CHART RESIZE FIX ────────────────────────────────────────────────────────
-
-// Force chart redraw on orientation change (iOS fix)
-window.addEventListener('orientationchange', () => {
-  setTimeout(() => {
-    Object.values(charts).forEach(c => { if (c) c.resize(); });
-  }, 300);
-});
-
-// Fix iOS Safari chart rendering
-Chart.defaults.animation = false;
-
-// ─── INIT ────────────────────────────────────────────────────────────────────
-
-buildLoginList();
-const today = new Date().toISOString().split('T')[0];
+window.addEventListener('orientationchange',()=>setTimeout(()=>Object.values(charts).forEach(c=>{if(c)c.resize();}),300));
 </script>
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js');
-  });
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'));
 }
 </script>
 </body>
