@@ -1267,6 +1267,17 @@ function dataFingerprint(){
   return s;
 }
 
+// Recrée entièrement l'interface en mémorisant l'onglet actif
+function rebuildCurrentView(){
+  if(!currentAthlete)return;
+  const activeEl=document.querySelector('.tab-content.active');
+  const activeTab=activeEl?activeEl.id.replace('tab-',''):null;
+  charts={};
+  buildTabs();
+  renderAll();
+  if(activeTab)switchTab(activeTab);
+}
+
 function startPolling(){
   stopPolling();
   // Polling silencieux toutes les 4s — filet de sécurité si Realtime déconnecté
@@ -1274,7 +1285,7 @@ function startPolling(){
     if(!currentUser||document.visibilityState!=='visible')return;
     const before=dataFingerprint();
     try{await loadAllData();}catch(e){return;}
-    if(dataFingerprint()!==before&&currentAthlete)renderAll();
+    if(dataFingerprint()!==before)rebuildCurrentView();
   },4000);
 }
 function stopPolling(){if(pollInterval){clearInterval(pollInterval);pollInterval=null;}}
@@ -1291,7 +1302,7 @@ async function syncFromServer(){
   syncTimer=setTimeout(async()=>{
     try{
       await loadAllData();
-      if(currentAthlete)renderAll();
+      rebuildCurrentView();
     }catch(e){
       console.warn('[Sync] erreur chargement:',e);
     }finally{
