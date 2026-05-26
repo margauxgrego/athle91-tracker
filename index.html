@@ -1759,7 +1759,7 @@ function renderHF(){
     <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type}</span></td>
     <td data-label="Distance" style="color:#888;font-size:12px">${d.dist}</td>
     <td data-label="Note" style="color:#888;font-size:12px">${d.note||'—'}</td>
-    <td data-label="Action"><button class="btn-ghost" onclick="delHF(${JSON.stringify(d.id)})">✕</button></td>
+    <td data-label="Action"><button class="btn-ghost del-hf-btn" data-id="${d.id}">✕</button></td>
   </tr>`).join('')||'<tr><td colspan="6" class="empty-state">Aucune entrée</td></tr>';
   buildChartHF();
 }
@@ -1861,10 +1861,10 @@ async function delPerf(dk,k,disc,id){
 }
 
 document.addEventListener('click',e=>{
-  const btn=e.target.closest('.del-perf-btn');
-  if(!btn)return;
-  const {dk,k,disc,id}=btn.dataset;
-  delPerf(dk,k,disc,id);
+  const bp=e.target.closest('.del-perf-btn');
+  if(bp){const {dk,k,disc,id}=bp.dataset;delPerf(dk,k,disc,id);return;}
+  const bh=e.target.closest('.del-hf-btn');
+  if(bh){delHF(bh.dataset.id);return;}
 });
 
 async function delHF(id){
