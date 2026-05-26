@@ -826,6 +826,70 @@ tr:hover td{background:#fafafa;}
   }
 }
 
+
+/* ═══ MODALE CONFIRMATION THÈME ATHLÉ 91 ═══════════════ */
+.confirm-modal{
+  max-width:420px;
+  text-align:left;
+  border-top:4px solid var(--yellow);
+}
+.confirm-icon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:var(--yellow);
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:28px;
+  font-weight:900;
+  margin-bottom:12px;
+  box-shadow:0 4px 14px rgba(245,196,0,.25);
+}
+.confirm-modal h3{
+  margin-bottom:8px;
+}
+.confirm-modal p{
+  color:#666;
+  font-size:14px;
+  line-height:1.45;
+}
+.confirm-modal .modal-actions{
+  margin-top:22px;
+}
+.profile-danger{
+  border:1px solid rgba(229,57,53,.25);
+  background:#fff7f7;
+  border-radius:10px;
+  padding:14px;
+  margin-top:14px;
+}
+.profile-danger-title{
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--red);
+  margin-bottom:6px;
+}
+.profile-danger p{
+  font-size:13px;
+  color:#777;
+  margin-bottom:10px;
+  line-height:1.4;
+}
+
+@media(max-width:640px){
+  .confirm-modal{
+    border-radius:16px 16px 12px 12px;
+  }
+  .confirm-modal p{
+    font-size:13px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -924,6 +988,11 @@ tr:hover td{background:#fafafa;}
     </div>
     <div class="form-group" style="margin-bottom:8px"><label>Nouveau mot de passe</label><input type="password" id="ec-pw1" placeholder="Laisser vide si inchangé"></div>
     <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><input type="password" id="ec-pw2" placeholder="Laisser vide si inchangé"></div>
+    <div class="profile-danger">
+      <div class="profile-danger-title">Zone sensible</div>
+      <p>Depuis ce profil, le coach peut aussi supprimer son propre compte.</p>
+      <button class="btn-danger" style="width:100%" onclick="deleteCoach()">Supprimer mon compte coach</button>
+    </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-edit-coach')">Annuler</button>
       <button class="btn" style="width:auto" onclick="saveCoachProfile()">Enregistrer</button>
@@ -940,6 +1009,16 @@ tr:hover td{background:#fafafa;}
       <button class="btn-cancel" onclick="closeModal('modal-add-disc')">Annuler</button>
       <button class="btn" style="width:auto" onclick="confirmAddDisc()">Ajouter</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL MESSAGE / CONFIRMATION -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal confirm-modal">
+    <div class="confirm-icon" id="confirm-icon">!</div>
+    <h3 id="confirm-title">Confirmation</h3>
+    <p id="confirm-message"></p>
+    <div class="modal-actions" id="confirm-actions"></div>
   </div>
 </div>
 
@@ -1327,7 +1406,6 @@ function showNoAthleteScreen(){
       <p style="font-size:13px;color:#888;margin-bottom:12px">Ce coach n’a pas encore d’athlète.</p>
       <button class="btn" onclick="openModal('modal-new-athlete')">+ Ajouter un athlète</button>
       <button class="btn" style="margin-top:10px;width:100%;background:#f0f0f0;color:#111;border:1px solid #ddd" onclick="openCoachProfile()">Modifier mon profil</button>
-      <button class="btn-danger" style="margin-top:10px;width:100%" onclick="deleteCoach()">Supprimer ce coach</button>
     </div>`;
 }
 
@@ -1340,8 +1418,7 @@ function buildSwitcher(){
     ).join('')+
     `<button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>
      <button class="ath-btn coach-add" onclick="openModal('modal-new-coach')">+ Coach</button>
-     <button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>
-     <button class="ath-btn" style="border-color:var(--red);color:var(--red)" onclick="deleteCoach()">Suppr. coach</button>`;
+     <button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>`;
   }else{
     sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
   }
@@ -1925,7 +2002,7 @@ function addPerf(k,disc){
   const type=document.getElementById(k+'-type').value;
   const lieu=document.getElementById(k+'-lieu').value;
   const niveau=document.getElementById(k+'-niveau')?.value||'';
-  if(!date||!val){alert('Date et valeur requis');return;}
+  if(!date||!val){showMessage('Ajout impossible','Date et valeur requis.','danger');return;}
   const dk=dataKey(disc);
   if(!athletes[currentAthlete][dk])athletes[currentAthlete][dk]=[];
   athletes[currentAthlete][dk].push({id:nextId++,date,val,type,lieu,niveau});
@@ -1941,7 +2018,7 @@ function addHF(){
   const type=document.getElementById('hf-type').value;
   const dist=document.getElementById('hf-dist').value;
   const note=document.getElementById('hf-note').value;
-  if(!date||!val||val<0){alert('Date et nombre de haies requis');return;}
+  if(!date||!val||val<0){showMessage('Ajout impossible','Date et nombre de haies requis.','danger');return;}
   if(!athletes[currentAthlete].haiesTotalSince)athletes[currentAthlete].haiesTotalSince=formatDate(date);
   if(!athletes[currentAthlete].haiesFranchies)athletes[currentAthlete].haiesFranchies=[];
   athletes[currentAthlete].haiesFranchies.push({id:nextId++,date,val,type,dist,note});
@@ -1961,17 +2038,19 @@ function delHF(id){
 }
 
 function removeDisc(disc){
-  if(!confirm(`Supprimer la discipline "${disc}" et toutes ses données ?`))return;
-  const ath=athletes[currentAthlete];
-  ath.disciplines=ath.disciplines.filter(d=>d!==disc);
-  const dk=dataKey(disc);
-  ath[dk]=[];
-  charts={};
-  buildTabs();
-  renderAll();
+  showConfirm('Supprimer la discipline',`Supprimer la discipline "${disc}" et toutes ses données ?`,()=>{
+    const ath=athletes[currentAthlete];
+    ath.disciplines=ath.disciplines.filter(d=>d!==disc);
+    const dk=dataKey(disc);
+    delete ath[dk];
+    saveLocalData();
+    charts={};
+    buildTabs();
+    renderAll();
+    showMessage('Discipline supprimée','La discipline a bien été supprimée.');
+  },'danger');
 }
 
-// ─── PARAMS ──────────────────────────────────────────────────────────────
 function saveParams(){
   const ath=athletes[currentAthlete];
   ath.prenom=document.getElementById('p-prenom').value.trim()||ath.prenom;
@@ -1981,7 +2060,7 @@ function saveParams(){
   ath.sub=`Athlé 91 · ${ath.cat} · née ${ath.annee}`;
   saveLocalData();
   buildSwitcher();buildTabs();renderAll();switchTab('parametres');
-  alert('Informations mises à jour');
+  showMessage('Informations mises à jour','Les informations ont bien été enregistrées.');
 }
 
 function changePassword(){
@@ -1997,20 +2076,24 @@ function changePassword(){
 }
 
 function deleteAthlete(key){
-  if(!confirm(`Supprimer ${athletes[key].prenom} ${athletes[key].nom} ?`))return;
-  delete athletes[key];
-  saveLocalData();
-  const remaining=athletesForCoach(currentUser.key).map(a=>a.id);
-  if(!remaining.length){currentAthlete=null;buildApp();return;}
-  currentAthlete=remaining[0];
-  buildSwitcher();buildTabs();renderAll();
+  const ath=athletes[key];
+  if(!ath)return;
+  showConfirm('Supprimer cet athlète',`Supprimer ${ath.prenom} ${ath.nom} ? Cette action est définitive.`,()=>{
+    delete athletes[key];
+    saveLocalData();
+    const remaining=athletesForCoach(currentUser.key).map(a=>a.id);
+    if(!remaining.length){currentAthlete=null;buildApp();return;}
+    currentAthlete=remaining[0];
+    charts={};
+    buildApp();
+    showMessage('Athlète supprimé','L’athlète a bien été supprimé.');
+  },'danger');
 }
 
-// ─── ADD/REMOVE DISCIPLINE ────────────────────────────────────────────────
 function openAddDisc(){
   const ath=athletes[currentAthlete];
   const avail=DISCIPLINES_ALL.filter(d=>!ath.disciplines.includes(d));
-  if(!avail.length){alert('Toutes les disciplines sont déjà ajoutées');return;}
+  if(!avail.length){showMessage('Aucune discipline disponible','Toutes les disciplines sont déjà ajoutées.');return;}
   document.getElementById('disc-add-checkboxes').innerHTML=avail.map(d=>`
     <div class="disc-pill"><label><input type="checkbox" value="${d}"><span> ${d}</span></label></div>`).join('');
   openModal('modal-add-disc');
@@ -2018,7 +2101,7 @@ function openAddDisc(){
 
 function confirmAddDisc(){
   const selected=[...document.querySelectorAll('#disc-add-checkboxes input:checked')].map(i=>i.value);
-  if(!selected.length){alert('Sélectionne au moins une discipline');return;}
+  if(!selected.length){showMessage('Information manquante','Sélectionne au moins une discipline.','danger');return;}
   const ath=athletes[currentAthlete];
   selected.forEach(d=>{
     if(!ath.disciplines.includes(d)){
@@ -2048,7 +2131,7 @@ function createAthlete(){
   const cat=document.getElementById('na-cat').value;
   const pw=document.getElementById('na-pw').value;
   const discs=[...document.querySelectorAll('#disc-checkboxes input:checked')].map(i=>i.value);
-  if(!prenom||!nom||!pw||!discs.length){alert('Prénom, nom, disciplines et mot de passe requis');return;}
+  if(!prenom||!nom||!pw||!discs.length){showMessage('Information manquante','Prénom, nom, disciplines et mot de passe requis.','danger');return;}
   const id=(prenom+nom).toLowerCase().replace(/\s/g,'');
   athletes[id]={id,dbId:null,coachId:(currentUser&&currentUser.type==='coach')?currentUser.key:'coach',prenom,nom,annee,cat,pw,disciplines:discs,
     sub:`Athlé 91 · ${cat} · née ${annee}`,records:[],
@@ -2062,6 +2145,58 @@ function createAthlete(){
 
 
 
+
+
+function showMessage(title,message,type='info'){
+  const modal=document.getElementById('modal-confirm');
+  const icon=document.getElementById('confirm-icon');
+  const actions=document.getElementById('confirm-actions');
+
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-message').textContent=message;
+  icon.textContent=type==='danger'?'!':'✓';
+  icon.style.background=type==='danger'?'var(--red)':'var(--yellow)';
+  icon.style.color=type==='danger'?'#fff':'#000';
+
+  actions.innerHTML=`<button class="btn" style="width:auto" onclick="closeThemedMessage()">OK</button>`;
+  modal.classList.add('show');
+}
+
+function showConfirm(title,message,onConfirm,type='danger'){
+  const modal=document.getElementById('modal-confirm');
+  const icon=document.getElementById('confirm-icon');
+  const actions=document.getElementById('confirm-actions');
+
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-message').textContent=message;
+  icon.textContent='!';
+  icon.style.background=type==='danger'?'var(--red)':'var(--yellow)';
+  icon.style.color=type==='danger'?'#fff':'#000';
+
+  window.__athleConfirmAction=onConfirm;
+
+  actions.innerHTML=`
+    <button class="btn-cancel" onclick="closeThemedMessage()">Annuler</button>
+    <button class="btn-danger" style="width:auto" onclick="runThemedConfirm()">Confirmer</button>
+  `;
+  modal.classList.add('show');
+}
+
+function runThemedConfirm(){
+  const action=window.__athleConfirmAction;
+  closeThemedMessage();
+  if(typeof action==='function')action();
+}
+
+function closeThemedMessage(){
+  const modal=document.getElementById('modal-confirm');
+  if(modal)modal.classList.remove('show');
+  window.__athleConfirmAction=null;
+}
+
+document.getElementById('modal-confirm').addEventListener('click',function(e){
+  if(e.target===this)closeThemedMessage();
+});
 
 function openCoachProfile(){
   if(!currentUser || currentUser.type!=='coach')return;
@@ -2092,12 +2227,12 @@ function saveCoachProfile(){
   const pw2=document.getElementById('ec-pw2').value;
 
   if(!prenom || !nom){
-    alert('Prénom et nom requis');
+    showMessage('Information manquante','Prénom et nom requis.','danger');
     return;
   }
 
   if((pw1 || pw2) && pw1!==pw2){
-    alert('Les mots de passe ne correspondent pas');
+    showMessage('Mot de passe incorrect','Les mots de passe ne correspondent pas.','danger');
     return;
   }
 
@@ -2115,7 +2250,7 @@ function saveCoachProfile(){
     showNoAthleteScreen();
   }
 
-  alert('Profil coach mis à jour.');
+  showMessage('Profil mis à jour','Le profil coach a bien été modifié.');
 }
 
 document.getElementById('modal-edit-coach').addEventListener('click',function(e){
@@ -2128,39 +2263,37 @@ function deleteCoach(){
   const coachKey=currentUser.key;
 
   if(coachKey==='coach'){
-    alert('Le coach principal ne peut pas être supprimé.');
+    showMessage('Action impossible','Le coach principal ne peut pas être supprimé.','danger');
     return;
   }
 
   const coachAthletes=athletesForCoach(coachKey);
+  const message=coachAthletes.length
+    ? 'Supprimer ce compte coach supprimera également ses athlètes. Cette action est définitive.'
+    : 'Supprimer ce compte coach ? Cette action est définitive.';
 
-  if(coachAthletes.length){
-    const confirmDelete=confirm(
-      'Supprimer ce coach supprimera également ses athlètes. Continuer ?'
-    );
-    if(!confirmDelete)return;
-
+  showConfirm('Supprimer mon compte coach',message,()=>{
     coachAthletes.forEach(a=>{
       delete athletes[a.id];
     });
-  }else{
-    if(!confirm('Supprimer ce coach ?'))return;
-  }
 
-  delete users[coachKey];
+    delete users[coachKey];
 
-  saveLocalData();
+    saveLocalData();
 
-  alert('Coach supprimé.');
+    closeModal('modal-edit-coach');
 
-  logout();
+    showMessage('Compte supprimé','Le compte coach a bien été supprimé.');
+
+    setTimeout(()=>logout(),700);
+  },'danger');
 }
 
 function createCoach(){
   const prenom=document.getElementById('nc-prenom').value.trim();
   const nom=document.getElementById('nc-nom').value.trim();
   const pw=document.getElementById('nc-pw').value;
-  if(!prenom||!nom||!pw){alert('Prénom, nom et mot de passe requis');return;}
+  if(!prenom||!nom||!pw){showMessage('Information manquante','Prénom, nom et mot de passe requis.','danger');return;}
   let id=(prenom+nom).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
   if(!id)id='coach'+Date.now();
   let base=id,n=2;
@@ -2169,7 +2302,7 @@ function createCoach(){
   saveLocalData();
   closeModal('modal-new-coach');
   ['nc-prenom','nc-nom','nc-pw'].forEach(i=>document.getElementById(i).value='');
-  alert('Coach ajouté. Il apparaîtra sur l’écran de connexion.');
+  showMessage('Coach ajouté','Il apparaîtra sur l’écran de connexion.');
 }
 
 document.getElementById('modal-new-coach').addEventListener('click',function(e){
