@@ -42,6 +42,9 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .login-pw-wrap{display:flex;flex-direction:column;gap:10px;}
 .login-err{color:var(--red);font-size:11px;display:none;}
 
+/* ── SYNC BANNER ────────────────────────── */
+#sync-banner{display:none;position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#111;color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:7px 18px;border-radius:20px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);}
+
 /* ── TOPBAR ─────────────────────────────── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:2px solid var(--yellow);gap:8px;flex-wrap:wrap;background:var(--bg);}
 .topbar-left{display:flex;gap:6px;flex-wrap:wrap;}
@@ -1026,6 +1029,8 @@ tr:hover td{background:#fafafa;}
   </div>
 </div>
 
+<div id="sync-banner">⟳ Synchronisation…</div>
+
 <!-- APP -->
 <div class="container" id="app" style="display:none">
   <div class="topbar">
@@ -1105,6 +1110,7 @@ async function loadAllData(){
       id:a.id,dbId:a.id,coachId:a.coach_id,
       prenom:a.prenom,nom:a.nom,annee:a.annee,cat:a.cat,
       password_hash:a.password_hash,
+      sort_order:a.sort_order??99,
       disciplines:discs,
       sub:`Athlé 91 · ${a.cat} · née ${a.annee}`,
       records:[],haiesFranchies:[],haiesTotalSince:null
@@ -1162,7 +1168,7 @@ async function initApp(){
 }
 
 function athletesForCoach(coachKey){
-  return Object.values(athletes).filter(a=>a.coachId===coachKey);
+  return Object.values(athletes).filter(a=>a.coachId===coachKey).sort((a,b)=>(a.sort_order??99)-(b.sort_order??99));
 }
 
 // ─── LOGIN ──────────────────────────────────────────────────────────────────
@@ -1292,10 +1298,14 @@ function setupRealtime(){
     .subscribe();
 }
 
+function showSyncBanner(){document.getElementById('sync-banner').style.display='block';}
+function hideSyncBanner(){document.getElementById('sync-banner').style.display='none';}
+
 // Re-sync quand l'app revient au premier plan (PWA installée, changement d'onglet)
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'&&currentUser){
-    loadAllData().then(()=>{if(currentAthlete)renderAll();}).catch(()=>{});
+    showSyncBanner();
+    loadAllData().then(()=>{if(currentAthlete)renderAll();}).catch(()=>{}).finally(()=>hideSyncBanner());
   }
 });
 
