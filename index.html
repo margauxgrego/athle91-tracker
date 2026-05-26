@@ -1247,7 +1247,7 @@ async function doLogin(){
 function logout(){
   currentUser=null;currentAthlete=null;charts={};
   stopPolling();
-  if(realtimeChannel){sb.removeChannel(realtimeChannel);realtimeChannel=null;}
+  stopRealtime();
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   renderCoachLogin();
@@ -1269,39 +1269,44 @@ function dataFingerprint(){
 
 function startPolling(){
   stopPolling();
-  // Polling silencieux toutes les 5s — filet de sécurité si Realtime déconnecté
+  // Polling silencieux toutes les 4s — filet de sécurité si Realtime déconnecté
   pollInterval=setInterval(async()=>{
     if(!currentUser||document.visibilityState!=='visible')return;
     const before=dataFingerprint();
-    await loadAllData().catch(()=>{});
+    try{await loadAllData();}catch(e){return;}
     if(dataFingerprint()!==before&&currentAthlete)renderAll();
-  },5000);
+  },4000);
 }
 function stopPolling(){if(pollInterval){clearInterval(pollInterval);pollInterval=null;}}
 
 // ─── REALTIME ─────────────────────────────────────────────────────────────
 let realtimeChannel=null;
 let syncTimer=null;
+let realtimeHeartbeat=null;
 
-function syncFromServer(){
-  // Déduplique les appels rapprochés (ex: plusieurs lignes modifiées à la suite)
+async function syncFromServer(){
+  // Déduplique les appels rapprochés (plusieurs événements en rafale)
   if(syncTimer)clearTimeout(syncTimer);
   showSyncBanner();
-  syncTimer=setTimeout(()=>{
-    loadAllData()
-      .then(()=>{if(currentAthlete)renderAll();})
-      .catch(()=>{})
-      .finally(()=>hideSyncBanner());
-  },250);
+  syncTimer=setTimeout(async()=>{
+    try{
+      await loadAllData();
+      if(currentAthlete)renderAll();
+    }catch(e){
+      console.warn('[Sync] erreur chargement:',e);
+    }finally{
+      hideSyncBanner();
+    }
+  },200);
 }
 
 function setupRealtime(){
-  if(realtimeChannel){sb.removeChannel(realtimeChannel);realtimeChannel=null;}
+  stopRealtime();
 
   realtimeChannel=sb.channel('athle91-sync',{config:{broadcast:{self:false}}})
 
     // ── Postgres Changes : écoute les vraies écritures en base ──────────────
-    // Se déclenche sur TOUS les clients connectés dès qu'une ligne est modifiée
+    // Déclenché sur tous les clients connectés dès qu'une ligne change en base,
     // même depuis un autre PC, une autre session, ou Supabase Studio.
     .on('postgres_changes',{event:'*',schema:'public',table:'performances'},
       ()=>syncFromServer())
@@ -1310,19 +1315,34 @@ function setupRealtime(){
     .on('postgres_changes',{event:'*',schema:'public',table:'athletes'},
       ()=>syncFromServer())
 
-    // ── Broadcast : signal immédiat entre clients déjà connectés ────────────
+    // ── Broadcast : signal immédiat entre clients connectés ─────────────────
     .on('broadcast',{event:'data-changed'},({payload})=>{
       if(payload&&payload.from===clientId)return;
       syncFromServer();
     })
 
     .subscribe(status=>{
-      if(status==='SUBSCRIBED')console.log('[Realtime] connecté ✓');
+      console.log('[Realtime] status:',status);
       if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
-        console.warn('[Realtime] erreur:',status,', reconnexion dans 5s…');
-        setTimeout(setupRealtime,5000);
+        console.warn('[Realtime] erreur — reconnexion dans 3s…');
+        setTimeout(setupRealtime,3000);
       }
     });
+
+  // Heartbeat toutes les 20s : si le canal n'est plus actif, on reconnecte
+  realtimeHeartbeat=setInterval(()=>{
+    if(!realtimeChannel)return;
+    const state=realtimeChannel.state;
+    if(state!=='joined'&&state!=='joining'){
+      console.warn('[Realtime] canal inactif ('+state+') — reconnexion…');
+      setupRealtime();
+    }
+  },20000);
+}
+
+function stopRealtime(){
+  if(realtimeHeartbeat){clearInterval(realtimeHeartbeat);realtimeHeartbeat=null;}
+  if(realtimeChannel){sb.removeChannel(realtimeChannel);realtimeChannel=null;}
 }
 
 async function broadcastChange(){
@@ -1338,8 +1358,7 @@ function hideSyncBanner(){document.getElementById('sync-banner').style.display='
 // Re-sync quand l'app revient au premier plan (PWA installée, changement d'onglet)
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'&&currentUser){
-    showSyncBanner();
-    loadAllData().then(()=>{if(currentAthlete)renderAll();}).catch(()=>{}).finally(()=>hideSyncBanner());
+    syncFromServer();
   }
 });
 
