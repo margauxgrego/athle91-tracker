@@ -374,6 +374,173 @@ tr:hover td{background:#fafafa;}
   .hurdles-counter{font-size:48px;}
   .ath-btn,.logout-btn{font-size:9px;padding:4px 8px;}
 }
+
+
+/* ═══ CORRECTION MOBILE LISIBILITÉ — ajout ChatGPT ═══════════════ */
+@media(max-width:640px){
+  /* Empêche les débordements de texte dans tous les blocs */
+  .card,
+  .stat,
+  .record-pill,
+  .rec-card,
+  .rec-history,
+  .modal,
+  .login-box,
+  .form-group,
+  td,
+  th{
+    min-width:0;
+    max-width:100%;
+    overflow-wrap:anywhere;
+    word-break:normal;
+  }
+
+  /* Les blocs principaux passent en vraie lecture verticale */
+  .grid-2,
+  .form-grid,
+  .form-row-2,
+  .modal .form-row-2{
+    grid-template-columns:1fr!important;
+  }
+
+  /* Les KPI ne restent plus serrés en 2 colonnes sur téléphone */
+  .stat-row{
+    grid-template-columns:1fr!important;
+  }
+  .stat{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+  .stat .n{font-size:24px;text-align:right;white-space:nowrap;}
+  .stat .l{font-size:9px;margin-top:0;}
+
+  /* Les records passent en un bloc par ligne */
+  .records-grid{
+    grid-template-columns:1fr!important;
+  }
+  .rec-card{
+    width:100%;
+  }
+  .rec-card .perf{font-size:24px;}
+  .rec-card .meta,
+  .rec-card .disc,
+  .rec-card .disc-label{
+    overflow-wrap:anywhere;
+    white-space:normal;
+  }
+
+  /* Les tableaux deviennent des cartes verticales lisibles */
+  .table-wrap{
+    overflow-x:visible!important;
+  }
+  .table-wrap table,
+  .rec-history table{
+    min-width:0!important;
+    width:100%!important;
+    border-collapse:separate;
+    border-spacing:0 8px;
+  }
+  .table-wrap thead,
+  .rec-history thead{
+    display:none;
+  }
+  .table-wrap tbody,
+  .table-wrap tr,
+  .table-wrap td,
+  .rec-history tbody,
+  .rec-history tr,
+  .rec-history td{
+    display:block;
+    width:100%;
+  }
+  .table-wrap tr,
+  .rec-history tr{
+    background:#fff;
+    border:1px solid #efefef;
+    border-left:3px solid var(--yellow);
+    border-radius:10px;
+    padding:10px;
+    box-shadow:0 1px 4px rgba(0,0,0,.04);
+  }
+  .table-wrap td,
+  .rec-history td{
+    border-bottom:0;
+    padding:6px 0;
+    white-space:normal!important;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    text-align:right;
+    font-size:12px!important;
+    color:#111!important;
+  }
+  .table-wrap td::before,
+  .rec-history td::before{
+    content:attr(data-label);
+    flex:0 0 auto;
+    max-width:42%;
+    text-align:left;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:#999;
+  }
+  .table-wrap td:last-child,
+  .rec-history td:last-child{
+    justify-content:flex-end;
+  }
+  .table-wrap td:last-child::before,
+  .rec-history td:last-child::before{
+    display:none;
+  }
+  .table-wrap .empty-state{
+    display:block!important;
+    text-align:center!important;
+    padding:22px!important;
+  }
+  .table-wrap .empty-state::before{
+    display:none!important;
+  }
+
+  /* Les filtres et en-têtes de graphique prennent toute la largeur */
+  .chart-header > div:last-child,
+  .filter-row{
+    width:100%;
+  }
+  .chart-header > div:last-child{
+    align-items:stretch!important;
+  }
+  .filter-btn{
+    flex:1 1 auto;
+    text-align:center;
+  }
+
+  /* Modales : pas de demi-colonnes ni de boutons trop petits */
+  .modal{
+    width:100%;
+  }
+  .modal-actions .btn,
+  .modal-actions .btn-cancel,
+  .modal-actions .btn-danger{
+    width:100%!important;
+  }
+
+  /* Pastilles de disciplines : retour à la ligne propre */
+  .disc-pills,
+  .records-filters{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .disc-pill label,
+  .records-filters select{
+    width:100%;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1245,12 +1412,12 @@ function renderPerf(k,disc){
     const isRP=d.val===pr;
     const lvl=d.niveau?`<span class="badge badge-${d.niveau.toLowerCase()}">${d.niveau}</span>`:'—';
     return`<tr>
-      <td>${formatDate(d.date)}</td>
-      <td><span class="perf-val">${fmtPr(d.val)}</span>${isRP?'<span class="rp-badge">RP</span>':''}</td>
-      <td><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
-      <td>${lvl}</td>
-      <td style="color:#888;font-size:12px">${d.lieu||'—'}</td>
-      <td><button class="btn-ghost" onclick="delPerf('${dk}','${k}','${disc}',${JSON.stringify(d.id)})">✕</button></td>
+      <td data-label="Date">${formatDate(d.date)}</td>
+      <td data-label="Perf."><span class="perf-val">${fmtPr(d.val)}</span>${isRP?'<span class="rp-badge">RP</span>':''}</td>
+      <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
+      <td data-label="Niveau">${lvl}</td>
+      <td data-label="Lieu" style="color:#888;font-size:12px">${d.lieu||'—'}</td>
+      <td data-label="Action"><button class="btn-ghost" onclick="delPerf('${dk}','${k}','${disc}',${JSON.stringify(d.id)})">✕</button></td>
     </tr>`;
   }).join('');
   buildChart(k);
@@ -1267,12 +1434,12 @@ function renderHF(){
   if(countEl)countEl.textContent=total;
   if(sinceEl)sinceEl.textContent=ath.haiesTotalSince?'Depuis le '+ath.haiesTotalSince:'';
   if(tbody)tbody.innerHTML=[...sorted].reverse().map(d=>`<tr>
-    <td>${formatDate(d.date)}</td>
-    <td><span class="perf-val">+${d.val}</span></td>
-    <td><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type}</span></td>
-    <td style="color:#888;font-size:12px">${d.dist}</td>
-    <td style="color:#888;font-size:12px">${d.note||'—'}</td>
-    <td><button class="btn-ghost" onclick="delHF(${JSON.stringify(d.id)})">✕</button></td>
+    <td data-label="Date">${formatDate(d.date)}</td>
+    <td data-label="Haies"><span class="perf-val">+${d.val}</span></td>
+    <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type}</span></td>
+    <td data-label="Distance" style="color:#888;font-size:12px">${d.dist}</td>
+    <td data-label="Note" style="color:#888;font-size:12px">${d.note||'—'}</td>
+    <td data-label="Action"><button class="btn-ghost" onclick="delHF(${JSON.stringify(d.id)})">✕</button></td>
   </tr>`).join('')||'<tr><td colspan="6" class="empty-state">Aucune entrée</td></tr>';
   buildChartHF();
 }
@@ -1348,10 +1515,10 @@ function toggleRecHistory(i,disc){
   el.innerHTML=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="min-width:0;width:100%;min-width:260px">
     <thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Lieu</th></tr></thead>
     <tbody>${data.map(d=>`<tr>
-      <td style="white-space:nowrap">${formatDate(d.date)}</td>
-      <td><span class="perf-val" style="font-size:13px">${fmt(d.val)}</span></td>
-      <td><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
-      <td style="color:#888;font-size:11px">${d.lieu||'—'}</td>
+      <td data-label="Date" style="white-space:nowrap">${formatDate(d.date)}</td>
+      <td data-label="Perf."><span class="perf-val" style="font-size:13px">${fmt(d.val)}</span></td>
+      <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
+      <td data-label="Lieu" style="color:#888;font-size:11px">${d.lieu||'—'}</td>
     </tr>`).join('')}</tbody></table></div>`;
   el.classList.add('show');card.classList.add('open');
 }
