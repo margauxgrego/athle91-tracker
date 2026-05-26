@@ -1309,6 +1309,7 @@ function showNoAthleteScreen(){
       <div class="card-title">Espace coach</div>
       <p style="font-size:13px;color:#888;margin-bottom:12px">Ce coach n’a pas encore d’athlète.</p>
       <button class="btn" onclick="openModal('modal-new-athlete')">+ Ajouter un athlète</button>
+      <button class="btn-danger" style="margin-top:10px;width:100%" onclick="deleteCoach()">Supprimer ce coach</button>
     </div>`;
 }
 
@@ -1320,7 +1321,8 @@ function buildSwitcher(){
       `<button class="ath-btn ${a.id===currentAthlete?'active':''}" onclick="switchAthlete('${a.id}')">${a.prenom} ${a.nom}</button>`
     ).join('')+
     `<button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>
-     <button class="ath-btn coach-add" onclick="openModal('modal-new-coach')">+ Coach</button>`;
+     <button class="ath-btn coach-add" onclick="openModal('modal-new-coach')">+ Coach</button>
+     <button class="ath-btn" style="border-color:var(--red);color:var(--red)" onclick="deleteCoach()">Suppr. coach</button>`;
   }else{
     sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
   }
@@ -2039,6 +2041,41 @@ function createAthlete(){
   ['na-prenom','na-nom','na-annee','na-pw'].forEach(i=>document.getElementById(i).value='');
 }
 
+
+
+function deleteCoach(){
+  if(!currentUser || currentUser.type!=='coach')return;
+
+  const coachKey=currentUser.key;
+
+  if(coachKey==='coach'){
+    alert('Le coach principal ne peut pas être supprimé.');
+    return;
+  }
+
+  const coachAthletes=athletesForCoach(coachKey);
+
+  if(coachAthletes.length){
+    const confirmDelete=confirm(
+      'Supprimer ce coach supprimera également ses athlètes. Continuer ?'
+    );
+    if(!confirmDelete)return;
+
+    coachAthletes.forEach(a=>{
+      delete athletes[a.id];
+    });
+  }else{
+    if(!confirm('Supprimer ce coach ?'))return;
+  }
+
+  delete users[coachKey];
+
+  saveLocalData();
+
+  alert('Coach supprimé.');
+
+  logout();
+}
 
 function createCoach(){
   const prenom=document.getElementById('nc-prenom').value.trim();
