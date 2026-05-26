@@ -360,6 +360,32 @@ tr:hover td{background:#fafafa;}
 
   /* ── Paramètres ── */
   .danger-zone{padding:12px;}
+
+
+  /* Correction scroll tactile mobile :
+     les zones de tableaux/cartes ne doivent plus bloquer le swipe vertical. */
+  .container,
+  .tab-content,
+  .card,
+  .grid-2,
+  .stat-row,
+  .records-grid,
+  .table-wrap,
+  .table-wrap table,
+  .table-wrap tbody,
+  .table-wrap tr,
+  .table-wrap td,
+  .rec-history,
+  .rec-history table,
+  .rec-history tr,
+  .rec-history td{
+    touch-action:pan-y!important;
+  }
+
+  .tabs,
+  .topbar-left{
+    touch-action:pan-x pan-y!important;
+  }
 }
 
 /* ═══ TRÈS PETIT ≤380px ═══════════════ */
