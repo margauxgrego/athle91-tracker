@@ -1750,7 +1750,7 @@ function renderPerf(k,disc){
       <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
       <td data-label="Niveau">${lvl}</td>
       <td data-label="Lieu" style="color:#888;font-size:12px">${d.lieu||'—'}</td>
-      <td data-label="Action"><button class="btn-ghost" onclick="delPerf('${dk}','${k}','${disc}','${d.id}')">✕</button></td>
+      <td data-label="Action"><button class="btn-ghost del-perf-btn" data-dk="${dk}" data-k="${k}" data-disc="${disc}" data-id="${d.id}">✕</button></td>
     </tr>`;
   }).join('');
   buildChart(k);
@@ -1872,6 +1872,13 @@ async function delPerf(dk,k,disc,id){
   athletes[currentAthlete][dk]=(athletes[currentAthlete][dk]||[]).filter(d=>d.id!==id);
   renderPerf(k,disc);
 }
+
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('.del-perf-btn');
+  if(!btn)return;
+  const {dk,k,disc,id}=btn.dataset;
+  delPerf(dk,k,disc,id);
+});
 
 async function delHF(id){
   const {error}=await sb.from('haies_franchies').delete().eq('id',id);
