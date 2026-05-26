@@ -1253,14 +1253,28 @@ function logout(){
   showStep(1);
 }
 
-// ─── POLLING (filet de secours si Realtime indisponible) ──────────────────
+// ─── POLLING ──────────────────────────────────────────────────────────────
 let pollInterval=null;
+
+function dataFingerprint(){
+  let s='';
+  Object.keys(athletes).sort().forEach(aid=>{
+    const a=athletes[aid];
+    const n=Object.keys(a).filter(k=>Array.isArray(a[k])).reduce((t,k)=>t+a[k].length,0);
+    s+=aid+':'+n+';';
+  });
+  return s;
+}
+
 function startPolling(){
   stopPolling();
   pollInterval=setInterval(()=>{
-    if(currentUser&&document.visibilityState==='visible')
-      loadAllData().then(()=>{if(currentAthlete)renderAll();}).catch(()=>{});
-  },30000);
+    if(!currentUser||document.visibilityState!=='visible')return;
+    const before=dataFingerprint();
+    loadAllData().then(()=>{
+      if(dataFingerprint()!==before&&currentAthlete)renderAll();
+    }).catch(()=>{});
+  },10000);
 }
 function stopPolling(){if(pollInterval){clearInterval(pollInterval);pollInterval=null;}}
 
