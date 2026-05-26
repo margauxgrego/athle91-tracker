@@ -1061,7 +1061,7 @@ tr:hover td{background:#fafafa;}
 <script>
 // ─── SUPABASE ──────────────────────────────────────────────────────────────
 const {createClient} = supabase;
-const sb = createClient('https://jxuiltcgxnvsqxgydyxg.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4dWlsdGNneG52c3F4Z3lkeXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTYxMTgsImV4cCI6MjA5NTI5MjExOH0.VRfH2EZMBvtb5lr_yMAOEe518oU0FCfTMPAh2452CXI');
+const sb = createClient('https://jxuiltcgxnvsqxgydyxg.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4dWlsdGNneG52c3F4Z3lkeXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTYxMTgsImV4cCI6MjA5NTI5MjExOH0.VRfH2EZMBvtb5lr_yMAOEe518oU0FCfTMPAh2452CXI',{auth:{persistSession:false}});
 
 // ─── CONSTANTS ─────────────────────────────────────────────────────────────
 const DISCIPLINES_ALL = [
@@ -1295,17 +1295,23 @@ function syncFromServer(){
 }
 
 function setupRealtime(){
-  if(realtimeChannel)sb.removeChannel(realtimeChannel);
+  if(realtimeChannel){sb.removeChannel(realtimeChannel);realtimeChannel=null;}
   realtimeChannel=sb.channel('athle91-room',{config:{broadcast:{self:false}}})
     .on('broadcast',{event:'data-changed'},({payload})=>{
       if(payload&&payload.from===clientId)return;
       syncFromServer();
     })
-    .subscribe();
+    .subscribe(status=>{
+      if(status==='SUBSCRIBED')console.log('[Realtime] connecté ✓');
+      if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('[Realtime] erreur:',status);
+    });
 }
 
-function broadcastChange(){
-  if(realtimeChannel)realtimeChannel.send({type:'broadcast',event:'data-changed',payload:{from:clientId}});
+async function broadcastChange(){
+  if(!realtimeChannel)return;
+  try{
+    await realtimeChannel.send({type:'broadcast',event:'data-changed',payload:{from:clientId}});
+  }catch(e){console.warn('[Realtime] send failed:',e);}
 }
 
 function showSyncBanner(){document.getElementById('sync-banner').style.display='block';}
