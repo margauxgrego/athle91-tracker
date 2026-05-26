@@ -752,18 +752,14 @@ tr:hover td{background:#fafafa;}
   <div class="login-box">
     <div class="logo-badge"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div>
     <p class="login-subtitle">Viry-Châtillon · Tracker</p>
-    <!-- Étape 1 : choix coach/athlète -->
+    <!-- Étape 1 : choix du coach -->
     <div class="login-step show" id="step1">
-      <div class="login-user" onclick="selectRole('coach')">
-        <span class="uname">Kevin DEI</span>
-        <span class="urole">Coach</span>
-      </div>
       <div class="login-user" onclick="showAthletes()">
-        <span class="uname">Athlètes</span>
-        <span class="urole">Se connecter →</span>
+        <span class="uname">Kevin DEI</span>
+        <span class="urole">Coach →</span>
       </div>
     </div>
-    <!-- Étape 2 : liste athlètes -->
+    <!-- Étape 2 : compte coach + liste athlètes -->
     <div class="login-step" id="step2">
       <button class="login-back" onclick="backStep(1)">← Retour</button>
       <div id="athlete-list"></div>
@@ -1104,6 +1100,10 @@ function showStep(n){
 function showAthletes(){
   const list=document.getElementById('athlete-list');
   list.innerHTML='<div style="display:flex;flex-direction:column;gap:6px">'+
+    `<div class="login-user" onclick="selectRole('coach')">
+      <span class="uname">Kevin DEI</span>
+      <span class="urole">Coach</span>
+    </div>`+
     Object.values(athletes).map(a=>`
       <div class="login-user" onclick="selectRole('${a.id}')">
         <span class="uname">${a.prenom} ${a.nom}</span>
@@ -1116,7 +1116,7 @@ function selectRole(key){
   loginTarget=key;
   document.getElementById('pw-input').value='';
   document.getElementById('login-err').style.display='none';
-  document.getElementById('back-btn-3').onclick=()=>backStep(key==='coach'?1:2);
+  document.getElementById('back-btn-3').onclick=()=>backStep(2);
   showStep(3);
   setTimeout(()=>document.getElementById('pw-input').focus(),100);
 }
