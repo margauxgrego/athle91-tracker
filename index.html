@@ -1416,9 +1416,9 @@ function buildSwitcher(){
     sw.innerHTML=coachAthletes.map(a=>
       `<button class="ath-btn ${a.id===currentAthlete?'active':''}" onclick="switchAthlete('${a.id}')">${a.prenom} ${a.nom}</button>`
     ).join('')+
-    `<button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>
-     <button class="ath-btn coach-add" onclick="openModal('modal-new-coach')">+ Coach</button>
-     <button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>`;
+    `<button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>
+     <button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>
+     <button class="ath-btn coach-add" onclick="openModal('modal-new-coach')">+ Coach</button>`;
   }else{
     sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
   }
