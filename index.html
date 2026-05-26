@@ -1735,7 +1735,7 @@ function renderRecords(){
   if(!grid||!sel)return;
   const years=new Set();
   Object.values(ath).forEach(v=>{
-    if(Array.isArray(v))v.forEach(p=>{if(p&&p.date&&typeof p.date==='string')years.add(p.date.split('-')[0]);});
+    if(Array.isArray(v))v.forEach(p=>{if(p&&p.date&&/^\d{4}-/.test(p.date))years.add(p.date.slice(0,4));});
   });
   const curVal=sel.value||'tout';
   sel.innerHTML='<option value="tout">Toutes</option>'+[...years].sort((a,b)=>b-a).map(y=>`<option value="${y}" ${curVal===y?'selected':''}>${y}</option>`).join('');
