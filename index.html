@@ -558,15 +558,29 @@ tr:hover td{background:#fafafa;}
     width:100%!important;
   }
 
-  /* Pastilles de disciplines : retour à la ligne propre */
-  .disc-pills,
+  /* Filtres records : colonne sur mobile */
   .records-filters{
     flex-direction:column;
     align-items:stretch;
   }
-  .disc-pill label,
   .records-filters select{
     width:100%;
+  }
+
+  /* Pastilles disciplines : restent en grille wrappée, plus compactes */
+  .disc-pills{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+  }
+  .disc-pill label{
+    width:100%;
+  }
+
+  /* Scroll tactile dans les modales (iOS) */
+  .modal{
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y;
   }
 }
 
