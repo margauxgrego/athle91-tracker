@@ -90,7 +90,7 @@ header{padding:14px 0 16px;border-bottom:1px solid #e0e0e0;margin-bottom:16px;bo
 .filter-row{display:flex;gap:4px;flex-wrap:wrap;}
 .filter-btn{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;background:none;border:1.5px solid #ddd;color:#999;cursor:pointer;border-radius:4px;transition:all .15s;}
 .filter-btn.active{border-color:var(--yellow);color:#000;background:var(--yellow);}
-.filter-btn.f-compet.active{background:var(--red);border-color:var(--red);color:#fff;}
+.filter-btn.f-compet.active{background:#f5c400;border-color:#f5c400;color:#000;}
 .filter-btn.f-entrainement.active{background:var(--yellow);border-color:var(--yellow);color:#000;}
 
 /* ── TABLE ─────────────────────────── */
@@ -108,7 +108,7 @@ tr:hover td{background:#fafafa;}
 .rp-badge{display:inline-block;background:var(--yellow);color:#000;font-size:8px;font-weight:900;padding:1px 5px;border-radius:2px;text-transform:uppercase;margin-left:5px;vertical-align:middle;letter-spacing:.5px;}
 
 /* ── TYPE COLORS ─────────────────── */
-.type-compet{color:var(--red);font-size:11px;font-weight:700;}
+.type-compet{color:#f5c400;font-size:11px;font-weight:700;}
 .type-entrainement{color:var(--yellow);font-size:11px;font-weight:700;}
 
 /* ── FORMS ─────────────────────── */
@@ -1414,7 +1414,7 @@ function buildDiscTab(disc){
   el.innerHTML=`
     <div class="stat-row" id="stats-${k}"></div>
     <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Compétition</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f5c400"></div>Compétition</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Entraînement</div>
     </div>
     <div class="grid-2">
