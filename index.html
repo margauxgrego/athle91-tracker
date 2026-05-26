@@ -1770,6 +1770,8 @@ function getAllDataForDisc(disc){
   return[...(ath[dk]||[])];
 }
 
+function extractYear(s){if(!s)return null;const m=(s+'').match(/\b(19|20)\d{2}\b/);return m?m[0]:null;}
+
 function renderRecords(){
   const ath=athletes[currentAthlete];
   const grid=document.getElementById('records-grid');
@@ -1777,7 +1779,7 @@ function renderRecords(){
   if(!grid||!sel)return;
   const years=new Set();
   Object.values(ath).forEach(v=>{
-    if(Array.isArray(v))v.forEach(p=>{if(p&&p.date&&/^\d{4}-/.test(p.date))years.add(p.date.slice(0,4));});
+    if(Array.isArray(v))v.forEach(p=>{if(p&&p.date){const y=extractYear(p.date);if(y)years.add(y);}});
   });
   const curVal=sel.value||'tout';
   sel.innerHTML='<option value="tout">Toutes</option>'+[...years].sort((a,b)=>b-a).map(y=>`<option value="${y}" ${curVal===y?'selected':''}>${y}</option>`).join('');
@@ -1786,7 +1788,7 @@ function renderRecords(){
     <div class="rec-card" id="rec-${i}" onclick="toggleRecHistory(${i},'${r.disc}')">
       <div class="disc">${discDisplayNames[r.disc]||r.disc}</div>
       <div class="perf">${r.perf}</div>
-      <div class="meta">${r.date} · ${r.cat}</div>
+      <div class="meta">${extractYear(r.date)||''} · ${r.cat}</div>
       <div class="rec-history" id="rec-hist-${i}"></div>
     </div>`).join('');
 }
