@@ -59,7 +59,7 @@ header{padding:14px 0 16px;border-bottom:1px solid #e0e0e0;margin-bottom:16px;bo
 .logo-inline{display:inline-flex;align-items:stretch;border-radius:6px;overflow:hidden;margin-bottom:4px;}
 .logo-inline .la{background:var(--yellow);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;padding:3px 7px;letter-spacing:2px;line-height:1;}
 .logo-inline .l9{background:var(--orange);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;padding:3px 7px;line-height:1;}
-.header-name{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,6vw,64px);font-weight:900;line-height:1;letter-spacing:1px;color:#111;}@media(min-width:768px){.header-name{margin-left:24px;}}
+.header-name{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,6vw,64px);font-weight:900;line-height:1;letter-spacing:1px;color:#111;}
 .header-name span{color:var(--yellow);}
 .header-sub{font-size:10px;color:#999;letter-spacing:2px;text-transform:uppercase;font-weight:600;}
 .header-records{display:flex;gap:8px;flex-wrap:wrap;}
@@ -581,6 +581,7 @@ tr:hover td{background:#fafafa;}
   .modal{
     -webkit-overflow-scrolling:touch;
     touch-action:pan-y;
+    overscroll-behavior:contain;
   }
 }
 
@@ -624,17 +625,13 @@ tr:hover td{background:#fafafa;}
     width:100%;
   }
 
-  /* Disciplines dans les modales : grille propre, lisible, sans textes écrasés */
+  /* Disciplines dans les modales : grille 2 colonnes, sans scroll imbriqué */
   #disc-checkboxes,
   #disc-add-checkboxes{
     display:grid!important;
     grid-template-columns:1fr 1fr;
     gap:8px!important;
     align-items:stretch;
-    max-height:42vh;
-    overflow-y:auto;
-    padding-right:2px;
-    -webkit-overflow-scrolling:touch;
   }
 
   #disc-checkboxes .disc-pill,
@@ -677,12 +674,9 @@ tr:hover td{background:#fafafa;}
   /* Annule le découpage qui mettait certains mots à la verticale */
   #disc-checkboxes,
   #disc-add-checkboxes{
-    display:flex!important;
-    flex-direction:column!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
     gap:8px!important;
-    max-height:48vh;
-    overflow-y:auto;
-    padding-right:2px;
   }
 
   #disc-checkboxes .disc-pill,
@@ -1921,8 +1915,18 @@ async function confirmAddDisc(){
 }
 
 // ─── MODALS ──────────────────────────────────────────────────────────────
-function openModal(id){document.getElementById(id).classList.add('show');}
-function closeModal(id){document.getElementById(id).classList.remove('show');}
+function openModal(id){
+  document.getElementById(id).classList.add('show');
+  document.body.style.overflow='hidden';
+  document.body.style.position='fixed';
+  document.body.style.width='100%';
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('show');
+  document.body.style.overflow='';
+  document.body.style.position='';
+  document.body.style.width='';
+}
 
 async function createAthlete(){
   const prenom=document.getElementById('na-prenom').value.trim();
