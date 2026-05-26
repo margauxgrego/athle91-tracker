@@ -914,6 +914,23 @@ tr:hover td{background:#fafafa;}
   </div>
 </div>
 
+<!-- MODAL PROFIL COACH -->
+<div class="modal-overlay" id="modal-edit-coach">
+  <div class="modal">
+    <h3>Profil coach</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Prénom</label><input type="text" id="ec-prenom" placeholder="Prénom"></div>
+      <div class="form-group"><label>Nom</label><input type="text" id="ec-nom" placeholder="Nom"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:8px"><label>Nouveau mot de passe</label><input type="password" id="ec-pw1" placeholder="Laisser vide si inchangé"></div>
+    <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><input type="password" id="ec-pw2" placeholder="Laisser vide si inchangé"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-edit-coach')">Annuler</button>
+      <button class="btn" style="width:auto" onclick="saveCoachProfile()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL AJOUTER DISCIPLINE -->
 <div class="modal-overlay" id="modal-add-disc">
   <div class="modal">
@@ -1309,6 +1326,7 @@ function showNoAthleteScreen(){
       <div class="card-title">Espace coach</div>
       <p style="font-size:13px;color:#888;margin-bottom:12px">Ce coach n’a pas encore d’athlète.</p>
       <button class="btn" onclick="openModal('modal-new-athlete')">+ Ajouter un athlète</button>
+      <button class="btn" style="margin-top:10px;width:100%;background:#f0f0f0;color:#111;border:1px solid #ddd" onclick="openCoachProfile()">Modifier mon profil</button>
       <button class="btn-danger" style="margin-top:10px;width:100%" onclick="deleteCoach()">Supprimer ce coach</button>
     </div>`;
 }
@@ -1322,6 +1340,7 @@ function buildSwitcher(){
     ).join('')+
     `<button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>
      <button class="ath-btn coach-add" onclick="openModal('modal-new-coach')">+ Coach</button>
+     <button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>
      <button class="ath-btn" style="border-color:var(--red);color:var(--red)" onclick="deleteCoach()">Suppr. coach</button>`;
   }else{
     sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
@@ -2042,6 +2061,66 @@ function createAthlete(){
 }
 
 
+
+
+function openCoachProfile(){
+  if(!currentUser || currentUser.type!=='coach')return;
+  const coach=users[currentUser.key];
+  if(!coach)return;
+
+  const parts=coach.name.trim().split(/\s+/);
+  const prenom=parts.shift()||'';
+  const nom=parts.join(' ')||'';
+
+  document.getElementById('ec-prenom').value=prenom;
+  document.getElementById('ec-nom').value=nom;
+  document.getElementById('ec-pw1').value='';
+  document.getElementById('ec-pw2').value='';
+
+  openModal('modal-edit-coach');
+}
+
+function saveCoachProfile(){
+  if(!currentUser || currentUser.type!=='coach')return;
+
+  const coach=users[currentUser.key];
+  if(!coach)return;
+
+  const prenom=document.getElementById('ec-prenom').value.trim();
+  const nom=document.getElementById('ec-nom').value.trim();
+  const pw1=document.getElementById('ec-pw1').value;
+  const pw2=document.getElementById('ec-pw2').value;
+
+  if(!prenom || !nom){
+    alert('Prénom et nom requis');
+    return;
+  }
+
+  if((pw1 || pw2) && pw1!==pw2){
+    alert('Les mots de passe ne correspondent pas');
+    return;
+  }
+
+  coach.name=`${prenom} ${nom}`;
+
+  if(pw1){
+    coach.pw=pw1;
+  }
+
+  saveLocalData();
+  closeModal('modal-edit-coach');
+
+  buildSwitcher();
+  if(!currentAthlete){
+    showNoAthleteScreen();
+  }
+
+  alert('Profil coach mis à jour.');
+}
+
+document.getElementById('modal-edit-coach').addEventListener('click',function(e){
+  if(e.target===this)closeModal('modal-edit-coach');
+});
 
 function deleteCoach(){
   if(!currentUser || currentUser.type!=='coach')return;
