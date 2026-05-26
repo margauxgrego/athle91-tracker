@@ -837,10 +837,7 @@ tr:hover td{background:#fafafa;}
     <p class="login-subtitle">Viry-Châtillon · Tracker</p>
     <!-- Étape 1 : choix du coach -->
     <div class="login-step show" id="step1">
-      <div class="login-user" onclick="showAthletes()">
-        <span class="uname">Kevin DEI</span>
-        <span class="urole">Coach →</span>
-      </div>
+      <div id="coach-list"></div>
     </div>
     <!-- Étape 2 : compte coach + liste athlètes -->
     <div class="login-step" id="step2">
@@ -897,6 +894,22 @@ tr:hover td{background:#fafafa;}
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
       <button class="btn" style="width:auto" onclick="createAthlete()">Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOUVEAU COACH -->
+<div class="modal-overlay" id="modal-new-coach">
+  <div class="modal">
+    <h3>Nouveau coach</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Prénom</label><input type="text" id="nc-prenom" placeholder="Kevin"></div>
+      <div class="form-group"><label>Nom</label><input type="text" id="nc-nom" placeholder="DEI"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><input type="password" id="nc-pw" placeholder="••••••"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-new-coach')">Annuler</button>
+      <button class="btn" style="width:auto" onclick="createCoach()">Créer</button>
     </div>
   </div>
 </div>
@@ -1167,10 +1180,33 @@ const athletes = {
     haies:[],haiesFranchies:[],haiesTotalSince:null,
   }
 };
-const users = {coach:{name:'Kevin DEI',pw:'coach91',dbId:null}};
+const users = {coach:{id:'coach',name:'Kevin DEI',pw:'coach91',dbId:null}};
 let currentUser=null,currentAthlete=null,nextId=500;
 let charts={};
 let chartFilters={}; // {key: {period:'tout', view:'les2'}}
+let selectedLoginCoach='coach';
+
+// Association par défaut des athlètes existants au coach Kevin
+Object.values(athletes).forEach(a=>{if(!a.coachId)a.coachId='coach';});
+
+// Sauvegarde locale simple pour conserver les coachs/athlètes ajoutés sur le même navigateur
+function saveLocalData(){
+  try{localStorage.setItem('athle91-data',JSON.stringify({users,athletes,nextId}));}catch(e){}
+}
+function loadLocalData(){
+  try{
+    const raw=localStorage.getItem('athle91-data');
+    if(!raw)return;
+    const data=JSON.parse(raw);
+    if(data.users)Object.assign(users,data.users);
+    if(data.athletes)Object.assign(athletes,data.athletes);
+    if(data.nextId)nextId=data.nextId;
+    Object.values(athletes).forEach(a=>{if(!a.coachId)a.coachId='coach';});
+  }catch(e){}
+}
+function athletesForCoach(coachKey){
+  return Object.values(athletes).filter(a=>(a.coachId||'coach')===coachKey);
+}
 
 // ─── LOGIN ──────────────────────────────────────────────────────────────────
 let loginTarget=null;
@@ -1180,18 +1216,35 @@ function showStep(n){
   document.getElementById('step'+n).classList.add('show');
 }
 
-function showAthletes(){
-  const list=document.getElementById('athlete-list');
+function renderCoachLogin(){
+  const list=document.getElementById('coach-list');
+  if(!list)return;
   list.innerHTML='<div style="display:flex;flex-direction:column;gap:6px">'+
-    `<div class="login-user" onclick="selectRole('coach')">
-      <span class="uname">Kevin DEI</span>
+    Object.values(users).map(c=>`
+      <div class="login-user" onclick="showAthletes('${c.id}')">
+        <span class="uname">${c.name}</span>
+        <span class="urole">Coach →</span>
+      </div>`).join('')+
+    '</div>';
+}
+
+function showAthletes(coachKey='coach'){
+  selectedLoginCoach=coachKey;
+  const coach=users[coachKey];
+  const list=document.getElementById('athlete-list');
+  const coachAthletes=athletesForCoach(coachKey);
+  list.innerHTML='<div style="display:flex;flex-direction:column;gap:6px">'+
+    `<div class="login-user" onclick="selectRole('${coachKey}')">
+      <span class="uname">${coach.name}</span>
       <span class="urole">Coach</span>
     </div>`+
-    Object.values(athletes).map(a=>`
+    coachAthletes.map(a=>`
       <div class="login-user" onclick="selectRole('${a.id}')">
         <span class="uname">${a.prenom} ${a.nom}</span>
         <span class="urole">Athlète · ${a.cat}</span>
-      </div>`).join('')+'</div>';
+      </div>`).join('')+
+    (!coachAthletes.length?`<div class="empty-state" style="padding:18px">Aucun athlète pour ce coach</div>`:'')+
+    '</div>';
   showStep(2);
 }
 
@@ -1209,12 +1262,17 @@ function backStep(n){showStep(n);}
 function doLogin(){
   const pw=document.getElementById('pw-input').value;
   let ok=false;
-  if(loginTarget==='coach'&&pw===users.coach.pw){ok=true;currentUser={type:'coach',key:'coach'};}
+  if(users[loginTarget]&&pw===users[loginTarget].pw){ok=true;currentUser={type:'coach',key:loginTarget};}
   else if(athletes[loginTarget]&&pw===athletes[loginTarget].pw){ok=true;currentUser={type:'athlete',key:loginTarget};}
   if(!ok){document.getElementById('login-err').style.display='block';return;}
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  currentAthlete=currentUser.type==='athlete'?loginTarget:Object.keys(athletes)[0];
+  if(currentUser.type==='athlete'){
+    currentAthlete=loginTarget;
+  }else{
+    const first=athletesForCoach(currentUser.key)[0];
+    currentAthlete=first?first.id:null;
+  }
   buildApp();
 }
 
@@ -1222,24 +1280,54 @@ function logout(){
   currentUser=null;currentAthlete=null;charts={};
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
+  renderCoachLogin();
   showStep(1);
 }
 
+loadLocalData();
+setTimeout(renderCoachLogin,0);
+
 // ─── APP ──────────────────────────────────────────────────────────────────
-function buildApp(){buildSwitcher();buildTabs();renderAll();}
+function buildApp(){
+  buildSwitcher();
+  if(!currentAthlete){
+    showNoAthleteScreen();
+    return;
+  }
+  buildTabs();
+  renderAll();
+}
+
+function showNoAthleteScreen(){
+  const coach=currentUser&&currentUser.type==='coach'?users[currentUser.key]:null;
+  document.getElementById('header-name').innerHTML=coach?coach.name.toUpperCase():'—';
+  document.getElementById('header-sub').textContent='Aucun athlète associé pour le moment';
+  document.getElementById('header-records').innerHTML='';
+  document.getElementById('main-tabs').innerHTML='';
+  document.getElementById('tab-contents').innerHTML=`
+    <div class="card">
+      <div class="card-title">Espace coach</div>
+      <p style="font-size:13px;color:#888;margin-bottom:12px">Ce coach n’a pas encore d’athlète.</p>
+      <button class="btn" onclick="openModal('modal-new-athlete')">+ Ajouter un athlète</button>
+    </div>`;
+}
 
 function buildSwitcher(){
   const sw=document.getElementById('athlete-switcher');
   if(currentUser.type==='coach'){
-    sw.innerHTML=Object.values(athletes).map(a=>
+    const coachAthletes=athletesForCoach(currentUser.key);
+    sw.innerHTML=coachAthletes.map(a=>
       `<button class="ath-btn ${a.id===currentAthlete?'active':''}" onclick="switchAthlete('${a.id}')">${a.prenom} ${a.nom}</button>`
-    ).join('')+`<button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>`;
+    ).join('')+
+    `<button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>
+     <button class="ath-btn coach-add" onclick="openModal('modal-new-coach')">+ Coach</button>`;
   }else{
     sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
   }
 }
 
 function buildTabs(){
+  if(!currentAthlete||!athletes[currentAthlete]){showNoAthleteScreen();return;}
   const ath=athletes[currentAthlete];
   const hasHaies=ath.disciplines.some(d=>d.toLowerCase().includes('haies'));
   const tabList=ath.disciplines.map(d=>discKey(d)).concat(hasHaies?['haies_franchies','records','parametres']:['records','parametres']);
@@ -1464,6 +1552,7 @@ function switchTab(name){
 }
 
 function switchAthlete(key){
+  if(!athletes[key])return;
   currentAthlete=key;charts={};chartFilters={};
   document.querySelectorAll('.ath-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick')?.includes("'"+key+"'")));
   buildTabs();renderAll();
@@ -1869,6 +1958,7 @@ function saveParams(){
   ath.annee=parseInt(document.getElementById('p-annee').value)||ath.annee;
   ath.cat=document.getElementById('p-cat').value;
   ath.sub=`Athlé 91 · ${ath.cat} · née ${ath.annee}`;
+  saveLocalData();
   buildSwitcher();buildTabs();renderAll();switchTab('parametres');
   alert('Informations mises à jour');
 }
@@ -1880,6 +1970,7 @@ function changePassword(){
   if(!pw1||pw1.length<4){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Min 4 caractères';return;}
   if(pw1!==pw2){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Les mots de passe ne correspondent pas';return;}
   athletes[currentAthlete].pw=pw1;
+  saveLocalData();
   msg.style.display='block';msg.style.color='var(--yellow)';msg.textContent='Mis à jour ✓';
   document.getElementById('p-pw1').value='';document.getElementById('p-pw2').value='';
 }
@@ -1887,8 +1978,9 @@ function changePassword(){
 function deleteAthlete(key){
   if(!confirm(`Supprimer ${athletes[key].prenom} ${athletes[key].nom} ?`))return;
   delete athletes[key];
-  const remaining=Object.keys(athletes);
-  if(!remaining.length){logout();return;}
+  saveLocalData();
+  const remaining=athletesForCoach(currentUser.key).map(a=>a.id);
+  if(!remaining.length){currentAthlete=null;buildApp();return;}
   currentAthlete=remaining[0];
   buildSwitcher();buildTabs();renderAll();
 }
@@ -1919,6 +2011,7 @@ function confirmAddDisc(){
       }
     }
   });
+  saveLocalData();
   closeModal('modal-add-disc');
   charts={};buildTabs();renderAll();
 }
@@ -1936,13 +2029,36 @@ function createAthlete(){
   const discs=[...document.querySelectorAll('#disc-checkboxes input:checked')].map(i=>i.value);
   if(!prenom||!nom||!pw||!discs.length){alert('Prénom, nom, disciplines et mot de passe requis');return;}
   const id=(prenom+nom).toLowerCase().replace(/\s/g,'');
-  athletes[id]={id,dbId:null,prenom,nom,annee,cat,pw,disciplines:discs,
+  athletes[id]={id,dbId:null,coachId:(currentUser&&currentUser.type==='coach')?currentUser.key:'coach',prenom,nom,annee,cat,pw,disciplines:discs,
     sub:`Athlé 91 · ${cat} · née ${annee}`,records:[],
     hauteur:[],haies:[],longueur:[],triplesaut:[],haiesFranchies:[],haiesTotalSince:null};
+  saveLocalData();
   closeModal('modal-new-athlete');
-  buildSwitcher();switchAthlete(id);
+  currentAthlete=id;
+  buildApp();
   ['na-prenom','na-nom','na-annee','na-pw'].forEach(i=>document.getElementById(i).value='');
 }
+
+
+function createCoach(){
+  const prenom=document.getElementById('nc-prenom').value.trim();
+  const nom=document.getElementById('nc-nom').value.trim();
+  const pw=document.getElementById('nc-pw').value;
+  if(!prenom||!nom||!pw){alert('Prénom, nom et mot de passe requis');return;}
+  let id=(prenom+nom).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+  if(!id)id='coach'+Date.now();
+  let base=id,n=2;
+  while(users[id])id=base+n++;
+  users[id]={id,name:`${prenom} ${nom}`,pw,dbId:null};
+  saveLocalData();
+  closeModal('modal-new-coach');
+  ['nc-prenom','nc-nom','nc-pw'].forEach(i=>document.getElementById(i).value='');
+  alert('Coach ajouté. Il apparaîtra sur l’écran de connexion.');
+}
+
+document.getElementById('modal-new-coach').addEventListener('click',function(e){
+  if(e.target===this)closeModal('modal-new-coach');
+});
 
 // ─── MODAL DISCIPLINE CHECKBOXES BUILD ────────────────────────────────────
 document.getElementById('modal-new-athlete').addEventListener('click',function(e){
