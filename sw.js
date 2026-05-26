@@ -16,12 +16,24 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Appels Supabase : toujours réseau (données dynamiques)
+  // Supabase : toujours réseau
   if (e.request.url.includes('supabase.co')) {
     e.respondWith(fetch(e.request));
     return;
   }
-  // Ressources statiques : cache en priorité, réseau en fallback
+  // Documents HTML : réseau en priorité → toujours la dernière version déployée
+  if (e.request.destination === 'document') {
+    e.respondWith(
+      fetch(e.request)
+        .then(response => {
+          caches.open(CACHE).then(c => c.put(e.request, response.clone()));
+          return response;
+        })
+        .catch(() => caches.match(e.request))
+    );
+    return;
+  }
+  // Autres ressources statiques : cache en priorité
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );

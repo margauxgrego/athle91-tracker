@@ -1245,12 +1245,24 @@ async function doLogin(){
 
 function logout(){
   currentUser=null;currentAthlete=null;charts={};
+  stopPolling();
   if(realtimeChannel){sb.removeChannel(realtimeChannel);realtimeChannel=null;}
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   renderCoachLogin();
   showStep(1);
 }
+
+// ─── POLLING (filet de secours si Realtime indisponible) ──────────────────
+let pollInterval=null;
+function startPolling(){
+  stopPolling();
+  pollInterval=setInterval(()=>{
+    if(currentUser&&document.visibilityState==='visible')
+      loadAllData().then(()=>{if(currentAthlete)renderAll();}).catch(()=>{});
+  },30000);
+}
+function stopPolling(){if(pollInterval){clearInterval(pollInterval);pollInterval=null;}}
 
 // ─── REALTIME ─────────────────────────────────────────────────────────────
 let realtimeChannel=null;
@@ -1291,6 +1303,7 @@ initApp();
 // ─── APP ──────────────────────────────────────────────────────────────────
 function buildApp(){
   setupRealtime();
+  startPolling();
   buildSwitcher();
   if(!currentAthlete){showNoAthleteScreen();return;}
   buildTabs();
