@@ -187,8 +187,8 @@ tr:hover td{background:#fafafa;}
 
 /* ── LOADING OVERLAY (zone données) ─── */
 #tab-contents{position:relative;}
-@keyframes blink-load{0%,100%{opacity:1}50%{opacity:.15}}
-.tab-load-overlay{position:absolute;inset:0;min-height:80px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.8);z-index:20;font-size:11px;font-weight:800;letter-spacing:2px;color:#bbb;text-transform:uppercase;animation:blink-load .8s ease-in-out infinite;border-radius:8px;pointer-events:none;}
+@keyframes blink-load{0%,100%{opacity:1}50%{opacity:.1}}
+.tab-load-overlay{position:absolute;inset:0;min-height:120px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.9);z-index:20;font-size:12px;font-weight:800;letter-spacing:3px;color:#555;text-transform:uppercase;animation:blink-load 1s ease-in-out infinite;border-radius:8px;pointer-events:none;}
 
 /* ── EMPTY STATE ─────────────────── */
 .empty-state{text-align:center;padding:36px;color:#888;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
@@ -1435,8 +1435,14 @@ function buildApp(){
   startPolling();
   buildSwitcher();
   if(!currentAthlete){showNoAthleteScreen();return;}
-  buildTabs();
-  renderAll();
+  buildTabs();           // crée le squelette des onglets
+  showDataLoading();     // overlay clignotant immédiatement
+  loadAllData()          // rafraîchit les données depuis Supabase
+    .catch(e=>console.warn('[buildApp] chargement:',e))
+    .finally(()=>{
+      hideDataLoading();
+      renderAll();       // affiche les données fraîches
+    });
 }
 
 function showNoAthleteScreen(){
