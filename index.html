@@ -2792,67 +2792,56 @@ async function saveObservation(){
   const type=document.getElementById('obs-type')?.value||'entrainement';
   const texte=document.getElementById('obs-texte')?.value.trim();
   if(!date||!texte){showMessage('Champ manquant','La date et les notes sont requises.','danger');return;}
-  let res=await sb.from('coach_observations').upsert(
-    {athlete_id:athleteId,coach_id:coachDbId,date,discipline:disc,type,texte,updated_at:new Date().toISOString()},
-    {onConflict:'athlete_id,coach_id,date,discipline'}
-  );
-  if(res.error){
-    // Fallback si la colonne type n'existe pas encore en base
-    res=await sb.from('coach_observations').upsert(
-      {athlete_id:athleteId,coach_id:coachDbId,date,discipline:disc,texte,updated_at:new Date().toISOString()},
-      {onConflict:'athlete_id,coach_id,date,discipline'}
-    );
+  const now=new Date().toISOString();
+  let error;
+  if(window._currentObsId){
+    // Modification d'une observation existante
+    ({error}=await sb.from('coach_observations')
+      .update({date,discipline:disc,type,texte,updated_at:now}).eq('id',window._currentObsId));
+    if(error)({error}=await sb.from('coach_observations')
+      .update({date,discipline:disc,texte,updated_at:now}).eq('id',window._currentObsId));
+  }else{
+    // Nouvelle observation (INSERT — plusieurs obs par jour autorisées)
+    ({error}=await sb.from('coach_observations')
+      .insert({athlete_id:athleteId,coach_id:coachDbId,date,discipline:disc,type,texte,updated_at:now}));
+    if(error)({error}=await sb.from('coach_observations')
+      .insert({athlete_id:athleteId,coach_id:coachDbId,date,discipline:disc,texte,updated_at:now}));
   }
-  if(res.error){showMessage('Erreur','Impossible d\'enregistrer.','danger');return;}
+  if(error){showMessage('Erreur','Impossible d\'enregistrer.','danger');return;}
   const msg=document.getElementById('obs-msg');
   if(msg){msg.textContent='Enregistré ✓';msg.style.color='var(--yellow)';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
-  // Remettre le formulaire vierge après enregistrement
-  const today=new Date().toISOString().slice(0,10);
-  const dateEl=document.getElementById('obs-date');if(dateEl)dateEl.value=today;
-  const discEl=document.getElementById('obs-discipline');if(discEl)discEl.value='';
-  const typeEl2=document.getElementById('obs-type');if(typeEl2)typeEl2.value='entrainement';
-  const texteEl2=document.getElementById('obs-texte');if(texteEl2)texteEl2.value='';
-  const title=document.getElementById('obs-form-title');if(title)title.textContent='Nouvelle observation';
+  _resetObsForm();
   loadCoachObservations(athleteId);
   if(disc)loadDiscObservations(disc,athleteId);
 }
 
 async function deleteObservation(){
   const athleteId=currentAthlete;
-  const coachDbId=users[currentUser.key]?.id;
-  const date=document.getElementById('obs-date')?.value;
-  const disc=document.getElementById('obs-discipline')?.value||'';
-  if(!date){showMessage('Champ manquant','Sélectionne d\'abord une date.','danger');return;}
+  if(!window._currentObsId){showMessage('Aucune sélection','Clique sur "Modifier →" dans l\'historique pour sélectionner une observation à supprimer.','danger');return;}
   showConfirm('Supprimer cette observation','Cette action est irréversible.',async()=>{
-    const {error}=await sb.from('coach_observations')
-      .delete().eq('athlete_id',athleteId).eq('coach_id',coachDbId).eq('date',date).eq('discipline',disc);
+    const {error}=await sb.from('coach_observations').delete().eq('id',window._currentObsId);
     if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
-    document.getElementById('obs-texte').value='';
-    const typeEl=document.getElementById('obs-type');if(typeEl)typeEl.value='entrainement';
     const msg=document.getElementById('obs-msg');
     if(msg){msg.textContent='Supprimée ✓';msg.style.color='#c0392b';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
+    _resetObsForm();
     loadCoachObservations(athleteId);
   });
 }
 
-function newObservation(){
+function _resetObsForm(){
+  window._currentObsId=null;
   const today=new Date().toISOString().slice(0,10);
-  const dateEl=document.getElementById('obs-date');
-  const discEl=document.getElementById('obs-discipline');
-  const typeEl=document.getElementById('obs-type');
-  const texteEl=document.getElementById('obs-texte');
-  if(dateEl)dateEl.value=today;
-  if(discEl)discEl.value='';
-  if(typeEl)typeEl.value='entrainement';
-  if(texteEl){texteEl.value='';setTimeout(()=>texteEl.focus(),100);}
-  const title=document.getElementById('obs-form-title');
-  if(title)title.textContent='Nouvelle observation';
-  window.scrollTo({top:0,behavior:'smooth'});
+  const d=document.getElementById('obs-date');if(d)d.value=today;
+  const di=document.getElementById('obs-discipline');if(di)di.value='';
+  const ty=document.getElementById('obs-type');if(ty)ty.value='entrainement';
+  const tx=document.getElementById('obs-texte');if(tx)tx.value='';
+  const ti=document.getElementById('obs-form-title');if(ti)ti.textContent='Nouvelle observation';
 }
 
 function editObservation(i){
   const o=window._coachObsData[i];
   if(!o)return;
+  window._currentObsId=o.id;
   const dateEl=document.getElementById('obs-date');
   const discEl=document.getElementById('obs-discipline');
   const typeEl=document.getElementById('obs-type');
@@ -2872,7 +2861,7 @@ async function loadCoachObservations(athleteId){
   const coachDbId=users[currentUser.key]?.id;
   try{
     const {data}=await sb.from('coach_observations')
-      .select('date,discipline,type,texte').eq('athlete_id',athleteId).eq('coach_id',coachDbId)
+      .select('id,date,discipline,type,texte').eq('athlete_id',athleteId).eq('coach_id',coachDbId)
       .order('date',{ascending:false}).limit(30);
     if(!data||!data.length){el.innerHTML='<div class="empty-state" style="padding:16px">Aucune observation enregistrée</div>';return;}
     window._coachObsData=data;
