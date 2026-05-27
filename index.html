@@ -1689,12 +1689,13 @@ function buildTabs(){
   const obsLabel='Observations';
   const tabList=['observations'].concat(ath.disciplines.map(d=>discKey(d))).concat(hasHaies?['haies_franchies','records','parametres']:['records','parametres']);
   const tabLabels=[obsLabel].concat(ath.disciplines).concat(hasHaies?['Haies Franchies','Records',paramLabel]:['Records',paramLabel]);
+  const defaultIdx=ath.disciplines.length>0?1:0;
   document.getElementById('main-tabs').innerHTML=
-    tabLabels.map((l,i)=>`<button class="tab ${i===0?'active':''}" onclick="switchTab('${tabList[i]}')">${l}</button>`).join('')+
+    tabLabels.map((l,i)=>`<button class="tab ${i===defaultIdx?'active':''}" onclick="switchTab('${tabList[i]}')">${l}</button>`).join('')+
     `<button class="tab" onclick="openAddDisc()" style="color:var(--yellow)">+ Discipline</button>`+
     `<button class="tab" onclick="openAddOptions()" style="color:var(--yellow)">+ Options</button>`;
   document.getElementById('tab-contents').innerHTML=
-    tabList.map((t,i)=>`<div class="tab-content ${i===0?'active':''}" id="tab-${t}"></div>`).join('');
+    tabList.map((t,i)=>`<div class="tab-content ${i===defaultIdx?'active':''}" id="tab-${t}"></div>`).join('');
   buildObsTab();
   ath.disciplines.forEach(d=>buildDiscTab(d));
   if(hasHaies)buildHFTab();
