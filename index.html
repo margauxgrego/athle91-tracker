@@ -2565,14 +2565,10 @@ async function confirmAddDisc(){
 function openModal(id){
   document.getElementById(id).classList.add('show');
   document.body.style.overflow='hidden';
-  document.body.style.position='fixed';
-  document.body.style.width='100%';
 }
 function closeModal(id){
   document.getElementById(id).classList.remove('show');
   document.body.style.overflow='';
-  document.body.style.position='';
-  document.body.style.width='';
 }
 
 async function createAthlete(){
@@ -3130,6 +3126,16 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') checkAppVersion();
 });
 checkAppVersion();
+
+// Fix iOS : barre de nav fixe même quand le clavier virtuel est ouvert
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize',()=>{
+    const tabs=document.getElementById('main-tabs');
+    if(!tabs)return;
+    const kbOffset=Math.max(0,window.innerHeight-window.visualViewport.offsetTop-window.visualViewport.height);
+    tabs.style.bottom=kbOffset+'px';
+  });
+}
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
