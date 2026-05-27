@@ -1176,7 +1176,7 @@ async function loadAllData(){
       .map(d=>d.discipline);
     athletes[a.id]={
       id:a.id,dbId:a.id,coachId:a.coach_id,
-      prenom:a.prenom,nom:(a.nom||'').toUpperCase(),annee:a.annee,cat:a.cat,first_login:a.first_login??false,
+      prenom:a.prenom,nom:(a.nom||'').toUpperCase(),annee:a.annee,cat:a.cat,first_login:a.first_login??false,has_haies:a.has_haies??false,
       password_hash:a.password_hash,
       sort_order:a.sort_order??99,
       disciplines:discs,
@@ -1522,7 +1522,7 @@ function buildSwitcher(){
 function buildTabs(){
   if(!currentAthlete||!athletes[currentAthlete]){showNoAthleteScreen();return;}
   const ath=athletes[currentAthlete];
-  const hasHaies=ath.prenom==='Margaux'&&ath.nom.toUpperCase()==='GREGO';
+  const hasHaies=!!ath.has_haies;
   const tabList=ath.disciplines.map(d=>discKey(d)).concat(hasHaies?['haies_franchies','records','parametres']:['records','parametres']);
   const tabLabels=ath.disciplines.concat(hasHaies?['Haies Franchies','Records','Paramètres']:['Records','Paramètres']);
   document.getElementById('main-tabs').innerHTML=
@@ -1744,11 +1744,34 @@ function buildParamTab(){
       <button class="btn" onclick="openAddDisc()">+ Ajouter une discipline</button>
     </div>
     ${isCoach?`
+    <div class="card">
+      <div class="card-title">Options</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#111">Haies franchies</div>
+          <div style="font-size:11px;color:#999;margin-top:2px">Onglet de suivi des haies franchises à l'entraînement</div>
+        </div>
+        <button onclick="toggleHaies()" class="${ath.has_haies?'btn':'btn-cancel'}" style="width:auto;flex-shrink:0;margin-left:12px">
+          ${ath.has_haies?'Activé ✓':'Activer'}
+        </button>
+      </div>
+    </div>
     <div class="card danger-zone">
       <div class="card-title" style="color:var(--red)">Zone dangereuse</div>
       <p>Supprimer définitivement le compte de ${ath.prenom} ${ath.nom}.</p>
       <button class="btn-danger" onclick="deleteAthlete('${ath.id}')">Supprimer ce compte</button>
     </div>`:''}`;
+}
+
+async function toggleHaies(){
+  const ath=athletes[currentAthlete];
+  const newVal=!ath.has_haies;
+  const {error}=await sb.from('athletes').update({has_haies:newVal}).eq('id',ath.id);
+  if(error){alert('Erreur lors de la modification.');return;}
+  ath.has_haies=newVal;
+  buildTabs();
+  renderAll();
+  switchTab('parametres');
 }
 
 // ─── NAVIGATION ───────────────────────────────────────────────────────────
