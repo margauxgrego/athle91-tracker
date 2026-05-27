@@ -74,7 +74,7 @@ header{padding:22px 0 24px;border-bottom:1px solid #e0e0e0;margin-bottom:22px;bo
 /* ── TABS ─────────────────────────────── */
 .tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #e0e0e0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;background:none;border:none;color:#888;cursor:pointer;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s;}
+.tab{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;background:none;border:none;color:#888;cursor:pointer;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s;touch-action:pan-x;}
 .tab.active{color:#000;background:var(--yellow);border-bottom-color:var(--yellow);font-weight:800;}
 .tab:hover:not(.active){color:#111;}
 .tab-content{display:none;width:100%;}
@@ -1526,6 +1526,15 @@ function buildTabs(){
   if(hasHaies)buildHFTab();
   buildRecordsTab();
   buildParamTab();
+  // Drag-to-scroll : slide la barre même en tenant un bouton
+  const _tb=document.getElementById('main-tabs');
+  if(_tb&&!_tb._di){
+    _tb._di=true;
+    let _sx,_ss,_mv;
+    _tb.addEventListener('touchstart',e=>{_sx=e.touches[0].clientX;_ss=_tb.scrollLeft;_mv=false;},{passive:true});
+    _tb.addEventListener('touchmove',e=>{const d=_sx-e.touches[0].clientX;if(Math.abs(d)>4){_mv=true;_tb.scrollLeft=_ss+d;e.preventDefault();}},{passive:false});
+    _tb.addEventListener('touchend',e=>{if(_mv)e.preventDefault();},{passive:false});
+  }
 }
 
 function discKey(d){return d.toLowerCase().replace(/ /g,'_').replace(/[^a-z0-9_]/g,'');}
