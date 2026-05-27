@@ -3159,21 +3159,24 @@ document.addEventListener('visibilitychange', () => {
 });
 checkAppVersion();
 
-// Fix iOS : barre de nav fixe même quand le clavier virtuel est ouvert
-// setProperty('bottom',...,'important') nécessaire car la CSS a bottom:0!important
+// Fix iOS : barre de nav fixe au-dessus du clavier virtuel
+// - Seuil >100px : seul le clavier produit un offset aussi grand (pas le scroll)
+// - Pas d'écoute du scroll : évite le clignotement lors des swipes rapides
 if(window.visualViewport){
-  const _syncNavBottom=()=>{
-    const tabs=document.getElementById('main-tabs');
-    if(!tabs)return;
-    const kbOffset=Math.max(0,window.innerHeight-window.visualViewport.offsetTop-window.visualViewport.height);
-    if(kbOffset>10){
-      tabs.style.setProperty('bottom',kbOffset+'px','important');
-    }else{
-      tabs.style.removeProperty('bottom');
-    }
-  };
-  window.visualViewport.addEventListener('resize',_syncNavBottom);
-  window.visualViewport.addEventListener('scroll',_syncNavBottom);
+  let _navKbTimer=null;
+  window.visualViewport.addEventListener('resize',()=>{
+    clearTimeout(_navKbTimer);
+    _navKbTimer=setTimeout(()=>{
+      const tabs=document.getElementById('main-tabs');
+      if(!tabs)return;
+      const kbOffset=Math.max(0,window.innerHeight-window.visualViewport.offsetTop-window.visualViewport.height);
+      if(kbOffset>100){
+        tabs.style.setProperty('bottom',kbOffset+'px','important');
+      }else{
+        tabs.style.removeProperty('bottom');
+      }
+    },80);
+  });
 }
 
 if('serviceWorker' in navigator){
