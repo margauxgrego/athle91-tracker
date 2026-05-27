@@ -1596,12 +1596,26 @@ function buildDiscTab(disc){
       </div>
     </div>
     <div class="card">
-      <div class="card-title">Historique</div>
-      <div class="table-wrap">
-        <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th><th></th></tr></thead>
-        <tbody id="table-${k}"></tbody></table>
+      <div class="card-title" style="cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between" onclick="toggleHist('${k}')">
+        <span>Historique</span>
+        <span id="hist-chevron-${k}" style="font-size:11px;color:#bbb;display:inline-block;transition:transform .25s">▼</span>
+      </div>
+      <div id="hist-body-${k}" style="display:none;margin-top:12px">
+        <div class="table-wrap">
+          <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th><th></th></tr></thead>
+          <tbody id="table-${k}"></tbody></table>
+        </div>
       </div>
     </div>`;
+}
+
+function toggleHist(k){
+  const body=document.getElementById('hist-body-'+k);
+  const chev=document.getElementById('hist-chevron-'+k);
+  if(!body)return;
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  if(chev)chev.style.transform=open?'rotate(180deg)':'rotate(0deg)';
 }
 
 function buildHFTab(){
