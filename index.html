@@ -2796,14 +2796,22 @@ async function saveObservation(){
   const type=document.getElementById('obs-type')?.value||'entrainement';
   const texte=document.getElementById('obs-texte')?.value.trim();
   if(!date||!texte){showMessage('Champ manquant','La date et les notes sont requises.','danger');return;}
-  const {error}=await sb.from('coach_observations').upsert(
+  let res=await sb.from('coach_observations').upsert(
     {athlete_id:athleteId,coach_id:coachDbId,date,discipline:disc,type,texte,updated_at:new Date().toISOString()},
     {onConflict:'athlete_id,coach_id,date,discipline'}
   );
-  if(error){showMessage('Erreur','Impossible d\'enregistrer.','danger');return;}
+  if(res.error){
+    // Fallback si la colonne type n'existe pas encore en base
+    res=await sb.from('coach_observations').upsert(
+      {athlete_id:athleteId,coach_id:coachDbId,date,discipline:disc,texte,updated_at:new Date().toISOString()},
+      {onConflict:'athlete_id,coach_id,date,discipline'}
+    );
+  }
+  if(res.error){showMessage('Erreur','Impossible d\'enregistrer.','danger');return;}
   const msg=document.getElementById('obs-msg');
   if(msg){msg.textContent='Enregistré ✓';msg.style.color='var(--yellow)';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
   loadCoachObservations(athleteId);
+  if(disc)loadDiscObservations(disc,athleteId);
 }
 
 async function deleteObservation(){
