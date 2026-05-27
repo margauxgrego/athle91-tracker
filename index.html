@@ -1774,7 +1774,6 @@ function buildParamTab(){
       </div>
       <button class="btn" onclick="openAddDisc()">+ Ajouter une discipline</button>
     </div>
-    ${isCoach?`
     <div class="card">
       <div class="card-title">Options</div>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
@@ -1787,6 +1786,7 @@ function buildParamTab(){
         </button>
       </div>
     </div>
+    ${isCoach?`
     <div class="card danger-zone">
       <div class="card-title" style="color:var(--red)">Zone dangereuse</div>
       <p>Supprimer définitivement le compte de ${ath.prenom} ${ath.nom}.</p>
