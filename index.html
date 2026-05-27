@@ -1784,7 +1784,14 @@ function buildDiscTab(disc){
           </div>
         </div>
       </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Notes du coach</div>
+      <div id="disc-obs-list-${k}">
+        <div style="font-size:11px;color:#bbb;padding:8px 0;font-weight:600">Chargement…</div>
+      </div>
     </div>`;
+  loadDiscObservations(disc,athletes[currentAthlete].id);
 }
 
 function toggleHist(k){
@@ -1873,6 +1880,7 @@ function buildObsTab(){
   const isCoach=currentUser.type==='coach';
   const today=new Date().toISOString().slice(0,10);
   if(isCoach){
+    const discOptions=ath.disciplines.map(d=>`<option value="${d}">${d}</option>`).join('');
     el.innerHTML=`
       <div class="card">
         <div class="card-title">Séance du jour</div>
@@ -1881,9 +1889,17 @@ function buildObsTab(){
           <input type="date" id="obs-date" value="${today}" onchange="loadObservation('${ath.id}',this.value)"
             style="width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;outline:none;">
         </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Discipline</label>
+          <select id="obs-discipline" onchange="loadObservation('${ath.id}',document.getElementById('obs-date').value)"
+            style="width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;font-family:'Barlow',sans-serif;outline:none;">
+            <option value="">Général (toutes disciplines)</option>
+            ${discOptions}
+          </select>
+        </div>
         <div class="form-group" style="margin-bottom:10px">
           <label>Observations</label>
-          <textarea id="obs-texte" class="obs-textarea" rows="6"
+          <textarea id="obs-texte" class="obs-textarea" rows="5"
             placeholder="Points à travailler, ce qui s'est bien passé, axes d'amélioration…"></textarea>
         </div>
         <button class="btn" onclick="saveObservation()">Enregistrer</button>
@@ -2742,8 +2758,9 @@ async function loadObservation(athleteId,date){
   if(!texteEl)return;
   try{
     const coachDbId=users[currentUser.key]?.id;
+    const disc=document.getElementById('obs-discipline')?.value||'';
     const {data}=await sb.from('coach_observations')
-      .select('texte').eq('athlete_id',athleteId).eq('coach_id',coachDbId).eq('date',date).maybeSingle();
+      .select('texte').eq('athlete_id',athleteId).eq('coach_id',coachDbId).eq('date',date).eq('discipline',disc).maybeSingle();
     texteEl.value=data?.texte||'';
   }catch(e){}
 }
@@ -2752,11 +2769,12 @@ async function saveObservation(){
   const athleteId=currentAthlete;
   const coachDbId=users[currentUser.key]?.id;
   const date=document.getElementById('obs-date')?.value;
+  const disc=document.getElementById('obs-discipline')?.value||'';
   const texte=document.getElementById('obs-texte')?.value.trim();
   if(!date||!texte){showMessage('Champ manquant','La date et les notes sont requises.','danger');return;}
   const {error}=await sb.from('coach_observations').upsert(
-    {athlete_id:athleteId,coach_id:coachDbId,date,texte,updated_at:new Date().toISOString()},
-    {onConflict:'athlete_id,coach_id,date'}
+    {athlete_id:athleteId,coach_id:coachDbId,date,discipline:disc,texte,updated_at:new Date().toISOString()},
+    {onConflict:'athlete_id,coach_id,date,discipline'}
   );
   if(error){showMessage('Erreur','Impossible d\'enregistrer.','danger');return;}
   const msg=document.getElementById('obs-msg');
@@ -2768,15 +2786,32 @@ async function loadAthleteObservations(athleteId){
   if(!el)return;
   try{
     const {data}=await sb.from('coach_observations')
-      .select('date,texte').eq('athlete_id',athleteId)
-      .order('date',{ascending:false}).limit(10);
+      .select('date,discipline,texte').eq('athlete_id',athleteId)
+      .order('date',{ascending:false}).limit(20);
     if(!data||!data.length){el.innerHTML='<div class="empty-state" style="padding:16px">Aucune observation pour le moment</div>';return;}
+    el.innerHTML=data.map(o=>`
+      <div class="obs-entry">
+        <div class="obs-entry-date">${new Date(o.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}${o.discipline?` <span style="background:rgba(224,96,0,.12);color:var(--yellow);font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;margin-left:6px;text-transform:uppercase">${o.discipline}</span>`:''}</div>
+        <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
+      </div>`).join('');
+  }catch(e){el.innerHTML='<div class="empty-state" style="padding:16px">Fonctionnalité non disponible</div>';}
+}
+
+async function loadDiscObservations(disc,athleteId){
+  const k=discKey(disc);
+  const el=document.getElementById('disc-obs-list-'+k);
+  if(!el)return;
+  try{
+    const {data}=await sb.from('coach_observations')
+      .select('date,texte').eq('athlete_id',athleteId).eq('discipline',disc)
+      .order('date',{ascending:false}).limit(5);
+    if(!data||!data.length){el.innerHTML='<div style="font-size:11px;color:#bbb;padding:8px 0;font-weight:600">Aucune note pour cette discipline</div>';return;}
     el.innerHTML=data.map(o=>`
       <div class="obs-entry">
         <div class="obs-entry-date">${new Date(o.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</div>
         <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
       </div>`).join('');
-  }catch(e){el.innerHTML='<div class="empty-state" style="padding:16px">Fonctionnalité non disponible</div>';}
+  }catch(e){el.innerHTML='';}
 }
 
 // ─── NOUVEAU COACH depuis écran login ──────────────────────────────────────
