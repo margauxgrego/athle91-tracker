@@ -1883,7 +1883,7 @@ function buildObsTab(){
     const discOptions=ath.disciplines.map(d=>`<option value="${d}">${d}</option>`).join('');
     el.innerHTML=`
       <div class="card">
-        <div class="card-title">Observation</div>
+        <div class="card-title">Observation de la séance du jour</div>
         <div class="form-group" style="margin-bottom:8px">
           <label>Date</label>
           <input type="date" id="obs-date" value="${today}" onchange="loadObservation('${ath.id}',this.value)"
@@ -1910,7 +1910,10 @@ function buildObsTab(){
           <textarea id="obs-texte" class="obs-textarea" rows="5"
             placeholder="Points à travailler, ce qui s'est bien passé, axes d'amélioration…"></textarea>
         </div>
-        <button class="btn" onclick="saveObservation()">Enregistrer</button>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn" onclick="saveObservation()" style="flex:1">Enregistrer</button>
+          <button onclick="deleteObservation()" style="background:#c0392b;color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;white-space:nowrap">Supprimer</button>
+        </div>
         <div id="obs-msg" style="display:none;font-size:11px;font-weight:700;margin-top:8px"></div>
       </div>`;
     loadObservation(ath.id,today);
@@ -2790,6 +2793,23 @@ async function saveObservation(){
   if(error){showMessage('Erreur','Impossible d\'enregistrer.','danger');return;}
   const msg=document.getElementById('obs-msg');
   if(msg){msg.textContent='Enregistré ✓';msg.style.color='var(--yellow)';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
+}
+
+async function deleteObservation(){
+  const athleteId=currentAthlete;
+  const coachDbId=users[currentUser.key]?.id;
+  const date=document.getElementById('obs-date')?.value;
+  const disc=document.getElementById('obs-discipline')?.value||'';
+  if(!date){showMessage('Champ manquant','Sélectionne d\'abord une date.','danger');return;}
+  showConfirm('Supprimer cette observation','Cette action est irréversible.',async()=>{
+    const {error}=await sb.from('coach_observations')
+      .delete().eq('athlete_id',athleteId).eq('coach_id',coachDbId).eq('date',date).eq('discipline',disc);
+    if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
+    document.getElementById('obs-texte').value='';
+    const typeEl=document.getElementById('obs-type');if(typeEl)typeEl.value='entrainement';
+    const msg=document.getElementById('obs-msg');
+    if(msg){msg.textContent='Supprimée ✓';msg.style.color='#c0392b';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
+  });
 }
 
 async function loadAthleteObservations(athleteId){
