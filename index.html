@@ -2806,6 +2806,13 @@ async function saveObservation(){
   if(res.error){showMessage('Erreur','Impossible d\'enregistrer.','danger');return;}
   const msg=document.getElementById('obs-msg');
   if(msg){msg.textContent='Enregistré ✓';msg.style.color='var(--yellow)';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
+  // Remettre le formulaire vierge après enregistrement
+  const today=new Date().toISOString().slice(0,10);
+  const dateEl=document.getElementById('obs-date');if(dateEl)dateEl.value=today;
+  const discEl=document.getElementById('obs-discipline');if(discEl)discEl.value='';
+  const typeEl2=document.getElementById('obs-type');if(typeEl2)typeEl2.value='entrainement';
+  const texteEl2=document.getElementById('obs-texte');if(texteEl2)texteEl2.value='';
+  const title=document.getElementById('obs-form-title');if(title)title.textContent='Nouvelle observation';
   loadCoachObservations(athleteId);
   if(disc)loadDiscObservations(disc,athleteId);
 }
