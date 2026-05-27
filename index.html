@@ -3160,13 +3160,20 @@ document.addEventListener('visibilitychange', () => {
 checkAppVersion();
 
 // Fix iOS : barre de nav fixe même quand le clavier virtuel est ouvert
+// setProperty('bottom',...,'important') nécessaire car la CSS a bottom:0!important
 if(window.visualViewport){
-  window.visualViewport.addEventListener('resize',()=>{
+  const _syncNavBottom=()=>{
     const tabs=document.getElementById('main-tabs');
     if(!tabs)return;
     const kbOffset=Math.max(0,window.innerHeight-window.visualViewport.offsetTop-window.visualViewport.height);
-    tabs.style.bottom=kbOffset+'px';
-  });
+    if(kbOffset>10){
+      tabs.style.setProperty('bottom',kbOffset+'px','important');
+    }else{
+      tabs.style.removeProperty('bottom');
+    }
+  };
+  window.visualViewport.addEventListener('resize',_syncNavBottom);
+  window.visualViewport.addEventListener('scroll',_syncNavBottom);
 }
 
 if('serviceWorker' in navigator){
