@@ -925,6 +925,17 @@ tr:hover td{background:#fafafa;}
     <div class="login-step show" id="step1">
       <p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:4px">Sélectionner le coach</p>
       <div id="coach-list"></div>
+      <!-- Création nouveau coach avec code admin -->
+      <div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
+        <button class="btn-cancel" style="width:100%;font-size:11px;font-weight:700;letter-spacing:.5px" onclick="toggleNewCoachGate()">+ Nouveau coach</button>
+        <div id="new-coach-gate" style="display:none;margin-top:10px">
+          <input type="number" id="coach-gate-code" placeholder="Code" maxlength="4"
+            style="width:100%;padding:12px;border:1.5px solid #ddd;border-radius:8px;font-size:22px;text-align:center;letter-spacing:10px;outline:none;margin-bottom:6px"
+            onkeydown="if(event.key==='Enter')checkCoachCode()">
+          <p id="coach-gate-err" style="display:none;color:var(--red);font-size:11px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
+          <button class="btn" style="width:100%" onclick="checkCoachCode()">Valider</button>
+        </div>
+      </div>
     </div>
     <!-- Étape 2 : compte coach + liste athlètes -->
     <div class="login-step" id="step2">
@@ -1471,8 +1482,7 @@ function buildSwitcher(){
       `<button class="ath-btn ${a.id===currentAthlete?'active':''}" onclick="switchAthlete('${a.id}')">${a.prenom} ${a.nom}</button>`
     ).join('')+
     `<button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>
-     <button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>
-     <button class="ath-btn coach-add" onclick="openModal('modal-new-coach')">+ Coach</button>`;
+     <button class="ath-btn coach-add" onclick="openModal('modal-new-athlete')">+ Athlète</button>`;
   }else{
     sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
   }
@@ -2330,6 +2340,28 @@ function buildDiscCheckboxes(){
     <div class="disc-pill"><label><input type="checkbox" value="${d}"><span> ${d}</span></label></div>`).join('');
 }
 
+// ─── NOUVEAU COACH depuis écran login ──────────────────────────────────────
+function toggleNewCoachGate(){
+  const gate=document.getElementById('new-coach-gate');
+  const open=gate.style.display==='none'||gate.style.display==='';
+  gate.style.display=open?'block':'none';
+  document.getElementById('coach-gate-err').style.display='none';
+  document.getElementById('coach-gate-code').value='';
+  if(open)setTimeout(()=>document.getElementById('coach-gate-code').focus(),100);
+}
+
+function checkCoachCode(){
+  const code=document.getElementById('coach-gate-code').value.trim();
+  if(code==='2026'){
+    toggleNewCoachGate();
+    openModal('modal-new-coach');
+  }else{
+    document.getElementById('coach-gate-err').style.display='block';
+    document.getElementById('coach-gate-code').value='';
+    setTimeout(()=>document.getElementById('coach-gate-code').focus(),50);
+  }
+}
+
 async function createCoach(){
   const prenom=document.getElementById('nc-prenom').value.trim();
   const nom=document.getElementById('nc-nom').value.trim();
@@ -2340,6 +2372,7 @@ async function createCoach(){
   if(error){showMessage('Erreur','Impossible d\'ajouter le coach.','danger');return;}
   users[newCoach.id]={id:newCoach.id,name:`${prenom} ${nom}`,password_hash,dbId:newCoach.id};
   closeModal('modal-new-coach');
+  renderCoachLogin(); // met à jour la liste immédiatement
   ['nc-prenom','nc-nom','nc-pw'].forEach(i=>document.getElementById(i).value='');
   showMessage('Coach ajouté','Il apparaîtra sur l\'écran de connexion.');
 }
