@@ -82,6 +82,10 @@ header{padding:22px 0 24px;border-bottom:1px solid #e0e0e0;margin-bottom:22px;bo
 
 /* ── GRID ─────────────────────────────── */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.disc-layout{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"chart add" "hist hist";gap:16px;margin-bottom:16px;}
+.disc-card-chart{grid-area:chart;}
+.disc-card-add{grid-area:add;}
+.disc-card-hist{grid-area:hist;}
 .card{background:#fff;border:1px solid #e8e8e8;border-top:3px solid var(--yellow);border-radius:10px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .card-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:14px;}
 .chart-wrap{position:relative;height:260px;}
@@ -207,6 +211,7 @@ tr:hover td{background:#fafafa;}
   .chart-wrap{height:320px;}
   .stat .n{font-size:36px;}
   .grid-2{gap:24px;}
+  .disc-layout{gap:24px;}
   .stat-row{grid-template-columns:repeat(4,1fr);gap:12px;}
   .records-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
   header{padding:28px 0 30px;padding-left:28px;margin-bottom:28px;}
@@ -292,6 +297,10 @@ tr:hover td{background:#fafafa;}
 
   /* ── Grid → 1 colonne ── */
   .grid-2{grid-template-columns:1fr;gap:8px;margin-bottom:8px;}
+  .disc-layout{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+  .disc-card-chart{order:1;}
+  .disc-card-hist{order:2;}
+  .disc-card-add{order:3;}
 
   /* ── Cards ── */
   .card{padding:12px;margin-bottom:8px;border-radius:8px;}
@@ -1609,8 +1618,8 @@ function buildDiscTab(disc){
       <div class="legend-item"><div class="legend-dot" style="background:#f5c400"></div>Compétition</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Entraînement</div>
     </div>
-    <div class="grid-2">
-      <div class="card">
+    <div class="disc-layout">
+      <div class="card disc-card-chart">
         <div class="chart-header">
           <div class="card-title" style="margin:0">Progression</div>
           <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
@@ -1624,7 +1633,7 @@ function buildDiscTab(disc){
         </div>
         <div class="chart-wrap"><canvas id="chart-${k}"></canvas></div>
       </div>
-      <div class="card">
+      <div class="card disc-card-add">
         <div class="card-title">Ajouter</div>
         <div class="form-col">
           <div class="form-row-2">
@@ -1642,16 +1651,16 @@ function buildDiscTab(disc){
           <button class="btn" onclick="addPerf('${k}','${disc}')">+ Ajouter</button>
         </div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-title" style="cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between" onclick="toggleHist('${k}')">
-        <span>Historique</span>
-        <span id="hist-chevron-${k}" style="font-size:11px;color:#bbb;display:inline-block;transition:transform .25s">▼</span>
-      </div>
-      <div id="hist-body-${k}" style="display:none;margin-top:12px">
-        <div class="table-wrap">
-          <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th></tr></thead>
-          <tbody id="table-${k}"></tbody></table>
+      <div class="card disc-card-hist">
+        <div class="card-title" style="cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between" onclick="toggleHist('${k}')">
+          <span>Historique</span>
+          <span id="hist-chevron-${k}" style="font-size:11px;color:#bbb;display:inline-block;transition:transform .25s">▼</span>
+        </div>
+        <div id="hist-body-${k}" style="display:none;margin-top:12px">
+          <div class="table-wrap">
+            <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th></tr></thead>
+            <tbody id="table-${k}"></tbody></table>
+          </div>
         </div>
       </div>
     </div>`;
