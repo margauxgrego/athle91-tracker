@@ -371,11 +371,11 @@ tr:hover td{background:#fafafa;}
   .rec-history th,.rec-history td{font-size:10px;padding:5px 6px;}
 
   /* ── Modal ── */
-  .modal-overlay{padding:12px;align-items:flex-end;}
+  .modal-overlay{padding:12px;padding-bottom:calc(80px + env(safe-area-inset-bottom));align-items:flex-end;}
   .modal{
     padding:20px 16px;
     border-radius:16px 16px 12px 12px;
-    max-height:88vh;
+    max-height:calc(88vh - 80px);
     overflow-y:auto;
   }
   .modal h3{font-size:22px;}
