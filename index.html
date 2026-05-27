@@ -1889,10 +1889,7 @@ function buildObsTab(){
     const discOptions=ath.disciplines.map(d=>`<option value="${d}">${d}</option>`).join('');
     el.innerHTML=`
       <div class="card">
-        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <span id="obs-form-title">Observation de la séance du jour</span>
-          <button onclick="newObservation()" style="background:var(--yellow);color:#000;border:none;border-radius:5px;padding:4px 10px;font-size:10px;font-weight:800;font-family:'Barlow',sans-serif;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap">+ Nouvelle</button>
-        </div>
+        <div class="card-title"><span id="obs-form-title">Nouvelle observation</span></div>
         <div class="form-group" style="margin-bottom:8px">
           <label>Date</label>
           <input type="date" id="obs-date" value="${today}"
@@ -1929,7 +1926,6 @@ function buildObsTab(){
         <div class="card-title">Historique</div>
         <div id="coach-obs-list"><div style="font-size:11px;color:#bbb;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div></div>
       </div>`;
-    loadObservation(ath.id,today);
     loadCoachObservations(ath.id);
   }else{
     el.innerHTML=`
