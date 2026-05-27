@@ -1679,16 +1679,18 @@ function buildTabs(){
   if(!currentAthlete||!athletes[currentAthlete]){showNoAthleteScreen();return;}
   const ath=athletes[currentAthlete];
   const hasHaies=!!ath.has_haies;
-  const tabList=ath.disciplines.map(d=>discKey(d)).concat(hasHaies?['haies_franchies','records','parametres']:['records','parametres']);
   const isCoachView=currentUser.type==='coach';
   const paramLabel=isCoachView?"Paramètres de l'athlète":'Paramètres';
-  const tabLabels=ath.disciplines.concat(hasHaies?['Haies Franchies','Records',paramLabel]:['Records',paramLabel]);
+  const obsLabel=isCoachView?'Séance':'Observations';
+  const tabList=['observations'].concat(ath.disciplines.map(d=>discKey(d))).concat(hasHaies?['haies_franchies','records','parametres']:['records','parametres']);
+  const tabLabels=[obsLabel].concat(ath.disciplines).concat(hasHaies?['Haies Franchies','Records',paramLabel]:['Records',paramLabel]);
   document.getElementById('main-tabs').innerHTML=
     tabLabels.map((l,i)=>`<button class="tab ${i===0?'active':''}" onclick="switchTab('${tabList[i]}')">${l}</button>`).join('')+
     `<button class="tab" onclick="openAddDisc()" style="color:var(--yellow)">+ Discipline</button>`+
     `<button class="tab" onclick="openAddOptions()" style="color:var(--yellow)">+ Options</button>`;
   document.getElementById('tab-contents').innerHTML=
     tabList.map((t,i)=>`<div class="tab-content ${i===0?'active':''}" id="tab-${t}"></div>`).join('');
+  buildObsTab();
   ath.disciplines.forEach(d=>buildDiscTab(d));
   if(hasHaies)buildHFTab();
   buildRecordsTab();
@@ -1864,6 +1866,42 @@ function buildRecordsTab(){
     </div>`;
 }
 
+function buildObsTab(){
+  const el=document.getElementById('tab-observations');
+  if(!el)return;
+  const ath=athletes[currentAthlete];
+  const isCoach=currentUser.type==='coach';
+  const today=new Date().toISOString().slice(0,10);
+  if(isCoach){
+    el.innerHTML=`
+      <div class="card">
+        <div class="card-title">Séance du jour</div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Date</label>
+          <input type="date" id="obs-date" value="${today}" onchange="loadObservation('${ath.id}',this.value)"
+            style="width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;outline:none;">
+        </div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label>Observations</label>
+          <textarea id="obs-texte" class="obs-textarea" rows="6"
+            placeholder="Points à travailler, ce qui s'est bien passé, axes d'amélioration…"></textarea>
+        </div>
+        <button class="btn" onclick="saveObservation()">Enregistrer</button>
+        <div id="obs-msg" style="display:none;font-size:11px;font-weight:700;margin-top:8px"></div>
+      </div>`;
+    loadObservation(ath.id,today);
+  }else{
+    el.innerHTML=`
+      <div class="card">
+        <div class="card-title">Observations du coach</div>
+        <div id="athlete-obs-list">
+          <div style="font-size:11px;color:#bbb;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div>
+        </div>
+      </div>`;
+    loadAthleteObservations(ath.id);
+  }
+}
+
 function buildParamTab(){
   const el=document.getElementById('tab-parametres');
   if(!el)return;
@@ -1915,31 +1953,11 @@ function buildParamTab(){
       </div>
     </div>
     ${isCoach?`
-    <div class="card">
-      <div class="card-title">Observations — Séance du jour</div>
-      <div class="form-group" style="margin-bottom:8px">
-        <label>Date de séance</label>
-        <input type="date" id="obs-date" value="${new Date().toISOString().slice(0,10)}" onchange="loadObservation('${ath.id}',this.value)" style="width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;outline:none;">
-      </div>
-      <div class="form-group" style="margin-bottom:10px">
-        <label>Notes</label>
-        <textarea id="obs-texte" class="obs-textarea" rows="4" placeholder="Points à travailler, observations de la séance…"></textarea>
-      </div>
-      <button class="btn" onclick="saveObservation()">Enregistrer</button>
-      <div id="obs-msg" style="display:none;font-size:11px;font-weight:700;margin-top:8px"></div>
-    </div>
     <div class="card danger-zone">
       <div class="card-title" style="color:var(--red)">Zone dangereuse</div>
       <p>Supprimer définitivement le compte de ${ath.prenom} ${ath.nom}.</p>
       <button class="btn-danger" onclick="deleteAthlete('${ath.id}')">Supprimer ce compte</button>
-    </div>`:`
-    <div class="card">
-      <div class="card-title">Observations du coach</div>
-      <div id="athlete-obs-list"><div style="font-size:11px;color:#bbb;text-align:center;padding:16px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div></div>
-    </div>`}`;
-  const today=new Date().toISOString().slice(0,10);
-  if(isCoach)loadObservation(ath.id,today);
-  else loadAthleteObservations(ath.id);
+    </div>`:''}`;
 }
 
 function openAddOptions(){
