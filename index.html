@@ -125,6 +125,9 @@ tr:hover td{background:#fafafa;}
 .btn:active{transform:scale(.98);}
 .btn-ghost{background:none;color:var(--red);border:1px solid rgba(239,68,68,.35);padding:4px 8px;font-size:11px;border-radius:4px;cursor:pointer;font-weight:700;}
 .btn-ghost:hover{background:rgba(239,68,68,.1);}
+.perf-row{cursor:pointer;transition:background .15s;}
+.perf-row:hover{background:rgba(245,196,0,.07);}
+.perf-row:active{background:rgba(245,196,0,.18);}
 .btn-cancel{background:none;color:#888;border:1px solid #ddd;border-radius:6px;padding:9px 18px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
 .btn-danger{background:var(--red);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
 
@@ -1086,6 +1089,34 @@ tr:hover td{background:#fafafa;}
   </div>
 </div>
 
+<!-- MODAL MODIFIER / SUPPRIMER UNE PERF -->
+<div class="modal-overlay" id="modal-edit-perf">
+  <div class="modal">
+    <h3 style="margin-bottom:16px">Performance</h3>
+    <div class="form-col">
+      <div class="form-row-2">
+        <div class="form-group"><label>Date</label><input type="date" id="ep-date"></div>
+        <div class="form-group"><label id="ep-val-label">Perf.</label><input type="number" id="ep-val" step="0.01"></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group"><label>Type</label>
+          <select id="ep-type">
+            <option value="compet">Compétition</option>
+            <option value="entrainement">Entraînement</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Lieu</label><input type="text" id="ep-lieu" placeholder="Lieu..."></div>
+      </div>
+      <div class="form-group"><label>Niveau</label><input type="text" id="ep-niveau" placeholder="R5, D2..."></div>
+    </div>
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="btn-danger" style="width:auto" onclick="confirmDeletePerf()">Supprimer</button>
+      <button class="btn-cancel" onclick="closeModal('modal-edit-perf')">Annuler</button>
+      <button class="btn" style="width:auto" onclick="saveEditPerf()">Modifier</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL MESSAGE / CONFIRMATION -->
 <div class="modal-overlay" id="modal-confirm">
   <div class="modal confirm-modal">
@@ -1619,7 +1650,7 @@ function buildDiscTab(disc){
       </div>
       <div id="hist-body-${k}" style="display:none;margin-top:12px">
         <div class="table-wrap">
-          <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th><th></th></tr></thead>
+          <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th></tr></thead>
           <tbody id="table-${k}"></tbody></table>
         </div>
       </div>
@@ -1981,13 +2012,12 @@ function renderPerf(k,disc){
   if(tbody)tbody.innerHTML=sorted.map(d=>{
     const isRP=d.val===pr;
     const lvl=d.niveau?`<span class="badge badge-${d.niveau.toLowerCase()}">${d.niveau}</span>`:'—';
-    return`<tr>
+    return`<tr class="perf-row" onclick="openEditPerf('${dk}','${k}','${disc}','${d.id}')">
       <td data-label="Date">${formatDate(d.date)}</td>
       <td data-label="Perf."><span class="perf-val">${fmtPr(d.val)}</span>${isRP?'<span class="rp-badge">RP</span>':''}</td>
       <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
       <td data-label="Niveau">${lvl}</td>
       <td data-label="Lieu" style="color:#888;font-size:12px">${d.lieu||'—'}</td>
-      <td data-label="Action"><button class="btn-ghost del-perf-btn" data-dk="${dk}" data-k="${k}" data-disc="${disc}" data-id="${d.id}">✕</button></td>
     </tr>`;
   }).join('');
   buildChart(k);
@@ -2139,6 +2169,49 @@ async function addHF(){
   broadcastChange();
 }
 
+// ─── ÉDITION PERF ────────────────────────────────────────────────────────
+let _editPerf=null;
+
+function openEditPerf(dk,k,disc,id){
+  const ath=athletes[currentAthlete];
+  const d=(ath[dk]||[]).find(p=>String(p.id)===String(id));
+  if(!d)return;
+  _editPerf={dk,k,disc,id:d.id};
+  document.getElementById('ep-date').value=d.date;
+  document.getElementById('ep-val').value=d.val;
+  document.getElementById('ep-type').value=d.type;
+  document.getElementById('ep-lieu').value=d.lieu||'';
+  document.getElementById('ep-niveau').value=d.niveau||'';
+  const step=isTimeDisc(disc)?'0.01':'1';
+  document.getElementById('ep-val').step=step;
+  const lbl=isDistDisc(disc)?disc+' (cm)':isTimeDisc(disc)?'Temps (s)':disc+' (cm)';
+  document.getElementById('ep-val-label').textContent=lbl;
+  openModal('modal-edit-perf');
+}
+
+async function saveEditPerf(){
+  const {dk,k,disc,id}=_editPerf;
+  const date=document.getElementById('ep-date').value;
+  const val=parseFloat(document.getElementById('ep-val').value);
+  const type=document.getElementById('ep-type').value;
+  const lieu=document.getElementById('ep-lieu').value.trim();
+  const niveau=document.getElementById('ep-niveau').value.trim();
+  if(!date||isNaN(val))return;
+  const {error}=await sb.from('performances').update({date,val,type,lieu,niveau}).eq('id',id);
+  if(error){showMessage('Erreur','Impossible de modifier.','danger');return;}
+  const perf=(athletes[currentAthlete][dk]||[]).find(p=>String(p.id)===String(id));
+  if(perf)Object.assign(perf,{date,val,type,lieu,niveau});
+  closeModal('modal-edit-perf');
+  renderPerf(k,disc);
+  broadcastChange();
+}
+
+function confirmDeletePerf(){
+  const {dk,k,disc,id}=_editPerf;
+  closeModal('modal-edit-perf');
+  delPerf(dk,k,disc,id);
+}
+
 async function delPerf(dk,k,disc,id){
   showConfirm('Supprimer cette performance','Es-tu sûre de vouloir supprimer cette performance ? Cette action est définitive.',async()=>{
     const {error}=await sb.from('performances').delete().eq('id',id);
@@ -2150,8 +2223,6 @@ async function delPerf(dk,k,disc,id){
 }
 
 document.addEventListener('click',e=>{
-  const bp=e.target.closest('.del-perf-btn');
-  if(bp){const {dk,k,disc,id}=bp.dataset;delPerf(dk,k,disc,id);return;}
   const bh=e.target.closest('.del-hf-btn');
   if(bh){delHF(bh.dataset.id);return;}
 });
