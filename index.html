@@ -22,7 +22,8 @@
   --text:#111;--muted:#888;--accent:#e06000;--accent2:#f5a623;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overscroll-behavior-y:none;}
+html{overscroll-behavior-y:none;}
 
 /* ── LOGIN ─────────────────────────────── */
 #login-screen{position:fixed;inset:0;background:#ececec;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
@@ -922,13 +923,13 @@ tr:hover td{background:#fafafa;}
     <p class="login-subtitle">Viry-Châtillon · Tracker</p>
     <!-- Étape 1 : choix du coach -->
     <div class="login-step show" id="step1">
-      <p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:4px">Sélectionner le coach</p>
+      <p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:4px">Sélectionner le coach</p>
       <div id="coach-list"></div>
     </div>
     <!-- Étape 2 : compte coach + liste athlètes -->
     <div class="login-step" id="step2">
       <button class="login-back" onclick="backStep(1)">← Retour</button>
-      <p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:4px">Profil</p>
+      <p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:4px">Profil</p>
       <div id="athlete-list"></div>
     </div>
     <!-- Étape 3 : mot de passe -->
