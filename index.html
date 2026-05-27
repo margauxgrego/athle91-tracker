@@ -1068,6 +1068,24 @@ tr:hover td{background:#fafafa;}
   </div>
 </div>
 
+<!-- MODAL PREMIER LOGIN ATHLÈTE -->
+<div class="modal-overlay" id="modal-first-login">
+  <div class="modal">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:36px;margin-bottom:10px">👋</div>
+      <h3 style="margin-bottom:8px">Bienvenue !</h3>
+      <p style="font-size:13px;color:#888;line-height:1.5">Ton compte a été créé par ton coach.<br>Pour sécuriser ton profil, choisis ton propre mot de passe.</p>
+    </div>
+    <div class="form-group" style="margin-bottom:10px"><label>Nouveau mot de passe</label><input type="password" id="fl-pw1" placeholder="••••••"></div>
+    <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><input type="password" id="fl-pw2" placeholder="••••••"></div>
+    <p id="fl-err" style="display:none;color:var(--red);font-size:11px;font-weight:700;margin-bottom:8px;text-align:center"></p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="skipFirstLogin()">Plus tard</button>
+      <button class="btn" style="width:auto" onclick="saveFirstLoginPw()">Valider</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL MESSAGE / CONFIRMATION -->
 <div class="modal-overlay" id="modal-confirm">
   <div class="modal confirm-modal">
@@ -1158,7 +1176,7 @@ async function loadAllData(){
       .map(d=>d.discipline);
     athletes[a.id]={
       id:a.id,dbId:a.id,coachId:a.coach_id,
-      prenom:a.prenom,nom:a.nom.toUpperCase(),annee:a.annee,cat:a.cat,
+      prenom:a.prenom,nom:a.nom.toUpperCase(),annee:a.annee,cat:a.cat,first_login:a.first_login??false,
       password_hash:a.password_hash,
       sort_order:a.sort_order??99,
       disciplines:discs,
@@ -1305,7 +1323,12 @@ async function doLogin(){
     const first=athletesForCoach(currentUser.key)[0];
     currentAthlete=first?first.id:null;
   }
+  const isFirstLogin=currentUser.type==='athlete'&&athletes[loginTarget]?.first_login===true;
   buildApp();
+  if(isFirstLogin){
+    // Délai court pour laisser l'interface s'afficher avant le modal
+    setTimeout(()=>openModal('modal-first-login'),600);
+  }
 }
 
 function logout(){
@@ -2392,6 +2415,29 @@ function formatVal(disc,v){
   if(isDistDisc(disc))return cmToM(v);
   if(isTimeDisc(disc))return formatTime(v);
   return v+' cm';
+}
+
+// ─── PREMIER LOGIN ATHLÈTE ────────────────────────────────────────────────
+function skipFirstLogin(){
+  closeModal('modal-first-login');
+  // first_login reste true en DB → le prompt réapparaîtra à la prochaine connexion
+}
+
+async function saveFirstLoginPw(){
+  const pw1=document.getElementById('fl-pw1').value;
+  const pw2=document.getElementById('fl-pw2').value;
+  const errEl=document.getElementById('fl-err');
+  errEl.style.display='none';
+  if(!pw1){errEl.textContent='Saisis un mot de passe.';errEl.style.display='block';return;}
+  if(pw1.length<4){errEl.textContent='Minimum 4 caractères.';errEl.style.display='block';return;}
+  if(pw1!==pw2){errEl.textContent='Les mots de passe ne correspondent pas.';errEl.style.display='block';return;}
+  const hash=await hashPassword(pw1);
+  const {error}=await sb.from('athletes').update({password_hash:hash,first_login:false}).eq('id',currentAthlete);
+  if(error){errEl.textContent='Erreur, réessaie.';errEl.style.display='block';return;}
+  athletes[currentAthlete].password_hash=hash;
+  athletes[currentAthlete].first_login=false;
+  closeModal('modal-first-login');
+  showMessage('Mot de passe enregistré','Ton mot de passe personnel est actif. 🎉');
 }
 
 // ─── CHARGEMENT DONNÉES (overlay clignotant) ────────────────────────────
