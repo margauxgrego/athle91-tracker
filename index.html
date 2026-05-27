@@ -2447,7 +2447,22 @@ window.addEventListener('orientationchange',()=>setTimeout(()=>Object.values(cha
 </script>
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'));
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      // Vérifier si une nouvelle version est disponible toutes les 60s
+      setInterval(() => reg.update(), 60000);
+      // Vérifier aussi dès que l'app revient au premier plan
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') reg.update();
+      });
+    });
+    // Quand le nouveau SW s'active, tous les onglets rechargent automatiquement
+    navigator.serviceWorker.addEventListener('message', event => {
+      if (event.data && event.data.type === 'SW_UPDATED') {
+        window.location.reload();
+      }
+    });
+  });
 }
 </script>
 </body>

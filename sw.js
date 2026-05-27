@@ -1,4 +1,4 @@
-const CACHE = 'athle91-v13';
+const CACHE = 'athle91-v14';
 const ASSETS = ['/', '/index.html', '/icon-192.png', '/manifest.json'];
 
 self.addEventListener('install', e => {
@@ -8,9 +8,13 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(() => {
+        // Notifier tous les onglets ouverts : nouvelle version détectée → rechargement
+        return self.clients.matchAll({ includeUncontrolled: true, type: 'window' })
+          .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', version: CACHE })));
+      })
   );
   self.clients.claim();
 });
