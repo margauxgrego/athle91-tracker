@@ -2448,21 +2448,34 @@ window.openModal=function(id){
 window.addEventListener('orientationchange',()=>setTimeout(()=>Object.values(charts).forEach(c=>{if(c)c.resize();}),300));
 </script>
 <script>
+// ── Mise à jour automatique ────────────────────────────────────────────────
+// Lit sw.js directement depuis le réseau (no-store) pour détecter tout changement
+// de version, même sur un onglet ouvert avec une ancienne version de la page.
+let _swVer = null;
+async function checkAppVersion() {
+  try {
+    const r = await fetch('/sw.js', { cache: 'no-store' });
+    const txt = await r.text();
+    const m = txt.match(/const CACHE = '([^']+)'/);
+    if (!m) return;
+    const v = m[1];
+    if (!_swVer) { _swVer = v; return; }   // 1re lecture : on mémorise
+    if (_swVer !== v) location.reload();    // version différente → rechargement
+  } catch(e) {}
+}
+// Vérifier toutes les 30s et dès que l'app revient au premier plan
+setInterval(checkAppVersion, 30000);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') checkAppVersion();
+});
+checkAppVersion(); // vérification immédiate au chargement
+
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
-      // Vérifier si une nouvelle version est disponible toutes les 60s
-      setInterval(() => reg.update(), 60000);
-      // Vérifier aussi dès que l'app revient au premier plan
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') reg.update();
-      });
-    });
-    // Quand le nouveau SW s'active, tous les onglets rechargent automatiquement
+    navigator.serviceWorker.register('/sw.js');
+    // Bonus : écoute aussi le message SW_UPDATED (redondant mais instantané)
     navigator.serviceWorker.addEventListener('message', event => {
-      if (event.data && event.data.type === 'SW_UPDATED') {
-        window.location.reload();
-      }
+      if (event.data && event.data.type === 'SW_UPDATED') location.reload();
     });
   });
 }
