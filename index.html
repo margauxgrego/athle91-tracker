@@ -22,8 +22,8 @@
   --text:#111;--muted:#888;--accent:#e06000;--accent2:#f5a623;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
+html{background:#ececec;overscroll-behavior-y:none;}
 body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overscroll-behavior-y:none;}
-html{overscroll-behavior-y:none;}
 
 /* ── LOGIN ─────────────────────────────── */
 #login-screen{position:fixed;inset:0;background:#ececec;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
@@ -1033,6 +1033,12 @@ tr:hover td{background:#fafafa;}
 </head>
 <body>
 
+<!-- OVERLAY CHARGEMENT (back button iOS) -->
+<div id="loading-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#ececec;align-items:center;justify-content:center;flex-direction:column;gap:12px">
+  <div class="logo-badge"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div>
+  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement…</div>
+</div>
+
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
@@ -1506,6 +1512,8 @@ function logout(){
   document.getElementById('login-screen').style.display='flex';
   renderCoachLogin();
   showStep(1);
+  const ov=document.getElementById('loading-overlay');
+  if(ov)ov.style.display='none';
 }
 
 // ─── POLLING ──────────────────────────────────────────────────────────────
@@ -2762,7 +2770,11 @@ function togglePw(id){
 history.pushState({athle91:true},'');
 window.addEventListener('popstate',()=>{
   history.pushState({athle91:true},'');
-  if(currentUser)logout();
+  if(currentUser){
+    const ov=document.getElementById('loading-overlay');
+    if(ov){ov.style.display='flex';}
+    logout();
+  }
 });
 
 // ─── NOUVEAU ATHLÈTE depuis écran login ────────────────────────────────────
