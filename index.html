@@ -1146,7 +1146,7 @@ async function loadAllData(){
   const {data:coachesData,error:e1}=await sb.from('coaches').select('*');
   if(e1)throw e1;
   coachesData.forEach(c=>{
-    users[c.id]={id:c.id,name:`${c.prenom} ${c.nom}`,password_hash:c.password_hash,dbId:c.id};
+    users[c.id]={id:c.id,name:`${c.prenom} ${c.nom.toUpperCase()}`,password_hash:c.password_hash,dbId:c.id};
   });
 
   const {data:athData,error:e2}=await sb.from('athletes')
@@ -1158,7 +1158,7 @@ async function loadAllData(){
       .map(d=>d.discipline);
     athletes[a.id]={
       id:a.id,dbId:a.id,coachId:a.coach_id,
-      prenom:a.prenom,nom:a.nom,annee:a.annee,cat:a.cat,
+      prenom:a.prenom,nom:a.nom.toUpperCase(),annee:a.annee,cat:a.cat,
       password_hash:a.password_hash,
       sort_order:a.sort_order??99,
       disciplines:discs,
@@ -2209,7 +2209,7 @@ async function createAthlete(){
   if(e1){showMessage('Erreur','Impossible d\'ajouter l\'athlète.','danger');return;}
   await sb.from('athlete_disciplines').insert(discs.map((d,i)=>({athlete_id:newAth.id,discipline:d,sort_order:i})));
   athletes[newAth.id]={
-    id:newAth.id,dbId:newAth.id,coachId,prenom,nom,annee,cat,password_hash,
+    id:newAth.id,dbId:newAth.id,coachId,prenom,nom:nom.toUpperCase(),annee,cat,password_hash,
     disciplines:discs,sub:`Athlé 91 · ${cat} · née ${annee}`,
     records:[],haiesFranchies:[],haiesTotalSince:null
   };
@@ -2293,7 +2293,7 @@ async function saveCoachProfile(){
   if(pw1)updateData.password_hash=await hashPassword(pw1);
   const {error}=await sb.from('coaches').update(updateData).eq('id',currentUser.key);
   if(error){showMessage('Erreur','Impossible de modifier.','danger');return;}
-  coach.name=`${prenom} ${nom}`;
+  coach.name=`${prenom} ${nom.toUpperCase()}`;
   if(pw1)coach.password_hash=updateData.password_hash;
   closeModal('modal-edit-coach');
   buildSwitcher();
@@ -2370,7 +2370,7 @@ async function createCoach(){
   const password_hash=await hashPassword(pw);
   const {data:newCoach,error}=await sb.from('coaches').insert({prenom,nom,password_hash}).select().single();
   if(error){showMessage('Erreur','Impossible d\'ajouter le coach.','danger');return;}
-  users[newCoach.id]={id:newCoach.id,name:`${prenom} ${nom}`,password_hash,dbId:newCoach.id};
+  users[newCoach.id]={id:newCoach.id,name:`${prenom} ${nom.toUpperCase()}`,password_hash,dbId:newCoach.id};
   closeModal('modal-new-coach');
   renderCoachLogin(); // met à jour la liste immédiatement
   ['nc-prenom','nc-nom','nc-pw'].forEach(i=>document.getElementById(i).value='');
