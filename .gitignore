@@ -1,0 +1,11 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Claude Code (config locale)
+.claude/
+
+# Doublons / fichiers temporaires
+icon-192 - Copie.png
+*.tmp
+*.log
