@@ -1888,15 +1888,18 @@ function buildObsTab(){
     const discOptions=ath.disciplines.map(d=>`<option value="${d}">${d}</option>`).join('');
     el.innerHTML=`
       <div class="card">
-        <div class="card-title">Observation de la séance du jour</div>
+        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <span id="obs-form-title">Observation de la séance du jour</span>
+          <button onclick="newObservation()" style="background:var(--yellow);color:#000;border:none;border-radius:5px;padding:4px 10px;font-size:10px;font-weight:800;font-family:'Barlow',sans-serif;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap">+ Nouvelle</button>
+        </div>
         <div class="form-group" style="margin-bottom:8px">
           <label>Date</label>
-          <input type="date" id="obs-date" value="${today}" onchange="loadObservation('${ath.id}',this.value)"
+          <input type="date" id="obs-date" value="${today}"
             style="width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;outline:none;">
         </div>
         <div class="form-group" style="margin-bottom:8px">
           <label>Discipline</label>
-          <select id="obs-discipline" onchange="loadObservation('${ath.id}',document.getElementById('obs-date').value)"
+          <select id="obs-discipline"
             style="width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;font-family:'Barlow',sans-serif;outline:none;">
             <option value="">Général (toutes disciplines)</option>
             ${discOptions}
@@ -2828,6 +2831,21 @@ async function deleteObservation(){
   });
 }
 
+function newObservation(){
+  const today=new Date().toISOString().slice(0,10);
+  const dateEl=document.getElementById('obs-date');
+  const discEl=document.getElementById('obs-discipline');
+  const typeEl=document.getElementById('obs-type');
+  const texteEl=document.getElementById('obs-texte');
+  if(dateEl)dateEl.value=today;
+  if(discEl)discEl.value='';
+  if(typeEl)typeEl.value='entrainement';
+  if(texteEl){texteEl.value='';setTimeout(()=>texteEl.focus(),100);}
+  const title=document.getElementById('obs-form-title');
+  if(title)title.textContent='Nouvelle observation';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
 function editObservation(i){
   const o=window._coachObsData[i];
   if(!o)return;
@@ -2839,7 +2857,8 @@ function editObservation(i){
   if(discEl)discEl.value=o.discipline||'';
   if(typeEl)typeEl.value=o.type||'entrainement';
   if(texteEl)texteEl.value=o.texte;
-  document.getElementById('tab-observations')?.scrollTo({top:0,behavior:'smooth'});
+  const title=document.getElementById('obs-form-title');
+  if(title)title.textContent='Modifier l\'observation';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
