@@ -1098,6 +1098,17 @@ tr:hover td{background:#fafafa;}
   </div>
 </div>
 
+<!-- MODAL OPTIONS -->
+<div class="modal-overlay" id="modal-add-options">
+  <div class="modal">
+    <h3 style="margin-bottom:16px">Options</h3>
+    <div id="options-list"></div>
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="btn-cancel" onclick="closeModal('modal-add-options')">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL MODIFIER / SUPPRIMER UNE PERF -->
 <div class="modal-overlay" id="modal-edit-perf">
   <div class="modal">
@@ -1567,7 +1578,8 @@ function buildTabs(){
   const tabLabels=ath.disciplines.concat(hasHaies?['Haies Franchies','Records','Paramètres']:['Records','Paramètres']);
   document.getElementById('main-tabs').innerHTML=
     tabLabels.map((l,i)=>`<button class="tab ${i===0?'active':''}" onclick="switchTab('${tabList[i]}')">${l}</button>`).join('')+
-    `<button class="tab" onclick="openAddDisc()" style="color:var(--yellow)">+ Discipline</button>`;
+    `<button class="tab" onclick="openAddDisc()" style="color:var(--yellow)">+ Discipline</button>`+
+    `<button class="tab" onclick="openAddOptions()" style="color:var(--yellow)">+ Options</button>`;
   document.getElementById('tab-contents').innerHTML=
     tabList.map((t,i)=>`<div class="tab-content ${i===0?'active':''}" id="tab-${t}"></div>`).join('');
   ath.disciplines.forEach(d=>buildDiscTab(d));
@@ -1801,6 +1813,34 @@ function buildParamTab(){
       <p>Supprimer définitivement le compte de ${ath.prenom} ${ath.nom}.</p>
       <button class="btn-danger" onclick="deleteAthlete('${ath.id}')">Supprimer ce compte</button>
     </div>`:''}`;
+}
+
+function openAddOptions(){
+  const ath=athletes[currentAthlete];
+  document.getElementById('options-list').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#111">Haies franchies</div>
+        <div style="font-size:11px;color:#999;margin-top:3px">Suivi des haies franchies à l'entraînement</div>
+      </div>
+      <button id="haies-opt-btn" onclick="toggleHaiesModal()" class="${ath.has_haies?'btn':'btn-cancel'}" style="width:auto;flex-shrink:0;margin-left:16px">
+        ${ath.has_haies?'Activé ✓':'Activer'}
+      </button>
+    </div>`;
+  openModal('modal-add-options');
+}
+
+async function toggleHaiesModal(){
+  const ath=athletes[currentAthlete];
+  const newVal=!ath.has_haies;
+  const {error}=await sb.from('athletes').update({has_haies:newVal}).eq('id',ath.id);
+  if(error){alert('Erreur lors de la modification.');return;}
+  ath.has_haies=newVal;
+  buildTabs();renderAll();
+  // Remettre le focus sur le bon onglet après rebuild
+  // Mettre à jour le bouton dans le modal
+  const btn=document.getElementById('haies-opt-btn');
+  if(btn){btn.className=newVal?'btn':'btn-cancel';btn.textContent=newVal?'Activé ✓':'Activer';}
 }
 
 async function toggleHaies(){
