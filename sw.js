@@ -1,4 +1,4 @@
-const CACHE = 'athle91-v19';
+const CACHE = 'athle91-v20';
 const ASSETS = ['/', '/index.html', '/icon-192.png', '/manifest.json'];
 
 self.addEventListener('install', e => {

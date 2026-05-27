@@ -1,7 +1,7 @@
 {
   "id": "athle91-tracker",
   "name": "Athlé 91 — Tracker",
-  "short_name": "Athlé 91 — Tracker",
+  "short_name": "Athlé 91",
   "description": "Suivi des performances athlétisme Athlé 91",
   "start_url": "/",
   "scope": "/",
