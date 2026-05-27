@@ -189,7 +189,7 @@ tr:hover td{background:#fafafa;}
 /* ── LOADING OVERLAY (zone données) ─── */
 #tab-contents{position:relative;}
 @keyframes blink-load{0%,100%{opacity:1}50%{opacity:.1}}
-.tab-load-overlay{position:absolute;inset:0;min-height:120px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.9);z-index:20;font-size:12px;font-weight:800;letter-spacing:3px;color:#555;text-transform:uppercase;animation:blink-load 1s ease-in-out infinite;border-radius:8px;pointer-events:none;}
+.tab-load-overlay{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.97);padding:12px 28px;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.13);z-index:300;font-size:11px;font-weight:800;letter-spacing:3px;color:#555;text-transform:uppercase;animation:blink-load 1s ease-in-out infinite;pointer-events:none;white-space:nowrap;}
 
 /* ── EMPTY STATE ─────────────────── */
 .empty-state{text-align:center;padding:36px;color:#888;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
@@ -1779,6 +1779,9 @@ function filterByPeriod(data,period){
 // ─── CHARTS ──────────────────────────────────────────────────────────────
 const baseOpts={
   responsive:true,maintainAspectRatio:false,animation:false,
+  // Sur mobile : le tooltip reste visible après le tap (pas fermé par touchend/mouseout)
+  events:['mousemove','click','touchstart','touchmove'],
+  interaction:{mode:'nearest',intersect:false,axis:'x'},
   plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',borderColor:'#e0e0e0',borderWidth:1,titleFont:{family:'Barlow',size:11},bodyFont:{family:'Barlow Condensed',size:14},titleColor:'#999',bodyColor:'#111',padding:10}},
   scales:{
     x:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#999',font:{family:'Barlow',size:10}},border:{display:false}},
