@@ -2563,12 +2563,21 @@ window.addEventListener('orientationchange',()=>setTimeout(()=>Object.values(cha
 
 // ── Bloquer le pull-to-refresh Android ────────────────────────────────────
 // overscroll-behavior CSS seul ne suffit pas sur tous les appareils Android.
-// On bloque touchmove quand on glisse vers le bas depuis le haut de la page.
+// On bloque touchmove vers le bas SAUF si le doigt est dans un élément scrollable.
 (function(){
   let startY=0;
+  function hasScrollableParent(el){
+    while(el&&el!==document.body){
+      const s=window.getComputedStyle(el);
+      if(/auto|scroll/.test(s.overflowY)&&el.scrollHeight>el.clientHeight)return true;
+      el=el.parentElement;
+    }
+    return false;
+  }
   document.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;},{passive:true});
   document.addEventListener('touchmove',e=>{
-    if(e.touches[0].clientY>startY&&window.pageYOffset===0)e.preventDefault();
+    if(e.touches[0].clientY>startY&&window.pageYOffset===0&&!hasScrollableParent(e.target))
+      e.preventDefault();
   },{passive:false});
 })();
 </script>
