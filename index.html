@@ -1001,6 +1001,12 @@ tr:hover td{background:#fafafa;}
   #app{
     padding-bottom:calc(80px + env(safe-area-inset-bottom))!important;
   }
+
+  /* ── Hauteur min : toutes les pages ont la même hauteur de contenu
+     (évite que Records/Observations soient trop courts → viewport iOS incohérent) ── */
+  #tab-contents{
+    min-height:calc(100vh - 160px)!important;
+  }
 }
 
 /* ═══ BOTTOM NAV — très petit écran ≤380px ═══════════════ */
