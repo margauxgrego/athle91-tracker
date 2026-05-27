@@ -2808,33 +2808,37 @@ window.addEventListener('orientationchange',()=>setTimeout(()=>Object.values(cha
 </script>
 <script>
 // ── Mise à jour automatique ────────────────────────────────────────────────
-// Lit sw.js directement depuis le réseau (no-store) pour détecter tout changement
-// de version, même sur un onglet ouvert avec une ancienne version de la page.
 let _swVer = null;
+let _swReg = null;
+
 async function checkAppVersion() {
   try {
-    const r = await fetch('/sw.js', { cache: 'no-store' });
+    // ?_ = timestamp : contourne le cache SW ET le cache HTTP à chaque appel
+    const r = await fetch('/sw.js?_=' + Date.now(), { cache: 'no-store' });
     const txt = await r.text();
     const m = txt.match(/const CACHE = '([^']+)'/);
     if (!m) return;
     const v = m[1];
-    if (!_swVer) { _swVer = v; return; }   // 1re lecture : on mémorise
-    if (_swVer !== v) location.reload();    // version différente → rechargement
+    if (!_swVer) { _swVer = v; return; }
+    if (_swVer !== v) { location.reload(); return; }
   } catch(e) {}
+  // Déclenche aussi la mise à jour du SW lui-même
+  if (_swReg) try { await _swReg.update(); } catch(e) {}
 }
-// Vérifier toutes les 30s et dès que l'app revient au premier plan
-setInterval(checkAppVersion, 30000);
+
+// Vérifie toutes les 20s et dès que l'app revient au premier plan
+setInterval(checkAppVersion, 20000);
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') checkAppVersion();
 });
-checkAppVersion(); // vérification immédiate au chargement
+checkAppVersion();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    // updateViaCache:'none' → le navigateur ne met jamais en cache sw.js lui-même
     navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
       .then(reg => {
-        reg.update(); // vérifie immédiatement si une nouvelle version existe
+        _swReg = reg;
+        reg.update();
       });
     navigator.serviceWorker.addEventListener('message', event => {
       if (event.data && event.data.type === 'SW_UPDATED') location.reload();
