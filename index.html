@@ -174,6 +174,22 @@ tr:hover td{background:#fafafa;}
 .disc-pill input:checked+span{color:var(--yellow);}
 .disc-pill label:has(input:checked){background:rgba(224,96,0,.1);border-color:var(--yellow);}
 
+/* ── MODE TABS (modal nouvel athlète) ─── */
+.mode-tab-bar{display:flex;gap:6px;margin-bottom:16px;background:#f2f2f2;border-radius:8px;padding:4px;}
+.mode-tab{flex:1;padding:8px 10px;border:none;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;background:transparent;color:#999;transition:all .15s;}
+.mode-tab.active{background:#fff;color:#111;box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.existing-ath-list{max-height:280px;overflow-y:auto;margin:4px 0 4px;}
+.existing-ath-row{padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:4px;border:2px solid transparent;background:#f8f8f8;transition:all .15s;}
+.existing-ath-row:hover{background:#f0f0f0;}
+.existing-ath-row.selected{border-color:#f5c400;background:rgba(245,196,0,.08);}
+.existing-ath-name{font-size:13px;font-weight:700;color:#111;}
+.existing-ath-sub{font-size:11px;color:#999;margin-top:2px;}
+
+/* ── LOADING OVERLAY (zone données) ─── */
+#tab-contents{position:relative;}
+@keyframes blink-load{0%,100%{opacity:1}50%{opacity:.15}}
+.tab-load-overlay{position:absolute;inset:0;min-height:80px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.8);z-index:20;font-size:11px;font-weight:800;letter-spacing:2px;color:#bbb;text-transform:uppercase;animation:blink-load .8s ease-in-out infinite;border-radius:8px;pointer-events:none;}
+
 /* ── EMPTY STATE ─────────────────── */
 .empty-state{text-align:center;padding:36px;color:#888;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 
@@ -928,41 +944,60 @@ tr:hover td{background:#fafafa;}
 <!-- MODAL NOUVEL ATHLÈTE -->
 <div class="modal-overlay" id="modal-new-athlete">
   <div class="modal">
-    <h3>Nouvel athlète</h3>
-    <div class="form-grid">
-      <div class="form-group"><label>Prénom</label><input type="text" id="na-prenom" placeholder="Marie"></div>
-      <div class="form-group"><label>Nom</label><input type="text" id="na-nom" placeholder="Dupont"></div>
-      <div class="form-group"><label>Née en</label><input type="number" id="na-annee" placeholder="2003"></div>
-      <div class="form-group"><label>Catégorie</label>
-        <select id="na-cat">
-          <option value="BB">Bébé Athlé (BB)</option>
-          <option value="EA">École d'Athlé (EA)</option>
-          <option value="PO">Poussin (PO)</option>
-          <option value="BE">Benjamin (BE)</option>
-          <option value="MI">Minime (MI)</option>
-          <option value="CA">Cadet (CA)</option>
-          <option value="JU">Junior (JU)</option>
-          <option value="ES">Espoir (ES)</option>
-          <option value="SE">Senior (SE)</option>
-          <option value="M35">Master 35 (M35)</option>
-          <option value="M40">Master 40 (M40)</option>
-          <option value="M45">Master 45 (M45)</option>
-          <option value="M50">Master 50 (M50)</option>
-          <option value="M55">Master 55 (M55)</option>
-          <option value="M60">Master 60 (M60)</option>
-          <option value="M65">Master 65 (M65)</option>
-          <option value="M70">Master 70 (M70)</option>
-          <option value="M75">Master 75+ (M75)</option>
-        </select>
+    <h3>Ajouter un athlète</h3>
+    <!-- Sélecteur de mode -->
+    <div class="mode-tab-bar">
+      <button class="mode-tab active" id="na-mode-create" onclick="setAthleteMode('create')">Créer nouveau</button>
+      <button class="mode-tab" id="na-mode-link" onclick="setAthleteMode('link')">Athlète existant</button>
+    </div>
+
+    <!-- Mode : Créer nouveau -->
+    <div id="na-form-create">
+      <div class="form-grid">
+        <div class="form-group"><label>Prénom</label><input type="text" id="na-prenom" placeholder="Marie"></div>
+        <div class="form-group"><label>Nom</label><input type="text" id="na-nom" placeholder="Dupont"></div>
+        <div class="form-group"><label>Née en</label><input type="number" id="na-annee" placeholder="2003"></div>
+        <div class="form-group"><label>Catégorie</label>
+          <select id="na-cat">
+            <option value="BB">Bébé Athlé (BB)</option>
+            <option value="EA">École d'Athlé (EA)</option>
+            <option value="PO">Poussin (PO)</option>
+            <option value="BE">Benjamin (BE)</option>
+            <option value="MI">Minime (MI)</option>
+            <option value="CA">Cadet (CA)</option>
+            <option value="JU">Junior (JU)</option>
+            <option value="ES">Espoir (ES)</option>
+            <option value="SE">Senior (SE)</option>
+            <option value="M35">Master 35 (M35)</option>
+            <option value="M40">Master 40 (M40)</option>
+            <option value="M45">Master 45 (M45)</option>
+            <option value="M50">Master 50 (M50)</option>
+            <option value="M55">Master 55 (M55)</option>
+            <option value="M60">Master 60 (M60)</option>
+            <option value="M65">Master 65 (M65)</option>
+            <option value="M70">Master 70 (M70)</option>
+            <option value="M75">Master 75+ (M75)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:10px"><label>Disciplines</label>
+        <div class="disc-pills" id="disc-checkboxes"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><input type="password" id="na-pw" placeholder="••••••"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
+        <button class="btn" style="width:auto" onclick="createAthlete()">Créer</button>
       </div>
     </div>
-    <div class="form-group" style="margin-bottom:10px"><label>Disciplines</label>
-      <div class="disc-pills" id="disc-checkboxes"></div>
-    </div>
-    <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><input type="password" id="na-pw" placeholder="••••••"></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
-      <button class="btn" style="width:auto" onclick="createAthlete()">Créer</button>
+
+    <!-- Mode : Athlète existant -->
+    <div id="na-form-link" style="display:none">
+      <p style="font-size:12px;color:#888;margin-bottom:10px">Sélectionnez un athlète déjà enregistré pour l'associer à votre profil coach.</p>
+      <div class="existing-ath-list" id="na-existing-list"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
+        <button class="btn" style="width:auto" onclick="linkExistingAthlete()">Associer</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1150,6 +1185,17 @@ async function loadAllData(){
     if(!athletes[h.athlete_id].haiesTotalSince)
       athletes[h.athlete_id].haiesTotalSince=formatDate(h.date);
   });
+
+  // Multi-coach : associations supplémentaires
+  const {data:acData,error:e6}=await sb.from('athlete_coaches').select('*');
+  if(!e6&&acData){
+    acData.forEach(ac=>{
+      if(!athletes[ac.athlete_id])return;
+      if(!athletes[ac.athlete_id].extraCoaches)athletes[ac.athlete_id].extraCoaches=[];
+      if(!athletes[ac.athlete_id].extraCoaches.includes(ac.coach_id))
+        athletes[ac.athlete_id].extraCoaches.push(ac.coach_id);
+    });
+  }
 }
 
 // ─── INIT APP ─────────────────────────────────────────────────────────────
@@ -1169,7 +1215,11 @@ async function initApp(){
 }
 
 function athletesForCoach(coachKey){
-  return Object.values(athletes).filter(a=>a.coachId===coachKey).sort((a,b)=>(a.sort_order??99)-(b.sort_order??99));
+  return Object.values(athletes).filter(a=>{
+    if(a.coachId===coachKey)return true;
+    if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return true;
+    return false;
+  }).sort((a,b)=>(a.sort_order??99)-(b.sort_order??99));
 }
 
 // ─── LOGIN ──────────────────────────────────────────────────────────────────
@@ -1299,6 +1349,7 @@ async function syncFromServer(){
   // Déduplique les appels rapprochés (plusieurs événements en rafale)
   if(syncTimer)clearTimeout(syncTimer);
   showSyncBanner();
+  showDataLoading();
   syncTimer=setTimeout(async()=>{
     try{
       await loadAllData();
@@ -1307,6 +1358,7 @@ async function syncFromServer(){
       console.warn('[Sync] erreur chargement:',e);
     }finally{
       hideSyncBanner();
+      hideDataLoading();
     }
   },200);
 }
@@ -1324,6 +1376,8 @@ function setupRealtime(){
     .on('postgres_changes',{event:'*',schema:'public',table:'haies_franchies'},
       ()=>syncFromServer())
     .on('postgres_changes',{event:'*',schema:'public',table:'athletes'},
+      ()=>syncFromServer())
+    .on('postgres_changes',{event:'*',schema:'public',table:'athlete_coaches'},
       ()=>syncFromServer())
 
     // ── Broadcast : signal immédiat entre clients connectés ─────────────────
@@ -2298,13 +2352,88 @@ function formatVal(disc,v){
   return v+' cm';
 }
 
+// ─── CHARGEMENT DONNÉES (overlay clignotant) ────────────────────────────
+function showDataLoading(){
+  const tc=document.getElementById('tab-contents');
+  if(!tc||tc.querySelector('.tab-load-overlay'))return;
+  const ov=document.createElement('div');
+  ov.className='tab-load-overlay';
+  ov.id='tab-load-overlay';
+  ov.textContent='Chargement…';
+  tc.appendChild(ov);
+}
+function hideDataLoading(){
+  const ov=document.getElementById('tab-load-overlay');
+  if(ov)ov.remove();
+}
+
+// ─── MULTI-COACH : modal athlète dual-mode ──────────────────────────────
+let selectedExistingAthleteId=null;
+
+function setAthleteMode(mode){
+  document.getElementById('na-mode-create').classList.toggle('active',mode==='create');
+  document.getElementById('na-mode-link').classList.toggle('active',mode==='link');
+  document.getElementById('na-form-create').style.display=mode==='create'?'':'none';
+  document.getElementById('na-form-link').style.display=mode==='link'?'':'none';
+  if(mode==='link')buildExistingAthletesList();
+}
+
+function buildExistingAthletesList(){
+  const coachKey=currentUser&&currentUser.type==='coach'?currentUser.key:null;
+  const container=document.getElementById('na-existing-list');
+  if(!coachKey){container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:12px 0">Fonctionnalité réservée aux coachs.</p>';return;}
+  const all=Object.values(athletes).filter(a=>{
+    if(a.coachId===coachKey)return false;
+    if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false;
+    return true;
+  }).sort((a,b)=>`${a.nom}${a.prenom}`.localeCompare(`${b.nom}${b.prenom}`));
+  if(!all.length){
+    container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:16px 0">Tous les athlètes sont déjà associés à votre profil.</p>';
+    return;
+  }
+  container.innerHTML=all.map(a=>`
+    <div class="existing-ath-row" id="ear-${a.id}" onclick="selectExistingAthlete('${a.id}')">
+      <div class="existing-ath-name">${a.prenom} ${a.nom.toUpperCase()}</div>
+      <div class="existing-ath-sub">${a.cat} · née ${a.annee}</div>
+    </div>`).join('');
+  selectedExistingAthleteId=null;
+}
+
+function selectExistingAthlete(id){
+  document.querySelectorAll('.existing-ath-row').forEach(r=>r.classList.remove('selected'));
+  const row=document.getElementById('ear-'+id);
+  if(row)row.classList.add('selected');
+  selectedExistingAthleteId=id;
+}
+
+async function linkExistingAthlete(){
+  if(!selectedExistingAthleteId){showMessage('Sélection manquante','Veuillez sélectionner un athlète dans la liste.','danger');return;}
+  const coachKey=currentUser&&currentUser.type==='coach'?currentUser.key:null;
+  if(!coachKey)return;
+  const {error}=await sb.from('athlete_coaches').insert({athlete_id:selectedExistingAthleteId,coach_id:coachKey});
+  if(error&&error.code!=='23505'){showMessage('Erreur','Impossible d\'associer l\'athlète.','danger');return;}
+  const ath=athletes[selectedExistingAthleteId];
+  if(ath){
+    if(!ath.extraCoaches)ath.extraCoaches=[];
+    if(!ath.extraCoaches.includes(coachKey))ath.extraCoaches.push(coachKey);
+  }
+  closeModal('modal-new-athlete');
+  currentAthlete=selectedExistingAthleteId;
+  buildApp();
+  broadcastChange();
+  showMessage('Athlète associé',`${ath?ath.prenom+' '+ath.nom:''} a bien été ajouté à votre liste.`);
+}
+
 // ─── INIT ────────────────────────────────────────────────────────────────
 Chart.defaults.animation=false;
 const today=new Date().toISOString().split('T')[0];
 
 const origOpenModal=openModal;
 window.openModal=function(id){
-  if(id==='modal-new-athlete')buildDiscCheckboxes();
+  if(id==='modal-new-athlete'){
+    buildDiscCheckboxes();
+    setAthleteMode('create'); // toujours réinitialiser sur "Créer nouveau"
+  }
   origOpenModal(id);
 };
 
