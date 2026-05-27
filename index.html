@@ -925,6 +925,20 @@ tr:hover td{background:#fafafa;}
 }
 
 
+/* ── Champ password avec bouton Voir ────────────────────────── */
+.pw-wrap{position:relative;display:flex;align-items:center;}
+.pw-wrap input{width:100%!important;padding-right:62px!important;}
+.pw-eye{position:absolute;right:10px;background:none;border:none;cursor:pointer;color:var(--yellow);font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:4px 6px;white-space:nowrap;}
+.pw-eye:hover{opacity:.7;}
+
+/* ── Textarea observation ────────────────────────── */
+.obs-textarea{width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:10px 12px;font-size:13px;font-family:'Barlow',sans-serif;resize:vertical;outline:none;transition:border-color .2s;min-height:90px;}
+.obs-textarea:focus{border-color:var(--yellow);}
+.obs-entry{border-bottom:1px solid #f0f0f0;padding:12px 0;}
+.obs-entry:last-child{border-bottom:none;}
+.obs-entry-date{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--yellow);margin-bottom:6px;}
+.obs-entry-text{font-size:13px;color:#333;line-height:1.55;white-space:pre-wrap;}
+
 /* ═══ BOTTOM NAV MOBILE — barre fixe en bas comme Money Time ═══════════════ */
 @media(max-width:640px){
 
@@ -1039,7 +1053,7 @@ tr:hover td{background:#fafafa;}
     <div class="login-step" id="step3">
       <button class="login-back" onclick="backStep(2)" id="back-btn-3">← Retour</button>
       <div class="login-pw-wrap">
-        <div class="form-group"><label>Mot de passe</label><input type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="form-group"><label>Mot de passe</label><div class="pw-wrap"><input type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" class="pw-eye" onclick="togglePw('pw-input')" tabindex="-1">Voir</button></div></div>
         <div class="login-err" id="login-err">Mot de passe incorrect</div>
         <button class="btn" onclick="doLogin()">Connexion</button>
       </div>
@@ -1089,7 +1103,7 @@ tr:hover td{background:#fafafa;}
       <div class="form-group" style="margin-bottom:10px"><label>Disciplines</label>
         <div class="disc-pills" id="disc-checkboxes"></div>
       </div>
-      <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><input type="password" id="na-pw" placeholder="••••••"></div>
+      <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><div class="pw-wrap"><input type="password" id="na-pw" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('na-pw')" tabindex="-1">Voir</button></div></div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
         <button class="btn" style="width:auto" onclick="createAthlete()">Créer</button>
@@ -1116,7 +1130,7 @@ tr:hover td{background:#fafafa;}
       <div class="form-group"><label>Prénom</label><input type="text" id="nc-prenom" placeholder="Kevin"></div>
       <div class="form-group"><label>Nom</label><input type="text" id="nc-nom" placeholder="DEI"></div>
     </div>
-    <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><input type="password" id="nc-pw" placeholder="••••••"></div>
+    <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><div class="pw-wrap"><input type="password" id="nc-pw" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('nc-pw')" tabindex="-1">Voir</button></div></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-new-coach')">Annuler</button>
       <button class="btn" style="width:auto" onclick="createCoach()">Créer</button>
@@ -1132,8 +1146,8 @@ tr:hover td{background:#fafafa;}
       <div class="form-group"><label>Prénom</label><input type="text" id="ec-prenom" placeholder="Prénom"></div>
       <div class="form-group"><label>Nom</label><input type="text" id="ec-nom" placeholder="Nom"></div>
     </div>
-    <div class="form-group" style="margin-bottom:8px"><label>Nouveau mot de passe</label><input type="password" id="ec-pw1" placeholder="Laisser vide si inchangé"></div>
-    <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><input type="password" id="ec-pw2" placeholder="Laisser vide si inchangé"></div>
+    <div class="form-group" style="margin-bottom:8px"><label>Nouveau mot de passe</label><div class="pw-wrap"><input type="password" id="ec-pw1" placeholder="Laisser vide si inchangé"><button type="button" class="pw-eye" onclick="togglePw('ec-pw1')" tabindex="-1">Voir</button></div></div>
+    <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><div class="pw-wrap"><input type="password" id="ec-pw2" placeholder="Laisser vide si inchangé"><button type="button" class="pw-eye" onclick="togglePw('ec-pw2')" tabindex="-1">Voir</button></div></div>
     <div class="profile-danger">
       <div class="profile-danger-title">Zone sensible</div>
       <p>Depuis ce profil, le coach peut aussi supprimer son propre compte.</p>
@@ -1168,8 +1182,8 @@ tr:hover td{background:#fafafa;}
       <h3 style="margin-bottom:8px">Bienvenue !</h3>
       <p style="font-size:13px;color:#888;line-height:1.5">Ton compte a été créé par ton coach.<br>Pour sécuriser ton profil, choisis ton propre mot de passe.</p>
     </div>
-    <div class="form-group" style="margin-bottom:10px"><label>Nouveau mot de passe</label><input type="password" id="fl-pw1" placeholder="••••••"></div>
-    <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><input type="password" id="fl-pw2" placeholder="••••••"></div>
+    <div class="form-group" style="margin-bottom:10px"><label>Nouveau mot de passe</label><div class="pw-wrap"><input type="password" id="fl-pw1" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('fl-pw1')" tabindex="-1">Voir</button></div></div>
+    <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><div class="pw-wrap"><input type="password" id="fl-pw2" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('fl-pw2')" tabindex="-1">Voir</button></div></div>
     <p id="fl-err" style="display:none;color:var(--red);font-size:11px;font-weight:700;margin-bottom:8px;text-align:center"></p>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="skipFirstLogin()">Plus tard</button>
@@ -1410,7 +1424,8 @@ function showAthletes(coachKey){
   const coach=users[coachKey];
   const list=document.getElementById('athlete-list');
   const coachAthletes=athletesForCoach(coachKey);
-  list.innerHTML='<div style="display:flex;flex-direction:column;gap:6px">'+
+  list.innerHTML=
+    '<div style="display:flex;flex-direction:column;gap:6px">'+
     `<div class="login-user" onclick="selectRole('${coachKey}')">
       <span class="uname">${coach.name}</span>
       <span class="urole">Coach</span>
@@ -1421,7 +1436,17 @@ function showAthletes(coachKey){
         <span class="urole">Athlète · ${a.cat}</span>
       </div>`).join('')+
     (!coachAthletes.length?`<div class="empty-state" style="padding:18px">Aucun athlète pour ce coach</div>`:'')+
-    '</div>';
+    '</div>'+
+    `<div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
+      <button class="btn-cancel" style="width:100%;font-size:11px;font-weight:700;letter-spacing:.5px" onclick="toggleAthleteGate()">+ Ajouter un athlète</button>
+      <div id="new-athlete-gate" style="display:none;margin-top:10px">
+        <input type="number" id="athlete-gate-code" placeholder="Code" maxlength="4"
+          style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px"
+          onkeydown="if(event.key==='Enter')checkAthleteCode()">
+        <p id="athlete-gate-err" style="display:none;color:var(--red);font-size:11px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
+        <button class="btn" style="width:100%" onclick="checkAthleteCode()">Valider</button>
+      </div>
+    </div>`;
   showStep(2);
 }
 
@@ -1860,8 +1885,8 @@ function buildParamTab(){
       </div>
       <div class="card">
         <div class="card-title">Mot de passe</div>
-        <div class="form-group" style="margin-bottom:8px"><label>Nouveau</label><input type="password" id="p-pw1" placeholder="••••••"></div>
-        <div class="form-group" style="margin-bottom:12px"><label>Confirmer</label><input type="password" id="p-pw2" placeholder="••••••"></div>
+        <div class="form-group" style="margin-bottom:8px"><label>Nouveau</label><div class="pw-wrap"><input type="password" id="p-pw1" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('p-pw1')" tabindex="-1">Voir</button></div></div>
+        <div class="form-group" style="margin-bottom:12px"><label>Confirmer</label><div class="pw-wrap"><input type="password" id="p-pw2" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('p-pw2')" tabindex="-1">Voir</button></div></div>
         <button class="btn" onclick="changePassword()">Changer</button>
         <div id="pw-msg" style="font-size:11px;margin-top:8px;display:none"></div>
       </div>
@@ -1890,11 +1915,31 @@ function buildParamTab(){
       </div>
     </div>
     ${isCoach?`
+    <div class="card">
+      <div class="card-title">Observations — Séance du jour</div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Date de séance</label>
+        <input type="date" id="obs-date" value="${new Date().toISOString().slice(0,10)}" onchange="loadObservation('${ath.id}',this.value)" style="width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;outline:none;">
+      </div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label>Notes</label>
+        <textarea id="obs-texte" class="obs-textarea" rows="4" placeholder="Points à travailler, observations de la séance…"></textarea>
+      </div>
+      <button class="btn" onclick="saveObservation()">Enregistrer</button>
+      <div id="obs-msg" style="display:none;font-size:11px;font-weight:700;margin-top:8px"></div>
+    </div>
     <div class="card danger-zone">
       <div class="card-title" style="color:var(--red)">Zone dangereuse</div>
       <p>Supprimer définitivement le compte de ${ath.prenom} ${ath.nom}.</p>
       <button class="btn-danger" onclick="deleteAthlete('${ath.id}')">Supprimer ce compte</button>
-    </div>`:''}`;
+    </div>`:`
+    <div class="card">
+      <div class="card-title">Observations du coach</div>
+      <div id="athlete-obs-list"><div style="font-size:11px;color:#bbb;text-align:center;padding:16px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div></div>
+    </div>`}`;
+  const today=new Date().toISOString().slice(0,10);
+  if(isCoach)loadObservation(ath.id,today);
+  else loadAthleteObservations(ath.id);
 }
 
 function openAddOptions(){
@@ -2484,21 +2529,28 @@ async function createAthlete(){
   const discs=[...document.querySelectorAll('#disc-checkboxes input:checked')].map(i=>i.value);
   if(!prenom||!nom||!pw||!discs.length){showMessage('Information manquante','Prénom, nom, disciplines et mot de passe requis.','danger');return;}
   const password_hash=await hashPassword(pw);
-  const coachId=(currentUser&&currentUser.type==='coach')?currentUser.key:null;
+  const coachId=(currentUser?.type==='coach')?currentUser.key:selectedLoginCoach;
   const {data:newAth,error:e1}=await sb.from('athletes').insert({
-    coach_id:coachId,prenom,nom,annee,cat,password_hash
+    coach_id:coachId,prenom,nom,annee,cat,password_hash,first_login:true
   }).select().single();
   if(e1){showMessage('Erreur','Impossible d\'ajouter l\'athlète.','danger');return;}
   await sb.from('athlete_disciplines').insert(discs.map((d,i)=>({athlete_id:newAth.id,discipline:d,sort_order:i})));
   athletes[newAth.id]={
     id:newAth.id,dbId:newAth.id,coachId,prenom,nom:nom.toUpperCase(),annee,cat,password_hash,
+    first_login:true,has_haies:false,sort_order:99,
     disciplines:discs,sub:`Athlé 91 · ${cat} · née ${annee}`,
     records:[],haiesFranchies:[],haiesTotalSince:null
   };
   closeModal('modal-new-athlete');
-  currentAthlete=newAth.id;
-  buildApp();
   ['na-prenom','na-nom','na-annee','na-pw'].forEach(i=>document.getElementById(i).value='');
+  if(currentUser){
+    currentAthlete=newAth.id;
+    buildApp();
+    broadcastChange();
+  }else{
+    showAthletes(selectedLoginCoach);
+    showMessage('Athlète créé',`${prenom} ${nom.toUpperCase()} a bien été ajouté.`);
+  }
 }
 
 function showMessage(title,message,type='info'){
@@ -2620,6 +2672,93 @@ document.getElementById('modal-new-athlete').addEventListener('click',function(e
 function buildDiscCheckboxes(){
   document.getElementById('disc-checkboxes').innerHTML=DISCIPLINES_ALL.map(d=>`
     <div class="disc-pill"><label><input type="checkbox" value="${d}"><span> ${d}</span></label></div>`).join('');
+}
+
+// ─── BOUTON ŒIL — afficher / masquer mot de passe ──────────────────────────
+function togglePw(id){
+  const inp=document.getElementById(id);
+  if(!inp)return;
+  const show=inp.type==='password';
+  inp.type=show?'text':'password';
+  const btn=inp.parentElement?.querySelector('.pw-eye');
+  if(btn)btn.textContent=show?'Masquer':'Voir';
+}
+
+// ─── BOUTON RETOUR MOBILE → écran d'authentification ──────────────────────
+history.pushState({athle91:true},'');
+window.addEventListener('popstate',()=>{
+  history.pushState({athle91:true},'');
+  if(currentUser)logout();
+});
+
+// ─── NOUVEAU ATHLÈTE depuis écran login ────────────────────────────────────
+function toggleAthleteGate(){
+  const gate=document.getElementById('new-athlete-gate');
+  if(!gate)return;
+  const open=gate.style.display==='none'||gate.style.display==='';
+  gate.style.display=open?'block':'none';
+  document.getElementById('athlete-gate-err').style.display='none';
+  document.getElementById('athlete-gate-code').value='';
+  if(open)setTimeout(()=>document.getElementById('athlete-gate-code').focus(),100);
+}
+
+function checkAthleteCode(){
+  const code=document.getElementById('athlete-gate-code').value.trim();
+  if(code==='2026'){
+    toggleAthleteGate();
+    buildDiscCheckboxes();
+    ['na-prenom','na-nom','na-annee','na-pw'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    const cat=document.getElementById('na-cat');if(cat)cat.selectedIndex=0;
+    setAthleteMode('create');
+    openModal('modal-new-athlete');
+  }else{
+    document.getElementById('athlete-gate-err').style.display='block';
+    document.getElementById('athlete-gate-code').value='';
+    setTimeout(()=>document.getElementById('athlete-gate-code').focus(),50);
+  }
+}
+
+// ─── OBSERVATIONS COACH ────────────────────────────────────────────────────
+async function loadObservation(athleteId,date){
+  const texteEl=document.getElementById('obs-texte');
+  if(!texteEl)return;
+  try{
+    const coachDbId=users[currentUser.key]?.id;
+    const {data}=await sb.from('coach_observations')
+      .select('texte').eq('athlete_id',athleteId).eq('coach_id',coachDbId).eq('date',date).maybeSingle();
+    texteEl.value=data?.texte||'';
+  }catch(e){}
+}
+
+async function saveObservation(){
+  const athleteId=currentAthlete;
+  const coachDbId=users[currentUser.key]?.id;
+  const date=document.getElementById('obs-date')?.value;
+  const texte=document.getElementById('obs-texte')?.value.trim();
+  if(!date||!texte){showMessage('Champ manquant','La date et les notes sont requises.','danger');return;}
+  const {error}=await sb.from('coach_observations').upsert(
+    {athlete_id:athleteId,coach_id:coachDbId,date,texte,updated_at:new Date().toISOString()},
+    {onConflict:'athlete_id,coach_id,date'}
+  );
+  if(error){showMessage('Erreur','Impossible d\'enregistrer.','danger');return;}
+  const msg=document.getElementById('obs-msg');
+  if(msg){msg.textContent='Enregistré ✓';msg.style.color='var(--yellow)';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
+}
+
+async function loadAthleteObservations(athleteId){
+  const el=document.getElementById('athlete-obs-list');
+  if(!el)return;
+  try{
+    const {data}=await sb.from('coach_observations')
+      .select('date,texte').eq('athlete_id',athleteId)
+      .order('date',{ascending:false}).limit(10);
+    if(!data||!data.length){el.innerHTML='<div class="empty-state" style="padding:16px">Aucune observation pour le moment</div>';return;}
+    el.innerHTML=data.map(o=>`
+      <div class="obs-entry">
+        <div class="obs-entry-date">${new Date(o.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</div>
+        <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
+      </div>`).join('');
+  }catch(e){el.innerHTML='<div class="empty-state" style="padding:16px">Fonctionnalité non disponible</div>';}
 }
 
 // ─── NOUVEAU COACH depuis écran login ──────────────────────────────────────
