@@ -1917,11 +1917,16 @@ function buildObsTab(){
         </div>
         <div style="display:flex;gap:8px;margin-top:4px">
           <button class="btn" onclick="saveObservation()" style="flex:1;padding:7px 12px;font-size:11px">Enregistrer</button>
-          <button onclick="deleteObservation()" style="background:#c0392b;color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;white-space:nowrap">Supprimer</button>
+          <button onclick="deleteObservation()" style="flex:1;background:#c0392b;color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Supprimer</button>
         </div>
         <div id="obs-msg" style="display:none;font-size:11px;font-weight:700;margin-top:8px"></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">Historique</div>
+        <div id="coach-obs-list"><div style="font-size:11px;color:#bbb;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div></div>
       </div>`;
     loadObservation(ath.id,today);
+    loadCoachObservations(ath.id);
   }else{
     el.innerHTML=`
       <div class="card">
@@ -2798,6 +2803,7 @@ async function saveObservation(){
   if(error){showMessage('Erreur','Impossible d\'enregistrer.','danger');return;}
   const msg=document.getElementById('obs-msg');
   if(msg){msg.textContent='Enregistré ✓';msg.style.color='var(--yellow)';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
+  loadCoachObservations(athleteId);
 }
 
 async function deleteObservation(){
@@ -2814,7 +2820,50 @@ async function deleteObservation(){
     const typeEl=document.getElementById('obs-type');if(typeEl)typeEl.value='entrainement';
     const msg=document.getElementById('obs-msg');
     if(msg){msg.textContent='Supprimée ✓';msg.style.color='#c0392b';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
+    loadCoachObservations(athleteId);
   });
+}
+
+function editObservation(i){
+  const o=window._coachObsData[i];
+  if(!o)return;
+  const dateEl=document.getElementById('obs-date');
+  const discEl=document.getElementById('obs-discipline');
+  const typeEl=document.getElementById('obs-type');
+  const texteEl=document.getElementById('obs-texte');
+  if(dateEl)dateEl.value=o.date;
+  if(discEl)discEl.value=o.discipline||'';
+  if(typeEl)typeEl.value=o.type||'entrainement';
+  if(texteEl)texteEl.value=o.texte;
+  document.getElementById('tab-observations')?.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function loadCoachObservations(athleteId){
+  const el=document.getElementById('coach-obs-list');
+  if(!el)return;
+  const coachDbId=users[currentUser.key]?.id;
+  try{
+    const {data}=await sb.from('coach_observations')
+      .select('date,discipline,type,texte').eq('athlete_id',athleteId).eq('coach_id',coachDbId)
+      .order('date',{ascending:false}).limit(30);
+    if(!data||!data.length){el.innerHTML='<div class="empty-state" style="padding:16px">Aucune observation enregistrée</div>';return;}
+    window._coachObsData=data;
+    el.innerHTML=data.map((o,i)=>{
+      const typeBg=o.type==='compet'?'rgba(245,196,0,.15)':'rgba(224,96,0,.12)';
+      const typeCol=o.type==='compet'?'#a07800':'var(--yellow)';
+      const typeLabel=o.type==='compet'?'Compétition':'Entraînement';
+      return`<div class="obs-entry" onclick="editObservation(${i})" style="cursor:pointer;border-left:3px solid #eee;padding-left:10px;transition:border-color .15s" onmouseenter="this.style.borderColor='var(--yellow)'" onmouseleave="this.style.borderColor='#eee'">
+        <div class="obs-entry-date" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span>${new Date(o.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>
+          ${o.discipline?`<span style="background:rgba(224,96,0,.12);color:var(--yellow);font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${o.discipline}</span>`:''}
+          <span style="background:${typeBg};color:${typeCol};font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
+          <span style="margin-left:auto;font-size:10px;color:#bbb;font-weight:600">Modifier →</span>
+        </div>
+        <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
+      </div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div class="empty-state" style="padding:16px">Erreur de chargement</div>';}
 }
 
 async function loadAthleteObservations(athleteId){
