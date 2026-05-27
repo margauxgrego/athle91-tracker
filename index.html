@@ -1577,6 +1577,8 @@ function setupRealtime(){
       ()=>syncFromServer())
     .on('postgres_changes',{event:'*',schema:'public',table:'athlete_coaches'},
       ()=>syncFromServer())
+    .on('postgres_changes',{event:'*',schema:'public',table:'coach_observations'},
+      ()=>refreshObservations())
 
     // ── Broadcast : signal immédiat entre clients connectés ─────────────────
     .on('broadcast',{event:'data-changed'},({payload})=>{
@@ -2037,6 +2039,15 @@ async function toggleHaies(){
 }
 
 // ─── NAVIGATION ───────────────────────────────────────────────────────────
+function refreshObservations(){
+  if(!currentAthlete||!currentUser)return;
+  const ath=athletes[currentAthlete];
+  if(!ath)return;
+  if(currentUser.type==='coach')loadCoachObservations(currentAthlete);
+  else loadAthleteObservations(currentAthlete);
+  ath.disciplines.forEach(d=>loadDiscObservations(d,currentAthlete));
+}
+
 function switchTab(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
@@ -2044,11 +2055,20 @@ function switchTab(name){
   if(btn)btn.classList.add('active');
   const el=document.getElementById('tab-'+name);
   if(el)el.classList.add('active');
+  // Rafraîchit les observations à chaque visite de l'onglet
+  if(name==='observations'){
+    if(currentUser?.type==='coach')loadCoachObservations(currentAthlete);
+    else loadAthleteObservations(currentAthlete);
+  }
+  const ath=athletes[currentAthlete];
+  if(ath){
+    const discMatch=ath.disciplines.find(d=>discKey(d)===name);
+    if(discMatch)loadDiscObservations(discMatch,currentAthlete);
+  }
   setTimeout(()=>{
     if(name==='haies_franchies')buildChartHF();
     else{
-      const ath=athletes[currentAthlete];
-      if(ath.disciplines.map(d=>discKey(d)).includes(name))buildChart(name);
+      if(ath&&ath.disciplines.map(d=>discKey(d)).includes(name))buildChart(name);
     }
   },50);
 }
