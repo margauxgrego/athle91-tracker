@@ -2831,8 +2831,11 @@ checkAppVersion(); // vérification immédiate au chargement
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js');
-    // Bonus : écoute aussi le message SW_UPDATED (redondant mais instantané)
+    // updateViaCache:'none' → le navigateur ne met jamais en cache sw.js lui-même
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+      .then(reg => {
+        reg.update(); // vérifie immédiatement si une nouvelle version existe
+      });
     navigator.serviceWorker.addEventListener('message', event => {
       if (event.data && event.data.type === 'SW_UPDATED') location.reload();
     });
