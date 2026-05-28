@@ -1,4 +1,4 @@
-const CACHE = 'athle91-v95';
+const CACHE = 'athle91-v95-mdp';
 const ASSETS = [
   '/',
   '/index.html',

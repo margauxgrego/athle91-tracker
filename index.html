@@ -3875,7 +3875,8 @@ async function saveFirstLoginPw(){
   athletes[currentAthlete].password_hash=hash;
   athletes[currentAthlete].first_login=false;
   closeModal('modal-first-login');
-  showMessage('Mot de passe enregistré','Ton mot de passe personnel est actif. 🎉');
+  // Nouveau compte athlète → lancer le tutoriel de bienvenue
+  setTimeout(()=>showTutorialWelcome(), 500);
 }
 
 // ─── CHARGEMENT DONNÉES (overlay clignotant) ────────────────────────────
