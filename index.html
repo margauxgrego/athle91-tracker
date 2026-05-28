@@ -3859,6 +3859,9 @@ function formatVal(disc,v){
 function skipFirstLogin(){
   closeModal('modal-first-login');
   // first_login reste true en DB → le prompt réapparaîtra à la prochaine connexion
+  // Lancer le tutoriel dans tous les cas (même si déjà vu avant)
+  localStorage.removeItem(_tutKey());
+  setTimeout(()=>showTutorialWelcome(), 500);
 }
 
 async function saveFirstLoginPw(){
