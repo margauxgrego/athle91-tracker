@@ -1955,7 +1955,7 @@ document.addEventListener('visibilitychange',()=>{
 // État stocké en localStorage, par utilisateur.
 
 const _TUT_KEY='athle91_tut_v1_';
-let _tutStep=0, _tutActive=false;
+let _tutStep=0, _tutActive=false, _tutGen=0;
 
 // ── Définition des étapes ────────────────────────────────────────────────────
 // target  : sélecteur CSS de l'élément à mettre en surbrillance (null = centré)
@@ -2049,7 +2049,7 @@ function dismissTutorialForever(){
 // ── Démarrage ────────────────────────────────────────────────────────────────
 function startTutorial(){
   closeTutorialWelcome();
-  _tutActive=true;_tutStep=0;
+  _tutActive=true;_tutStep=0;_tutGen++;
   // Créer les éléments DOM du tutoriel
   _destroyTutDOM();
   const spot=document.createElement('div');
@@ -2069,11 +2069,13 @@ function _destroyTutDOM(){
 }
 
 function destroyTutorial(){
-  _destroyTutDOM();_tutActive=false;
+  _tutGen++;_destroyTutDOM();_tutActive=false;
 }
 
 // ── Affichage d'une étape ─────────────────────────────────────────────────────
 async function _showTutStep(n){
+  const myGen=_tutGen; // Capture la génération courante — invalide si destroyTutorial/startTutorial est rappelé
+  if(!_tutActive)return;
   const total=TUTORIAL_STEPS.length;
   if(n<0||n>=total)return;
   _tutStep=n;
@@ -2084,6 +2086,7 @@ async function _showTutStep(n){
     const tabEl=document.getElementById('tab-'+step.tab);
     if(tabEl)switchTab(step.tab);
     await new Promise(r=>setTimeout(r,400));
+    if(_tutGen!==myGen)return; // Stale : une autre instance a pris le relais
   }
 
   // Pour les étapes liées aux disciplines, naviguer vers la 1re discipline
@@ -2092,6 +2095,7 @@ async function _showTutStep(n){
     if(ath&&ath.disciplines.length){
       switchTab(discKey(ath.disciplines[0]));
       await new Promise(r=>setTimeout(r,400));
+      if(_tutGen!==myGen)return; // Stale
     } else {
       return _showTutStep(n+1); // Pas de discipline → étape suivante
     }
@@ -2134,6 +2138,7 @@ async function _showTutStep(n){
 
   // Positionner la carte après que le DOM ait été rendu
   await new Promise(r=>setTimeout(r,30));
+  if(_tutGen!==myGen)return; // Stale : vérification finale avant de positionner
   _posTutCard(card,step.target,step.pos||'bottom');
 }
 
@@ -2175,7 +2180,7 @@ function finishTutorial(){
 }
 
 function relaunchTutorial(){
-  // Bouton "Relancer" dans les Paramètres
+  destroyTutorial(); // Stoppe proprement toute instance en cours (incrémente _tutGen)
   localStorage.removeItem(_tutKey());
   showTutorialWelcome();
 }
