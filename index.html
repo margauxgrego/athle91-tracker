@@ -2063,9 +2063,8 @@ function startTutorial(){
   const card=document.createElement('div');
   card.id='tut-card';card.className='tut-card';
   document.body.appendChild(card);
-  // Remonter en haut de page pour que les éléments spotlightés soient visibles
-  window.scrollTo({top:0,behavior:'smooth'});
-  setTimeout(()=>_showTutStep(0),350);
+  window.scrollTo(0,0); // Scroll instantané
+  setTimeout(()=>_showTutStep(0),60);
 }
 
 function _destroyTutDOM(){
@@ -2112,8 +2111,9 @@ async function _showTutStep(n){
   if(step.tab){
     const tabEl=document.getElementById('tab-'+step.tab);
     if(tabEl)switchTab(step.tab);
-    await new Promise(r=>setTimeout(r,400));
-    if(_tutGen!==myGen)return; // Stale : une autre instance a pris le relais
+    window.scrollTo(0,0); // Scroll instantané : annule le smooth de switchTab
+    await new Promise(r=>setTimeout(r,60)); // Juste le temps d'un repaint
+    if(_tutGen!==myGen)return;
   }
 
   // Pour les étapes liées aux disciplines, naviguer vers la 1re discipline
@@ -2121,8 +2121,9 @@ async function _showTutStep(n){
     const ath=athletes[currentAthlete];
     if(ath&&ath.disciplines.length){
       switchTab(discKey(ath.disciplines[0]));
-      await new Promise(r=>setTimeout(r,400));
-      if(_tutGen!==myGen)return; // Stale
+      window.scrollTo(0,0);
+      await new Promise(r=>setTimeout(r,60));
+      if(_tutGen!==myGen)return;
     } else {
       return _showTutStep(n+1); // Pas de discipline → étape suivante
     }
@@ -2131,10 +2132,10 @@ async function _showTutStep(n){
   // Positionner le spotlight sur l'élément cible
   const spot=document.getElementById('tut-spotlight');
   const targetEl=step.target?document.querySelector(step.target):null;
-  // Scroll vers la cible si elle est hors champ (nearest = ne scrolle pas si déjà visible)
+  // Scroll instantané vers la cible si elle est hors champ
   if(targetEl){
-    targetEl.scrollIntoView({behavior:'smooth',block:'nearest'});
-    await new Promise(r=>setTimeout(r,220));
+    targetEl.scrollIntoView({block:'nearest'}); // behavior auto = instantané
+    await new Promise(r=>setTimeout(r,30));
     if(_tutGen!==myGen)return;
   }
   if(spot){
