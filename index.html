@@ -2147,24 +2147,33 @@ async function _showTutStep(n){
   }
 
   // Construire le contenu de la carte
-  const isFirst=n===0,isLast=n===total-1;
-  const dots=TUTORIAL_STEPS.map((_,i)=>`<div class="tut-dot${i===n?' active':i<n?' done':''}"></div>`).join('');
+  // Calculer les étapes visibles pour ce type d'utilisateur (skipFor exclus)
+  const visibleIdxs=TUTORIAL_STEPS.reduce((a,s,i)=>{
+    if(!s.skipFor||!s.skipFor.includes(currentUser?.type))a.push(i);
+    return a;
+  },[]);
+  const visibleTotal=visibleIdxs.length;
+  const visiblePos=visibleIdxs.indexOf(n); // position 0-based dans la liste filtrée
+  const isFirst=visiblePos===0, isLast=visiblePos===visibleTotal-1;
+  const prevN=visiblePos>0?visibleIdxs[visiblePos-1]:-1;
+  const nextN=visiblePos<visibleTotal-1?visibleIdxs[visiblePos+1]:-1;
+  const dots=visibleIdxs.map((_,vi)=>`<div class="tut-dot${vi===visiblePos?' active':vi<visiblePos?' done':''}"></div>`).join('');
   const card=document.getElementById('tut-card');
   if(!card)return;
   // Forcer le re-déclenchement de l'animation CSS
   card.style.animation='none';void card.offsetWidth;card.style.animation='';
   card.innerHTML=`
-    <div class="tut-step-label">Étape ${n+1} / ${total}</div>
+    <div class="tut-step-label">Étape ${visiblePos+1} / ${visibleTotal}</div>
     <div class="tut-card-title">${step.title}</div>
     <div class="tut-card-text">${step.text}</div>
     <div class="tut-dots">${dots}</div>
     <div class="tut-card-actions">
       <button class="tut-skip" onclick="skipTutorial()">Passer</button>
       <div class="tut-nav-btns">
-        ${!isFirst?`<button class="tut-prev" onclick="_showTutStep(${n-1})">← Préc.</button>`:''}
+        ${!isFirst?`<button class="tut-prev" onclick="_showTutStep(${prevN})">← Préc.</button>`:''}
         ${isLast
           ?`<button class="tut-next" onclick="finishTutorial()">Terminer ✓</button>`
-          :`<button class="tut-next" onclick="_showTutStep(${n+1})">Suivant →</button>`
+          :`<button class="tut-next" onclick="_showTutStep(${nextN})">Suivant →</button>`
         }
       </div>
     </div>`;
