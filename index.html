@@ -1908,7 +1908,7 @@ function buildObsTab(){
         <div class="form-group" style="margin-bottom:8px">
           <label>Date</label>
           <input type="date" id="obs-date" value="${today}"
-            style="width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;outline:none;">
+            style="width:100%;box-sizing:border-box;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;outline:none;-webkit-appearance:none;appearance:none;">
         </div>
         <div class="form-group" style="margin-bottom:8px">
           <label>Discipline</label>
@@ -3196,15 +3196,16 @@ if(window.visualViewport){
 }
 
 if('serviceWorker' in navigator){
+  // Listener immédiat — avant le load pour éviter la race condition avec SW_UPDATED
+  navigator.serviceWorker.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SW_UPDATED') location.reload();
+  });
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
       .then(reg => {
         _swReg = reg;
         reg.update();
       });
-    navigator.serviceWorker.addEventListener('message', event => {
-      if (event.data && event.data.type === 'SW_UPDATED') location.reload();
-    });
   });
 }
 </script>
