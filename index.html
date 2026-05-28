@@ -1671,6 +1671,8 @@ function logout(){
   currentUser=null;currentAthlete=null;charts={};
   stopPolling();
   stopRealtime();
+  const _ptl=document.getElementById('page-title');
+  if(_ptl)_ptl.textContent='';
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   renderCoachLogin();
@@ -1891,6 +1893,9 @@ function buildTabs(){
     `<button class="tab" onclick="openAddOptions()" style="color:var(--yellow)">+ Options</button>`;
   document.getElementById('tab-contents').innerHTML=
     tabList.map((t,i)=>`<div class="tab-content ${i===defaultIdx?'active':''}" id="tab-${t}"></div>`).join('');
+  // Titre de page : toujours synchronisé avec l'onglet actif
+  const _pt=document.getElementById('page-title');
+  if(_pt)_pt.textContent=tabLabels[defaultIdx];
   buildObsTab();
   ath.disciplines.forEach(d=>buildDiscTab(d));
   if(hasHaies)buildHFTab();
