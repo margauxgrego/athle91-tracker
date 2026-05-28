@@ -41,10 +41,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .login-back{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;text-align:left;margin-bottom:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
 .login-back:hover{color:var(--text);}
 .login-pw-wrap{display:flex;flex-direction:column;gap:10px;}
-.login-err{color:var(--red);font-size:11px;display:none;}
+.login-err{color:var(--red);font-size:12px;display:none;}
 
 /* ── SYNC BANNER ────────────────────────── */
-#sync-banner{display:none;position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#111;color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:7px 18px;border-radius:20px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);}
+#sync-banner{display:none;position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#111;color:#fff;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:7px 18px;border-radius:20px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);}
 
 /* ── TOPBAR ─────────────────────────────── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:2px solid var(--yellow);gap:8px;flex-wrap:wrap;background:var(--bg);}
@@ -53,7 +53,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .ath-btn.active{background:var(--yellow);border-color:var(--yellow);color:#fff;}
 .ath-btn:hover{color:#111;}
 .ath-btn.coach-add{border-color:var(--yellow);color:var(--yellow);}
-.logout-btn{font-size:11px;font-weight:400;text-transform:uppercase;padding:6px 14px;background:none;border:1.5px solid rgba(192,57,43,.35);color:var(--red);cursor:pointer;border-radius:6px;letter-spacing:.5px;}
+.logout-btn{font-size:10px;font-weight:400;text-transform:uppercase;padding:6px 14px;background:none;border:1.5px solid rgba(192,57,43,.35);color:var(--red);cursor:pointer;border-radius:6px;letter-spacing:.5px;}
 .logout-btn:hover{border-color:var(--red);opacity:.8;}
 
 /* ── HEADER ─────────────────────────────── */
@@ -69,7 +69,7 @@ header{padding:22px 0 24px;border-bottom:1px solid #e0e0e0;margin-bottom:22px;bo
 .header-records{display:flex;gap:8px;flex-wrap:wrap;}
 .record-pill{background:#fff;border:2px solid var(--yellow);border-radius:8px;padding:8px 14px;text-align:center;min-width:80px;box-shadow:0 1px 4px rgba(0,0,0,.08);}
 .record-pill .val{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--yellow);line-height:1;}
-.record-pill .label{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;font-weight:700;}
+.record-pill .label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;font-weight:700;}
 
 /* ── TABS ─────────────────────────────── */
 .tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #e0e0e0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;}
@@ -101,51 +101,51 @@ header{padding:22px 0 24px;border-bottom:1px solid #e0e0e0;margin-bottom:22px;bo
 /* ── TABLE ─────────────────────────── */
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;scrollbar-width:none;}
 .table-wrap::-webkit-scrollbar{display:none;}
-table{width:100%;min-width:440px;border-collapse:collapse;font-size:13px;}
-th{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);text-align:left;padding:8px 10px;border-bottom:2px solid var(--yellow);white-space:nowrap;}
-td{padding:10px 10px;border-bottom:1px solid #efefef;font-size:13px;vertical-align:middle;white-space:nowrap;color:#111;}
+table{width:100%;min-width:440px;border-collapse:collapse;font-size:12px;}
+th{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);text-align:left;padding:8px 10px;border-bottom:2px solid var(--yellow);white-space:nowrap;}
+td{padding:10px 10px;border-bottom:1px solid #efefef;font-size:12px;vertical-align:middle;white-space:nowrap;color:#111;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#fafafa;}
 .perf-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--yellow);}
-.badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.5px;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
+.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
 .badge-r1,.badge-r2,.badge-r3,.badge-r4,.badge-r5,.badge-r6{background:rgba(245,196,0,.15);color:#f5c400;border:1px solid rgba(245,196,0,.4);}
 .badge-d1,.badge-d2,.badge-d3,.badge-d7,.badge-d{background:rgba(245,166,35,.12);color:var(--orange);border:1px solid rgba(245,166,35,.3);}
-.rp-badge{display:inline-block;background:var(--yellow);color:#000;font-size:8px;font-weight:900;padding:1px 5px;border-radius:2px;text-transform:uppercase;margin-left:5px;vertical-align:middle;letter-spacing:.5px;}
+.rp-badge{display:inline-block;background:var(--yellow);color:#000;font-size:10px;font-weight:900;padding:1px 5px;border-radius:2px;text-transform:uppercase;margin-left:5px;vertical-align:middle;letter-spacing:.5px;}
 
 /* ── TYPE COLORS ─────────────────── */
-.type-compet{color:#f5c400;font-size:11px;font-weight:700;}
-.type-entrainement{color:var(--yellow);font-size:11px;font-weight:700;}
+.type-compet{color:#f5c400;font-size:12px;font-weight:700;}
+.type-entrainement{color:var(--yellow);font-size:12px;font-weight:700;}
 
 /* ── FORMS ─────────────────────── */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
 .form-col{display:flex;flex-direction:column;gap:8px;}
 .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.form-group label{display:block;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:4px;}
+.form-group label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:4px;}
 .form-group input,.form-group select{width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .2s;}
 .form-group input:focus,.form-group select:focus{border-color:var(--yellow);}
 .form-group select option{background:#fff;color:#111;}
 .btn{background:var(--yellow);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;width:100%;margin-top:4px;}
 .btn:hover{opacity:.85;}
 .btn:active{transform:scale(.98);}
-.btn-ghost{background:none;color:var(--red);border:1px solid rgba(239,68,68,.35);padding:4px 8px;font-size:11px;border-radius:4px;cursor:pointer;font-weight:400;}
+.btn-ghost{background:none;color:var(--red);border:1px solid rgba(239,68,68,.35);padding:4px 8px;font-size:12px;border-radius:4px;cursor:pointer;font-weight:400;}
 .btn-ghost:hover{background:rgba(239,68,68,.1);}
 .perf-row{cursor:pointer;transition:background .15s;}
 .perf-row:hover{background:rgba(245,196,0,.07);}
 .perf-row:active{background:rgba(245,196,0,.18);}
-.btn-cancel{background:none;color:#888;border:1px solid #ddd;border-radius:6px;padding:9px 18px;font-size:11px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
+.btn-cancel{background:none;color:#888;border:1px solid #ddd;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
 .btn-danger{background:var(--red);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
 
 /* ── STATS ─────────────────────── */
 .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
 .stat{background:#fff;border:1px solid #e8e8e8;border-left:3px solid var(--yellow);border-radius:8px;padding:12px 14px;}
 .stat .n{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;line-height:1;color:var(--yellow);}
-.stat .l{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-top:3px;}
+.stat .l{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-top:3px;}
 .trend-up{color:var(--yellow)!important;}
 .trend-down{color:var(--red)!important;}
 
 /* ── LEGEND ─────────────────────── */
 .legend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#999;font-weight:600;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#999;font-weight:600;}
 .legend-dot{width:10px;height:10px;border-radius:50%;}
 
 /* ── RECORDS ─────────────────────── */
@@ -162,13 +162,13 @@ tr:hover td{background:#fafafa;}
 .rec-history{display:none;background:#fafafa;border:1px solid #efefef;border-radius:8px;padding:12px;margin-top:8px;}
 .rec-history.show{display:block;}
 .rec-history table{min-width:0;width:100%;}
-.rec-history th,.rec-history td{font-size:11px;padding:6px 8px;}
+.rec-history th,.rec-history td{font-size:12px;padding:6px 8px;}
 
 /* ── HAIES ─────────────────────── */
 .hurdles-hero{text-align:center;padding:28px 0 20px;}
 .hurdles-counter{font-family:'Barlow Condensed',sans-serif;font-size:96px;font-weight:900;line-height:1;color:var(--orange);}
-.hurdles-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#888;margin-top:6px;font-weight:700;}
-.hurdles-since{font-size:11px;color:#888;margin-top:8px;}
+.hurdles-label{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#888;margin-top:6px;font-weight:700;}
+.hurdles-since{font-size:12px;color:#888;margin-top:8px;}
 
 /* ── MODAL ─────────────────────── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
@@ -177,39 +177,39 @@ tr:hover td{background:#fafafa;}
 .modal h3{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#111;margin-bottom:18px;}
 .modal-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
 .disc-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
-.disc-pill label{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#888;cursor:pointer;background:#f5f5f5;border:1px solid #ddd;padding:5px 10px;border-radius:4px;transition:all .15s;}
+.disc-pill label{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#888;cursor:pointer;background:#f5f5f5;border:1px solid #ddd;padding:5px 10px;border-radius:4px;transition:all .15s;}
 .disc-pill label:hover{border-color:var(--yellow);color:#111;}
 .disc-pill input:checked+span{color:var(--yellow);}
 .disc-pill label:has(input:checked){background:rgba(224,96,0,.1);border-color:var(--yellow);}
 
 /* ── MODE TABS (modal nouvel athlète) ─── */
 .mode-tab-bar{display:flex;gap:6px;margin-bottom:16px;background:#f2f2f2;border-radius:8px;padding:4px;}
-.mode-tab{flex:1;padding:8px 10px;border:none;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;background:transparent;color:#999;transition:all .15s;}
+.mode-tab{flex:1;padding:8px 10px;border:none;border-radius:6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;background:transparent;color:#999;transition:all .15s;}
 .mode-tab.active{background:#fff;color:#111;box-shadow:0 1px 4px rgba(0,0,0,.12);}
 .existing-ath-list{max-height:280px;overflow-y:auto;margin:4px 0 4px;}
 .existing-ath-row{padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:4px;border:2px solid transparent;background:#f8f8f8;transition:all .15s;}
 .existing-ath-row:hover{background:#f0f0f0;}
 .existing-ath-row.selected{border-color:#f5c400;background:rgba(245,196,0,.08);}
-.existing-ath-name{font-size:13px;font-weight:700;color:#111;}
-.existing-ath-sub{font-size:11px;color:#999;margin-top:2px;}
+.existing-ath-name{font-size:14px;font-weight:700;color:#111;}
+.existing-ath-sub{font-size:12px;color:#999;margin-top:2px;}
 
 /* ── LOADING OVERLAY (zone données) ─── */
 #tab-contents{position:relative;}
 @keyframes blink-load{0%,100%{opacity:1}50%{opacity:.1}}
-.tab-load-overlay{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.97);padding:12px 28px;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.13);z-index:300;font-size:11px;font-weight:800;letter-spacing:3px;color:#555;text-transform:uppercase;animation:blink-load 1s ease-in-out infinite;pointer-events:none;white-space:nowrap;}
+.tab-load-overlay{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.97);padding:12px 28px;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.13);z-index:300;font-size:12px;font-weight:800;letter-spacing:3px;color:#555;text-transform:uppercase;animation:blink-load 1s ease-in-out infinite;pointer-events:none;white-space:nowrap;}
 
 /* ── EMPTY STATE ─────────────────── */
 .empty-state{text-align:center;padding:36px;color:#888;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 
 /* ── PARAMS ─────────────────────── */
 .danger-zone{border:1px solid rgba(229,57,53,.25);background:#fff5f5;border-radius:8px;padding:16px;margin-top:8px;}
-.danger-zone p{font-size:11px;color:#888;margin-bottom:12px;line-height:1.5;}
+.danger-zone p{font-size:12px;color:#888;margin-bottom:12px;line-height:1.5;}
 
 /* ── BOUTONS COMPACTS (pages paramètres) ─────────────────────── */
-.btn-sm{background:var(--yellow);color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:11px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
+.btn-sm{background:var(--yellow);color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:12px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
 .btn-sm:hover{opacity:.85;}
-.btn-sm-cancel{background:none;color:#888;border:1px solid #ddd;border-radius:5px;padding:5px 13px;font-size:11px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;}
-.btn-sm-danger{background:var(--red);color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:11px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
+.btn-sm-cancel{background:none;color:#888;border:1px solid #ddd;border-radius:5px;padding:5px 13px;font-size:12px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;}
+.btn-sm-danger{background:var(--red);color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:12px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
 .btn-sm-danger:hover{opacity:.85;}
 
 /* ── TYPOGRAPHIE ITEMS ─────────────────────── */
@@ -229,7 +229,7 @@ tr:hover td{background:#fafafa;}
   .records-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
   header{padding:28px 0 30px;padding-left:28px;margin-bottom:28px;}
   .tabs{margin-bottom:20px;}
-  .tab{font-size:13px;padding:12px 18px;}
+  .tab{font-size:12px;padding:12px 18px;}
   .card{padding:22px;margin-bottom:20px;}
   table{font-size:14px;}
   th{font-size:10px;padding:10px 14px;}
@@ -253,7 +253,7 @@ tr:hover td{background:#fafafa;}
   .stat-row{grid-template-columns:repeat(2,1fr);gap:8px;}
   .stat .n{font-size:26px;}
   .records-grid{grid-template-columns:repeat(3,1fr);}
-  .tab{font-size:11px;padding:9px 12px;}
+  .tab{font-size:12px;padding:9px 12px;}
 }
 
 /* ═══ MOBILE (≤640px) ═══════════════ */
@@ -291,17 +291,17 @@ tr:hover td{background:#fafafa;}
     align-items:stretch;
     gap:6px;
   }
-  .logo-inline .la,.logo-inline .l9{font-size:11px;padding:2px 5px;}
+  .logo-inline .la,.logo-inline .l9{font-size:10px;padding:2px 5px;}
   .header-name{font-size:clamp(18px,5.5vw,24px);}
-  .header-sub{font-size:8px;}
+  .header-sub{font-size:10px;}
   .header-records{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:5px;
   }
   .record-pill{padding:4px 3px;min-width:0;border-radius:5px;border-width:1.5px;}
-  .record-pill .val{font-size:13px;}
-  .record-pill .label{font-size:7px;letter-spacing:0;}
+  .record-pill .val{font-size:14px;}
+  .record-pill .label{font-size:10px;letter-spacing:0;}
 
   /* ── Tabs — ne bougent PAS verticalement ── */
   .tabs{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;margin-bottom:12px;touch-action:pan-x;}
@@ -318,7 +318,7 @@ tr:hover td{background:#fafafa;}
 
   /* ── Cards ── */
   .card{padding:10px;margin-bottom:6px;border-radius:6px;border-top-width:2px;}
-  .card-title{font-size:9px;letter-spacing:1.5px;margin-bottom:7px;}
+  .card-title{font-size:10px;letter-spacing:1.5px;margin-bottom:7px;}
   /* ── Stat ── */
   .stat{border-radius:6px;border-left-width:2px;}
 
@@ -331,17 +331,17 @@ tr:hover td{background:#fafafa;}
   }
   .stat{padding:7px 8px;}
   .stat .n{font-size:17px;}
-  .stat .l{font-size:7px;}
+  .stat .l{font-size:10px;}
 
   /* ── Chart ── */
   .chart-wrap{height:160px;}
   .chart-header{flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:8px;}
   .filter-row{gap:3px;flex-wrap:wrap;}
-  .filter-btn{font-size:9px;padding:3px 7px;}
+  .filter-btn{font-size:10px;padding:3px 7px;}
 
   /* ── Legend ── */
   .legend{gap:8px;margin-bottom:6px;}
-  .legend-item{font-size:9px;}
+  .legend-item{font-size:10px;}
 
   /* ── Tables — scroll horizontal ── */
   .table-wrap{
@@ -352,18 +352,18 @@ tr:hover td{background:#fafafa;}
   }
   .table-wrap::-webkit-scrollbar{display:none;}
   table{min-width:360px;}
-  th{font-size:7px;padding:5px 6px;}
-  td{font-size:11px;padding:6px 6px;}
-  .perf-val{font-size:12px;}
-  .badge{font-size:8px;padding:1px 5px;}
-  .rp-badge{font-size:7px;padding:1px 4px;}
-  .btn-ghost{padding:3px 6px;font-size:10px;}
+  th{font-size:10px;padding:5px 6px;}
+  td{font-size:12px;padding:6px 6px;}
+  .perf-val{font-size:14px;}
+  .badge{font-size:10px;padding:1px 5px;}
+  .rp-badge{font-size:10px;padding:1px 4px;}
+  .btn-ghost{padding:3px 6px;font-size:12px;}
 
   /* ── Formulaires — 1 colonne totale, inputs grands ── */
   .form-row-2{grid-template-columns:1fr;gap:6px;}
   .form-col{gap:6px;}
   .form-grid{grid-template-columns:1fr;gap:6px;}
-  .form-group label{font-size:9px;margin-bottom:3px;}
+  .form-group label{font-size:10px;margin-bottom:3px;}
   .form-group input,
   .form-group select{
     font-size:16px; /* évite zoom iOS */
@@ -372,22 +372,22 @@ tr:hover td{background:#fafafa;}
     border-radius:5px;
   }
   .btn{font-size:12px;padding:10px;width:100%;margin-top:3px;border-radius:5px;}
-  .btn-cancel{padding:8px 14px;font-size:10px;border-radius:5px;}
+  .btn-cancel{padding:8px 14px;font-size:12px;border-radius:5px;}
   .btn-danger{padding:10px;font-size:12px;border-radius:5px;}
 
   /* ── Haies franchies ── */
   .hurdles-hero{padding:12px 0 8px;}
   .hurdles-counter{font-size:52px;}
-  .hurdles-label{font-size:9px;}
+  .hurdles-label{font-size:10px;}
 
   /* ── Records ── */
   .records-grid{grid-template-columns:1fr 1fr;gap:6px;}
   .rec-card{padding:7px 8px;border-radius:6px;border-bottom-width:2px;}
-  .rec-card .disc{font-size:8px;}
-  .rec-card .perf{font-size:15px;}
-  .rec-card .meta{font-size:8px;}
+  .rec-card .disc{font-size:10px;}
+  .rec-card .perf{font-size:14px;}
+  .rec-card .meta{font-size:10px;}
   .rec-history{padding:8px;border-radius:6px;}
-  .rec-history th,.rec-history td{font-size:10px;padding:4px 5px;}
+  .rec-history th,.rec-history td{font-size:12px;padding:4px 5px;}
 
   /* ── Modal ── */
   .modal-overlay{padding:10px;padding-bottom:calc(80px + env(safe-area-inset-bottom));align-items:flex-end;}
@@ -405,10 +405,10 @@ tr:hover td{background:#fafafa;}
   .modal-actions .btn-cancel{width:100%;}
 
   /* ── Observations ── */
-  .obs-textarea{font-size:13px;padding:7px 9px;min-height:70px;}
+  .obs-textarea{font-size:12px;padding:7px 9px;min-height:70px;}
   .obs-entry{padding:7px 0;}
-  .obs-entry-date{font-size:9px;margin-bottom:3px;}
-  .obs-entry-text{font-size:11px;line-height:1.4;}
+  .obs-entry-date{font-size:10px;margin-bottom:3px;}
+  .obs-entry-text{font-size:12px;line-height:1.4;}
 
   /* ── Paramètres ── */
   .danger-zone{padding:12px;}
@@ -442,15 +442,15 @@ tr:hover td{background:#fafafa;}
 
 /* ═══ TRÈS PETIT ≤380px ═══════════════ */
 @media(max-width:380px){
-  .tab{font-size:9px;padding:6px 7px;}
+  .tab{font-size:10px;padding:6px 7px;}
   .stat .n{font-size:15px;}
   .header-name{font-size:18px;}
   .record-pill .val{font-size:12px;}
-  th{font-size:7px;padding:4px 5px;}
-  td{font-size:10px;padding:5px 5px;}
+  th{font-size:10px;padding:4px 5px;}
+  td{font-size:12px;padding:5px 5px;}
   .chart-wrap{height:140px;}
   .hurdles-counter{font-size:44px;}
-  .ath-btn,.logout-btn{font-size:9px;padding:4px 8px;}
+  .ath-btn,.logout-btn{font-size:10px;padding:4px 8px;}
 }
 
 
@@ -490,7 +490,7 @@ tr:hover td{background:#fafafa;}
     display:block;
   }
   .stat .n{font-size:20px;text-align:left;white-space:nowrap;}
-  .stat .l{font-size:8px;margin-top:2px;}
+  .stat .l{font-size:10px;margin-top:2px;}
 
   /* Les records passent en un bloc par ligne */
   .records-grid{
@@ -559,7 +559,7 @@ tr:hover td{background:#fafafa;}
     flex:0 0 auto;
     max-width:42%;
     text-align:left;
-    font-size:9px;
+    font-size:10px;
     font-weight:800;
     letter-spacing:1px;
     text-transform:uppercase;
@@ -933,7 +933,7 @@ tr:hover td{background:#fafafa;}
   margin-bottom:6px;
 }
 .profile-danger p{
-  font-size:11px;
+  font-size:12px;
   color:#777;
   margin-bottom:10px;
   line-height:1.5;
@@ -944,7 +944,7 @@ tr:hover td{background:#fafafa;}
     border-radius:16px 16px 12px 12px;
   }
   .confirm-modal p{
-    font-size:13px;
+    font-size:12px;
   }
 }
 
@@ -956,12 +956,12 @@ tr:hover td{background:#fafafa;}
 .pw-eye:hover{opacity:.7;}
 
 /* ── Textarea observation ────────────────────────── */
-.obs-textarea{width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:10px 12px;font-size:13px;font-family:'Barlow',sans-serif;resize:vertical;outline:none;transition:border-color .2s;min-height:90px;}
+.obs-textarea{width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:10px 12px;font-size:12px;font-family:'Barlow',sans-serif;resize:vertical;outline:none;transition:border-color .2s;min-height:90px;}
 .obs-textarea:focus{border-color:var(--yellow);}
 .obs-entry{border-bottom:1px solid #f0f0f0;padding:12px 0;}
 .obs-entry:last-child{border-bottom:none;}
 .obs-entry-date{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--yellow);margin-bottom:6px;}
-.obs-entry-text{font-size:13px;color:#333;line-height:1.55;white-space:pre-wrap;}
+.obs-entry-text{font-size:12px;color:#333;line-height:1.55;white-space:pre-wrap;}
 
 /* ═══ BOTTOM NAV MOBILE — barre fixe en bas comme Money Time ═══════════════ */
 @media(max-width:640px){
@@ -1040,7 +1040,7 @@ tr:hover td{background:#fafafa;}
   }
   .tab{
     min-width:70px!important;
-    font-size:11px!important;
+    font-size:10px!important;
     padding:12px 12px!important;
   }
   #app{
@@ -1077,7 +1077,7 @@ tr:hover td{background:#fafafa;}
 <!-- OVERLAY CHARGEMENT (back button iOS) -->
 <div id="loading-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#ececec;align-items:center;justify-content:center;flex-direction:column;gap:12px">
   <div class="logo-badge"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div>
-  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement…</div>
+  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement…</div>
 </div>
 
 <!-- LOGIN -->
@@ -1091,12 +1091,12 @@ tr:hover td{background:#fafafa;}
       <div id="coach-list"></div>
       <!-- Création nouveau coach avec code admin -->
       <div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
-        <button class="btn-cancel" style="width:100%;font-size:11px;letter-spacing:.5px" onclick="toggleNewCoachGate()">+ Nouveau coach</button>
+        <button class="btn-cancel" style="width:100%;font-size:12px;letter-spacing:.5px" onclick="toggleNewCoachGate()">+ Nouveau coach</button>
         <div id="new-coach-gate" style="display:none;margin-top:10px">
           <input type="number" id="coach-gate-code" placeholder="Code" maxlength="4"
             style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px"
             onkeydown="if(event.key==='Enter')checkCoachCode()">
-          <p id="coach-gate-err" style="display:none;color:var(--red);font-size:11px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
+          <p id="coach-gate-err" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
           <button class="btn" style="width:100%" onclick="checkCoachCode()">Valider</button>
         </div>
       </div>
@@ -1238,11 +1238,11 @@ tr:hover td{background:#fafafa;}
     <div style="text-align:center;margin-bottom:20px">
       <div style="font-size:36px;margin-bottom:10px">👋</div>
       <h3 style="margin-bottom:8px">Bienvenue !</h3>
-      <p style="font-size:13px;color:#888;line-height:1.5">Ton compte a été créé par ton coach.<br>Pour sécuriser ton profil, choisis ton propre mot de passe.</p>
+      <p style="font-size:12px;color:#888;line-height:1.5">Ton compte a été créé par ton coach.<br>Pour sécuriser ton profil, choisis ton propre mot de passe.</p>
     </div>
     <div class="form-group" style="margin-bottom:10px"><label>Nouveau mot de passe</label><div class="pw-wrap"><input type="password" id="fl-pw1" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('fl-pw1')" tabindex="-1">Voir</button></div></div>
     <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><div class="pw-wrap"><input type="password" id="fl-pw2" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('fl-pw2')" tabindex="-1">Voir</button></div></div>
-    <p id="fl-err" style="display:none;color:var(--red);font-size:11px;font-weight:700;margin-bottom:8px;text-align:center"></p>
+    <p id="fl-err" style="display:none;color:var(--red);font-size:12px;font-weight:700;margin-bottom:8px;text-align:center"></p>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="skipFirstLogin()">Plus tard</button>
       <button class="btn" style="width:auto" onclick="saveFirstLoginPw()">Valider</button>
@@ -1387,7 +1387,7 @@ function _showOfflineBanner(){
   if(!b){
     b=document.createElement('div');
     b.id='offline-banner';
-    b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#c0392b;color:#fff;text-align:center;font-size:11px;font-weight:700;letter-spacing:1px;padding:7px 12px;text-transform:uppercase';
+    b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#c0392b;color:#fff;text-align:center;font-size:12px;font-weight:700;letter-spacing:1px;padding:7px 12px;text-transform:uppercase';
     b.textContent='⚠ Hors ligne — modifications en attente de synchronisation';
     document.body.prepend(b);
   }
@@ -1519,7 +1519,7 @@ async function loadAllData(){
 async function initApp(){
   const box=document.querySelector('.login-box');
   const orig=box.innerHTML;
-  box.innerHTML='<div style="text-align:center;padding:48px 0 40px"><div class="logo-badge" style="margin:0 auto 16px"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div><div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement...</div></div>';
+  box.innerHTML='<div style="text-align:center;padding:48px 0 40px"><div class="logo-badge" style="margin:0 auto 16px"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div><div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement...</div></div>';
   try{
     await loadAllData();
     box.innerHTML=orig;
@@ -1535,7 +1535,7 @@ async function initApp(){
       _showOfflineBanner();
     }else{
       const detail=err?.message||err?.details||err?.hint||JSON.stringify(err)||'inconnue';
-      box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:13px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><p style="color:#888;font-size:10px;margin-top:8px;word-break:break-all">'+detail+'</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
+      box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:14px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><p style="color:#888;font-size:10px;margin-top:8px;word-break:break-all">'+detail+'</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
     }
   }
 }
@@ -1587,12 +1587,12 @@ function showAthletes(coachKey){
     (!coachAthletes.length?`<div class="empty-state" style="padding:18px">Aucun athlète pour ce coach</div>`:'')+
     '</div>'+
     `<div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
-      <button class="btn-cancel" style="width:100%;font-size:11px;letter-spacing:.5px" onclick="toggleAthleteGate()">+ Ajouter un athlète</button>
+      <button class="btn-cancel" style="width:100%;font-size:12px;letter-spacing:.5px" onclick="toggleAthleteGate()">+ Ajouter un athlète</button>
       <div id="new-athlete-gate" style="display:none;margin-top:10px">
         <input type="number" id="athlete-gate-code" placeholder="Code" maxlength="4"
           style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px"
           onkeydown="if(event.key==='Enter')checkAthleteCode()">
-        <p id="athlete-gate-err" style="display:none;color:var(--red);font-size:11px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
+        <p id="athlete-gate-err" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
         <button class="btn" style="width:100%" onclick="checkAthleteCode()">Valider</button>
       </div>
     </div>`;
@@ -1671,6 +1671,8 @@ function logout(){
   currentUser=null;currentAthlete=null;charts={};
   stopPolling();
   stopRealtime();
+  const _ptl=document.getElementById('page-title');
+  if(_ptl)_ptl.textContent='';
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   renderCoachLogin();
@@ -1831,7 +1833,7 @@ function showNoAthleteScreen(){
   document.getElementById('tab-contents').innerHTML=`
     <div class="card">
       <div class="card-title">Espace coach</div>
-      <p style="font-size:13px;color:#888;margin-bottom:12px">Ce coach n'a pas encore d'athlète. Ajoutez-en un depuis la page d'authentification.</p>
+      <p style="font-size:12px;color:#888;margin-bottom:12px">Ce coach n'a pas encore d'athlète. Ajoutez-en un depuis la page d'authentification.</p>
       <button class="btn" style="width:100%;background:#f0f0f0;color:#111;border:1px solid #ddd" onclick="openCoachProfile()">Modifier mon profil</button>
     </div>`;
 }
@@ -1853,7 +1855,7 @@ function buildSwitcher(){
     `<button class="ath-btn" onclick="openLinkAthleteModal()" title="Associer un athlète existant">+ Associer</button>`+
     `<button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>`;
   }else{
-    sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
+    sw.innerHTML=`<span style="font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
   }
   // Drag-to-scroll : slide la barre même en tenant un bouton
   if(sw&&!sw._di){
@@ -1891,6 +1893,9 @@ function buildTabs(){
     `<button class="tab" onclick="openAddOptions()" style="color:var(--yellow)">+ Options</button>`;
   document.getElementById('tab-contents').innerHTML=
     tabList.map((t,i)=>`<div class="tab-content ${i===defaultIdx?'active':''}" id="tab-${t}"></div>`).join('');
+  // Titre de page : toujours synchronisé avec l'onglet actif
+  const _pt=document.getElementById('page-title');
+  if(_pt)_pt.textContent=tabLabels[defaultIdx];
   buildObsTab();
   ath.disciplines.forEach(d=>buildDiscTab(d));
   if(hasHaies)buildHFTab();
@@ -1976,7 +1981,7 @@ function buildDiscTab(disc){
       <div class="card disc-card-hist">
         <div class="card-title" style="cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between" onclick="toggleHist('${k}')">
           <span>Historique</span>
-          <span id="hist-chevron-${k}" style="font-size:11px;color:#bbb;display:inline-block;transition:transform .25s">▼</span>
+          <span id="hist-chevron-${k}" style="font-size:12px;color:#bbb;display:inline-block;transition:transform .25s">▼</span>
         </div>
         <div id="hist-body-${k}" style="display:none;margin-top:12px">
           <div class="table-wrap">
@@ -1989,7 +1994,7 @@ function buildDiscTab(disc){
     <div class="card">
       <div class="card-title">Notes du coach</div>
       <div id="disc-obs-list-${k}">
-        <div style="font-size:11px;color:#bbb;padding:8px 0;font-weight:600">Chargement…</div>
+        <div style="font-size:12px;color:#bbb;padding:8px 0;font-weight:600">Chargement…</div>
       </div>
     </div>`;
   loadDiscObservations(disc,athletes[currentAthlete].id);
@@ -2111,14 +2116,14 @@ function buildObsTab(){
             placeholder="Points à travailler, ce qui s'est bien passé, axes d'amélioration…"></textarea>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px">
-          <button onclick="saveObservation()" style="flex:1;background:var(--yellow);color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:400;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Enregistrer</button>
-          <button onclick="deleteObservation()" style="flex:1;background:#c0392b;color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:400;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Supprimer</button>
+          <button onclick="saveObservation()" style="flex:1;background:var(--yellow);color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:400;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Enregistrer</button>
+          <button onclick="deleteObservation()" style="flex:1;background:#c0392b;color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:400;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Supprimer</button>
         </div>
-        <div id="obs-msg" style="display:none;font-size:11px;font-weight:700;margin-top:8px"></div>
+        <div id="obs-msg" style="display:none;font-size:12px;font-weight:700;margin-top:8px"></div>
       </div>
       <div class="card" style="margin-top:12px">
         <div class="card-title">Historique</div>
-        <div id="coach-obs-list"><div style="font-size:11px;color:#bbb;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div></div>
+        <div id="coach-obs-list"><div style="font-size:12px;color:#bbb;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div></div>
       </div>`;
     loadCoachObservations(ath.id);
   }else{
@@ -2126,7 +2131,7 @@ function buildObsTab(){
       <div class="card">
         <div class="card-title">Observations du coach</div>
         <div id="athlete-obs-list">
-          <div style="font-size:11px;color:#bbb;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div>
+          <div style="font-size:12px;color:#bbb;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div>
         </div>
       </div>`;
     loadAthleteObservations(ath.id);
@@ -2196,8 +2201,8 @@ function openAddOptions(){
   document.getElementById('options-list').innerHTML=`
     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0">
       <div>
-        <div style="font-size:13px;font-weight:700;color:#111">Haies franchies</div>
-        <div style="font-size:11px;color:#999;margin-top:3px">Suivi des haies franchies à l'entraînement</div>
+        <div style="font-size:14px;font-weight:700;color:#111">Haies franchies</div>
+        <div style="font-size:12px;color:#999;margin-top:3px">Suivi des haies franchies à l'entraînement</div>
       </div>
       <button id="haies-opt-btn" onclick="toggleHaiesModal()" class="${ath.has_haies?'btn':'btn-cancel'}" style="width:auto;flex-shrink:0;margin-left:16px">
         ${ath.has_haies?'Activé ✓':'Activer'}
@@ -2536,7 +2541,7 @@ function renderRecords(){
   });
 
   if(!cards.length){
-    grid.innerHTML='<p style="color:#999;font-size:13px;padding:12px 0">'+(year==='tout'?'Aucun record enregistré':'Aucun record pour '+year)+'</p>';
+    grid.innerHTML='<p style="color:#999;font-size:12px;padding:12px 0">'+(year==='tout'?'Aucun record enregistré':'Aucun record pour '+year)+'</p>';
     return;
   }
 
@@ -2564,9 +2569,9 @@ function toggleRecHistory(i,disc){
     <thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Lieu</th></tr></thead>
     <tbody>${data.map(d=>`<tr>
       <td data-label="Date" style="white-space:nowrap">${formatDate(d.date)}</td>
-      <td data-label="Perf."><span class="perf-val" style="font-size:13px">${fmt(d.val)}</span></td>
+      <td data-label="Perf."><span class="perf-val" style="font-size:14px">${fmt(d.val)}</span></td>
       <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
-      <td data-label="Lieu" style="color:#888;font-size:11px">${d.lieu||'—'}</td>
+      <td data-label="Lieu" style="color:#888;font-size:12px">${d.lieu||'—'}</td>
     </tr>`).join('')}</tbody></table></div>`;
   el.classList.add('show');card.classList.add('open');
 }
@@ -3121,9 +3126,9 @@ function _renderObsFromMemory(){
     return`<div class="obs-entry" onclick="editObservation(${i})" style="cursor:pointer;border-left:3px solid #eee;padding-left:10px;transition:border-color .15s" onmouseenter="this.style.borderColor='var(--yellow)'" onmouseleave="this.style.borderColor='#eee'">
       <div class="obs-entry-date" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
         <span>${new Date(o.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>
-        ${o.discipline?`<span style="background:rgba(224,96,0,.12);color:var(--yellow);font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${o.discipline}</span>`:''}
-        <span style="background:${typeBg};color:${typeCol};font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
-        ${isTemp?`<span style="background:#f39c12;color:#fff;font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">En attente</span>`:''}
+        ${o.discipline?`<span style="background:rgba(224,96,0,.12);color:var(--yellow);font-size:10px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${o.discipline}</span>`:''}
+        <span style="background:${typeBg};color:${typeCol};font-size:10px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
+        ${isTemp?`<span style="background:#f39c12;color:#fff;font-size:10px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">En attente</span>`:''}
         <span style="margin-left:auto;font-size:10px;color:#bbb;font-weight:600">Modifier →</span>
       </div>
       <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
@@ -3209,8 +3214,8 @@ async function loadAthleteObservations(athleteId){
       return`<div class="obs-entry">
         <div class="obs-entry-date" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
           <span>${new Date(o.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>
-          ${o.discipline?`<span style="background:rgba(224,96,0,.12);color:var(--yellow);font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${o.discipline}</span>`:''}
-          <span style="background:${typeBg};color:${typeCol};font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
+          ${o.discipline?`<span style="background:rgba(224,96,0,.12);color:var(--yellow);font-size:10px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${o.discipline}</span>`:''}
+          <span style="background:${typeBg};color:${typeCol};font-size:10px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
         </div>
         <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
       </div>`;}).join('');
@@ -3225,7 +3230,7 @@ async function loadDiscObservations(disc,athleteId){
     const {data}=await sb.from('coach_observations')
       .select('date,type,texte').eq('athlete_id',athleteId).eq('discipline',disc)
       .order('date',{ascending:false}).limit(5);
-    if(!data||!data.length){el.innerHTML='<div style="font-size:11px;color:#bbb;padding:8px 0;font-weight:600">Aucune note pour cette discipline</div>';return;}
+    if(!data||!data.length){el.innerHTML='<div style="font-size:12px;color:#bbb;padding:8px 0;font-weight:600">Aucune note pour cette discipline</div>';return;}
     el.innerHTML=data.map(o=>{
       const typeBg=o.type==='compet'?'rgba(245,196,0,.15)':'rgba(224,96,0,.12)';
       const typeCol=o.type==='compet'?'#a07800':'var(--yellow)';
@@ -3233,7 +3238,7 @@ async function loadDiscObservations(disc,athleteId){
       return`<div class="obs-entry">
         <div class="obs-entry-date" style="display:flex;align-items:center;gap:6px">
           <span>${new Date(o.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>
-          <span style="background:${typeBg};color:${typeCol};font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
+          <span style="background:${typeBg};color:${typeCol};font-size:10px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
         </div>
         <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
       </div>`;}).join('');
@@ -3362,8 +3367,8 @@ function buildExistingAthletesList(){
   container.innerHTML=all.map(a=>{
     const orphan=!a.coachId||!users[a.coachId];
     const coachLabel=orphan
-      ? ' <span style="font-size:9px;background:#e06000;color:#fff;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">SANS COACH</span>'
-      : ` <span style="font-size:9px;background:#eee;color:#666;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">${users[a.coachId]?.name||'Coach'}</span>`;
+      ? ' <span style="font-size:10px;background:#e06000;color:#fff;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">SANS COACH</span>'
+      : ` <span style="font-size:10px;background:#eee;color:#666;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">${users[a.coachId]?.name||'Coach'}</span>`;
     return`<div class="existing-ath-row" id="ear-${a.id}" onclick="selectExistingAthlete('${a.id}')">
       <div class="existing-ath-name">${a.prenom} ${a.nom.toUpperCase()}${coachLabel}</div>
       <div class="existing-ath-sub">${a.cat} · née ${a.annee}</div>
