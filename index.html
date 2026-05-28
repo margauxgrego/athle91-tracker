@@ -1703,6 +1703,13 @@ function showNoAthleteScreen(){
     </div>`;
 }
 
+function openLinkAthleteModal(){
+  // Ouvre la modale directement sur l'onglet "Athlète existant" (currentUser est défini)
+  buildDiscCheckboxes();
+  origOpenModal('modal-new-athlete');
+  setAthleteMode('link');
+}
+
 function buildSwitcher(){
   const sw=document.getElementById('athlete-switcher');
   if(currentUser.type==='coach'){
@@ -1710,6 +1717,7 @@ function buildSwitcher(){
     sw.innerHTML=coachAthletes.map(a=>
       `<button class="ath-btn ${a.id===currentAthlete?'active':''}" onclick="switchAthlete('${a.id}')">${a.prenom} ${a.nom}</button>`
     ).join('')+
+    `<button class="ath-btn" onclick="openLinkAthleteModal()" title="Associer un athlète existant">+ Associer</button>`+
     `<button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>`;
   }else{
     sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
@@ -3103,7 +3111,10 @@ function setAthleteMode(mode){
 function buildExistingAthletesList(){
   const coachKey=currentUser&&currentUser.type==='coach'?currentUser.key:null;
   const container=document.getElementById('na-existing-list');
-  if(!coachKey){container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:12px 0">Fonctionnalité réservée aux coachs.</p>';return;}
+  if(!coachKey){
+    container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:16px 0">Connectez-vous en tant que coach puis utilisez le bouton <strong>+ Associer</strong> dans la barre de navigation.</p>';
+    return;
+  }
   const all=Object.values(athletes).filter(a=>{
     if(a.coachId===coachKey)return false;
     if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false;
