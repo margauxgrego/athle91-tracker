@@ -1529,7 +1529,7 @@ async function hashPassword(pw){
 }
 
 // ─── CHARGEMENT DEPUIS SUPABASE ────────────────────────────────────────────
-async function loadAllData(clubId){
+async function loadAllData(clubId=selectedClub){
   // 1. Coaches filtrés par club
   const {data:coachesData,error:e1}=await sb.from('coaches').select('*').eq('club_id',clubId);
   if(e1)throw e1;
@@ -1562,54 +1562,59 @@ async function loadAllData(clubId){
     };
   });
 
-  // 3. Performances / records / haies — filtrés par les IDs des athlètes du club
+  // 3+4+5+6. Performances, records, haies et multi-coach en parallèle
   const athIds=athData.map(a=>a.id);
+  const parallelQueries=[];
   if(athIds.length){
-    const {data:perfsData,error:e3}=await sb.from('performances').select('*').in('athlete_id',athIds);
-    if(e3)throw e3;
-    perfsData.forEach(p=>{
-      if(!athletes[p.athlete_id])return;
-      const dk=dataKey(p.discipline);
-      if(!athletes[p.athlete_id][dk])athletes[p.athlete_id][dk]=[];
-      athletes[p.athlete_id][dk].push({
-        id:p.id,date:p.date,val:parseFloat(p.val),
-        type:p.type,lieu:p.lieu||'',niveau:p.niveau||'',
-        vent:p.vent??null,hauteur_haie:p.hauteur_haie||null
-      });
-    });
-
-    const {data:recsData,error:e4}=await sb.from('records').select('*').in('athlete_id',athIds);
-    if(e4)throw e4;
-    recsData.forEach(r=>{
-      if(!athletes[r.athlete_id])return;
-      athletes[r.athlete_id].records.push({
-        id:r.id,disc:r.disc,perf:r.perf,date:r.date,cat:r.cat
-      });
-    });
-
-    const {data:hfData,error:e5}=await sb.from('haies_franchies').select('*').in('athlete_id',athIds).order('date');
-    if(e5)throw e5;
-    hfData.forEach(h=>{
-      if(!athletes[h.athlete_id])return;
-      athletes[h.athlete_id].haiesFranchies.push({
-        id:h.id,date:h.date,val:h.val,
-        type:h.type,dist:h.dist||'',note:h.note||''
-      });
-      if(!athletes[h.athlete_id].haiesTotalSince)
-        athletes[h.athlete_id].haiesTotalSince=formatDate(h.date);
-    });
+    parallelQueries.push(
+      sb.from('performances').select('*').in('athlete_id',athIds),
+      sb.from('records').select('*').in('athlete_id',athIds),
+      sb.from('haies_franchies').select('*').in('athlete_id',athIds).order('date')
+    );
   }
-
-  // 4. Multi-coach : associations supplémentaires (coaches du même club)
   if(coachIds.length){
-    const {data:acData,error:e6}=await sb.from('athlete_coaches').select('*').in('coach_id',coachIds);
-    if(!e6&&acData){
-      acData.forEach(ac=>{
-        if(!athletes[ac.athlete_id])return;
-        if(!athletes[ac.athlete_id].extraCoaches)athletes[ac.athlete_id].extraCoaches=[];
-        if(!athletes[ac.athlete_id].extraCoaches.includes(ac.coach_id))
-          athletes[ac.athlete_id].extraCoaches.push(ac.coach_id);
+    parallelQueries.push(sb.from('athlete_coaches').select('*').in('coach_id',coachIds));
+  }
+  if(parallelQueries.length){
+    const results=await Promise.all(parallelQueries);
+    let idx=0;
+    if(athIds.length){
+      const {data:perfsData,error:e3}=results[idx++];
+      if(e3)throw e3;
+      perfsData.forEach(p=>{
+        if(!athletes[p.athlete_id])return;
+        const dk=dataKey(p.discipline);
+        if(!athletes[p.athlete_id][dk])athletes[p.athlete_id][dk]=[];
+        athletes[p.athlete_id][dk].push({
+          id:p.id,date:p.date,val:parseFloat(p.val),
+          type:p.type,lieu:p.lieu||'',niveau:p.niveau||'',
+          vent:p.vent??null,hauteur_haie:p.hauteur_haie||null
+        });
       });
+      const {data:recsData,error:e4}=results[idx++];
+      if(e4)throw e4;
+      recsData.forEach(r=>{
+        if(!athletes[r.athlete_id])return;
+        athletes[r.athlete_id].records.push({id:r.id,disc:r.disc,perf:r.perf,date:r.date,cat:r.cat});
+      });
+      const {data:hfData,error:e5}=results[idx++];
+      if(e5)throw e5;
+      hfData.forEach(h=>{
+        if(!athletes[h.athlete_id])return;
+        athletes[h.athlete_id].haiesFranchies.push({id:h.id,date:h.date,val:h.val,type:h.type,dist:h.dist||'',note:h.note||''});
+        if(!athletes[h.athlete_id].haiesTotalSince)athletes[h.athlete_id].haiesTotalSince=formatDate(h.date);
+      });
+    }
+    if(coachIds.length){
+      const {data:acData,error:e6}=results[idx++];
+      if(!e6&&acData){
+        acData.forEach(ac=>{
+          if(!athletes[ac.athlete_id])return;
+          if(!athletes[ac.athlete_id].extraCoaches)athletes[ac.athlete_id].extraCoaches=[];
+          if(!athletes[ac.athlete_id].extraCoaches.includes(ac.coach_id))
+            athletes[ac.athlete_id].extraCoaches.push(ac.coach_id);
+        });
+      }
     }
   }
   // Sauvegarde du cache local pour le mode hors ligne
@@ -1622,41 +1627,44 @@ async function initApp(){
   const orig=box.innerHTML;
   box.innerHTML='<div style="text-align:center;padding:48px 0 40px"><div class="logo-badge" style="margin:0 auto 16px"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div><div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement...</div></div>';
   try{
-    // Chargement léger : la liste des clubs seulement
-    const {data:clubs,error:clubErr}=await sb.from('clubs').select('*').order('nom');
-    if(clubErr)throw clubErr;
-    clubsData=clubs||[];
-
-    // Tentative de restauration de session (connexion persistante)
     const savedSession=_loadSession();
+
     if(savedSession&&savedSession.selectedClub){
+      // Session trouvée → charger clubs ET données du club en parallèle
+      const [{data:clubs,error:clubErr}]=await Promise.all([
+        sb.from('clubs').select('*').order('nom'),
+        loadAllData(savedSession.selectedClub)
+      ]);
+      if(clubErr)throw clubErr;
+      clubsData=clubs||[];
+
       const clubExists=clubsData.find(c=>c.id===savedSession.selectedClub);
       if(clubExists){
-        try{
-          await loadAllData(savedSession.selectedClub);
-          const cu=savedSession.currentUser;
-          const userExists=cu.type==='coach'?!!users[cu.key]:!!athletes[cu.key];
-          if(userExists){
-            selectedClub=savedSession.selectedClub;
-            currentUser=cu;
-            if(cu.type==='athlete'){
-              currentAthlete=cu.key;
-            }else{
-              currentAthlete=savedSession.currentAthlete&&athletes[savedSession.currentAthlete]
-                ?savedSession.currentAthlete
-                :(athletesForCoach(cu.key)[0]?.id||null);
-            }
-            box.innerHTML=orig;
-            document.getElementById('login-screen').style.display='none';
-            document.getElementById('app').style.display='block';
-            buildApp();
-            return;
+        const cu=savedSession.currentUser;
+        const userExists=cu.type==='coach'?!!users[cu.key]:!!athletes[cu.key];
+        if(userExists){
+          selectedClub=savedSession.selectedClub;
+          currentUser=cu;
+          if(cu.type==='athlete'){
+            currentAthlete=cu.key;
+          }else{
+            currentAthlete=savedSession.currentAthlete&&athletes[savedSession.currentAthlete]
+              ?savedSession.currentAthlete
+              :(athletesForCoach(cu.key)[0]?.id||null);
           }
-        }catch(e){
-          console.warn('Restauration de session échouée',e);
-          _clearSession();
+          box.innerHTML=orig;
+          document.getElementById('login-screen').style.display='none';
+          document.getElementById('app').style.display='block';
+          buildApp();
+          return;
         }
       }
+      _clearSession();
+    } else {
+      // Pas de session → charger juste la liste des clubs
+      const {data:clubs,error:clubErr}=await sb.from('clubs').select('*').order('nom');
+      if(clubErr)throw clubErr;
+      clubsData=clubs||[];
     }
 
     box.innerHTML=orig;
@@ -2354,7 +2362,7 @@ function buildApp(){
   if(!currentAthlete){showNoAthleteScreen();return;}
   buildTabs();           // crée le squelette des onglets
   showDataLoading();     // overlay clignotant immédiatement
-  loadAllData()          // rafraîchit les données depuis Supabase
+  loadAllData(selectedClub)  // rafraîchit les données depuis Supabase
     .catch(e=>console.warn('[buildApp] chargement:',e))
     .finally(()=>{
       hideDataLoading();
