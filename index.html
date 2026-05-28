@@ -2415,13 +2415,13 @@ function buildDiscTab(disc){
             <div class="form-group"><label>${valLabel}</label><input type="number" id="${k}-val" placeholder="${valPh}" step="${isTimeDisc(disc)?'0.01':'1'}"></div>
           </div>
           <div class="form-row-2">
-            <div class="form-group"><label>Type</label><select id="${k}-type">
-              <option value="compet">Compétition</option>
+            <div class="form-group"><label>Type</label><select id="${k}-type" onchange="const w=document.getElementById('${k}-niveau-wrap');if(w)w.style.display=this.value==='compet'?'':'none';">
               <option value="entrainement">Entraînement</option>
+              <option value="compet">Compétition</option>
             </select></div>
             <div class="form-group"><label>Lieu</label><input type="text" id="${k}-lieu" placeholder="Lieu..."></div>
           </div>
-          <div class="form-group"><label>Niveau</label><input type="text" id="${k}-niveau" placeholder="R5, D2..."></div>
+          <div class="form-group" id="${k}-niveau-wrap" style="display:none"><label>Niveau</label><input type="text" id="${k}-niveau" placeholder="R5, D2..."></div>
           ${haiesField}${ventField}
           <button class="btn" onclick="addPerf('${k}','${disc}')">+ Ajouter</button>
         </div>
@@ -3052,6 +3052,11 @@ async function addPerf(k,disc){
     if(document.getElementById(k+'-niveau'))document.getElementById(k+'-niveau').value='';
     if(document.getElementById(k+'-vent'))document.getElementById(k+'-vent').value='';
     if(document.getElementById(k+'-hauteur_haie'))document.getElementById(k+'-hauteur_haie').value='';
+    // Remettre type à "Entraînement" par défaut et cacher le champ Niveau
+    const typeEl=document.getElementById(k+'-type');
+    if(typeEl)typeEl.value='entrainement';
+    const niveauWrap=document.getElementById(k+'-niveau-wrap');
+    if(niveauWrap)niveauWrap.style.display='none';
   }
 
   if(_offlineMode){
