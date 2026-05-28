@@ -272,28 +272,28 @@ tr:hover td{background:#fafafa;}
   .logout-btn{font-size:10px;padding:5px 10px;white-space:nowrap;flex-shrink:0;}
 
   /* ── Header ── */
-  header{padding:10px 0 10px;margin-bottom:10px;padding-left:12px;}
+  header{padding:8px 0 8px;margin-bottom:8px;padding-left:12px;}
   .header-inner{
     flex-direction:column;
     align-items:stretch;
-    gap:8px;
+    gap:6px;
   }
-  .logo-inline .la,.logo-inline .l9{font-size:12px;padding:2px 6px;}
-  .header-name{font-size:clamp(22px,7vw,30px);}
-  .header-sub{font-size:9px;}
+  .logo-inline .la,.logo-inline .l9{font-size:11px;padding:2px 5px;}
+  .header-name{font-size:clamp(18px,5.5vw,24px);}
+  .header-sub{font-size:8px;}
   .header-records{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:6px;
+    gap:5px;
   }
-  .record-pill{padding:6px 4px;min-width:0;}
-  .record-pill .val{font-size:15px;}
+  .record-pill{padding:5px 3px;min-width:0;}
+  .record-pill .val{font-size:13px;}
   .record-pill .label{font-size:7px;letter-spacing:0;}
 
   /* ── Tabs — ne bougent PAS verticalement ── */
   .tabs{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;margin-bottom:12px;touch-action:pan-x;}
   .tabs::-webkit-scrollbar{display:none;}
-  .tab{font-size:11px;padding:8px 11px;white-space:nowrap;flex-shrink:0;}
+  .tab{font-size:10px;padding:7px 9px;white-space:nowrap;flex-shrink:0;}
 
   /* ── Grid → 1 colonne ── */
   .grid-2{grid-template-columns:1fr;gap:8px;margin-bottom:8px;}
@@ -303,8 +303,8 @@ tr:hover td{background:#fafafa;}
   .disc-card-add{order:3;}
 
   /* ── Cards ── */
-  .card{padding:12px;margin-bottom:8px;border-radius:8px;}
-  .card-title{font-size:9px;letter-spacing:1.5px;margin-bottom:10px;}
+  .card{padding:10px;margin-bottom:7px;border-radius:8px;}
+  .card-title{font-size:9px;letter-spacing:1.5px;margin-bottom:8px;}
 
   /* ── Stats → 2 colonnes ── */
   .stat-row{
@@ -313,12 +313,12 @@ tr:hover td{background:#fafafa;}
     gap:6px;
     margin-bottom:10px;
   }
-  .stat{padding:9px 10px;}
-  .stat .n{font-size:20px;}
-  .stat .l{font-size:8px;}
+  .stat{padding:7px 8px;}
+  .stat .n{font-size:17px;}
+  .stat .l{font-size:7px;}
 
   /* ── Chart ── */
-  .chart-wrap{height:180px;}
+  .chart-wrap{height:160px;}
   .chart-header{flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:8px;}
   .filter-row{gap:3px;flex-wrap:wrap;}
   .filter-btn{font-size:9px;padding:3px 7px;}
@@ -336,9 +336,9 @@ tr:hover td{background:#fafafa;}
   }
   .table-wrap::-webkit-scrollbar{display:none;}
   table{min-width:360px;}
-  th{font-size:8px;padding:6px 7px;}
-  td{font-size:12px;padding:7px 7px;}
-  .perf-val{font-size:13px;}
+  th{font-size:7px;padding:5px 6px;}
+  td{font-size:11px;padding:6px 6px;}
+  .perf-val{font-size:12px;}
   .badge{font-size:8px;padding:1px 5px;}
   .rp-badge{font-size:7px;padding:1px 4px;}
   .btn-ghost{padding:3px 6px;font-size:10px;}
@@ -358,16 +358,16 @@ tr:hover td{background:#fafafa;}
   .btn{font-size:13px;padding:12px;width:100%;margin-top:4px;}
 
   /* ── Haies franchies ── */
-  .hurdles-hero{padding:16px 0 12px;}
-  .hurdles-counter{font-size:60px;}
-  .hurdles-label{font-size:10px;}
+  .hurdles-hero{padding:12px 0 8px;}
+  .hurdles-counter{font-size:52px;}
+  .hurdles-label{font-size:9px;}
 
   /* ── Records ── */
   .records-grid{grid-template-columns:1fr 1fr;gap:8px;}
-  .rec-card{padding:10px;}
-  .rec-card .disc{font-size:9px;}
-  .rec-card .perf{font-size:18px;}
-  .rec-card .meta{font-size:9px;}
+  .rec-card{padding:8px;}
+  .rec-card .disc{font-size:8px;}
+  .rec-card .perf{font-size:15px;}
+  .rec-card .meta{font-size:8px;}
   .rec-history th,.rec-history td{font-size:10px;padding:5px 6px;}
 
   /* ── Modal ── */
@@ -378,7 +378,7 @@ tr:hover td{background:#fafafa;}
     max-height:calc(88vh - 80px);
     overflow-y:auto;
   }
-  .modal h3{font-size:22px;}
+  .modal h3{font-size:18px;}
   .modal .form-row-2{grid-template-columns:1fr 1fr;}
   .modal-actions{flex-direction:column-reverse;gap:6px;}
   .modal-actions .btn,
@@ -416,14 +416,14 @@ tr:hover td{background:#fafafa;}
 
 /* ═══ TRÈS PETIT ≤380px ═══════════════ */
 @media(max-width:380px){
-  .tab{font-size:10px;padding:7px 8px;}
-  .stat .n{font-size:17px;}
-  .header-name{font-size:21px;}
-  .record-pill .val{font-size:14px;}
-  th{font-size:7px;padding:5px 5px;}
-  td{font-size:11px;padding:6px 5px;}
-  .chart-wrap{height:155px;}
-  .hurdles-counter{font-size:48px;}
+  .tab{font-size:9px;padding:6px 7px;}
+  .stat .n{font-size:15px;}
+  .header-name{font-size:18px;}
+  .record-pill .val{font-size:12px;}
+  th{font-size:7px;padding:4px 5px;}
+  td{font-size:10px;padding:5px 5px;}
+  .chart-wrap{height:140px;}
+  .hurdles-counter{font-size:44px;}
   .ath-btn,.logout-btn{font-size:9px;padding:4px 8px;}
 }
 
