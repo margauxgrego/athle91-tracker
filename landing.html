@@ -196,9 +196,8 @@ else {
     e.preventDefault();
     deferredPrompt = e;
     promptFired = true;
+    // Prompt prêt : effacer le spinner, le bouton est cliquable
     setStatus('');
-    // Déclencher automatiquement le prompt d'installation
-    installApp();
   });
 
   // Pas de fallback artificiel : le bouton reste disponible pour un clic manuel
