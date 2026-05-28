@@ -3859,6 +3859,9 @@ function formatVal(disc,v){
 function skipFirstLogin(){
   closeModal('modal-first-login');
   // first_login reste true en DB → le prompt réapparaîtra à la prochaine connexion
+  // Lancer le tutoriel dans tous les cas (même si déjà vu avant)
+  localStorage.removeItem(_tutKey());
+  setTimeout(()=>showTutorialWelcome(), 500);
 }
 
 async function saveFirstLoginPw(){
@@ -3875,7 +3878,10 @@ async function saveFirstLoginPw(){
   athletes[currentAthlete].password_hash=hash;
   athletes[currentAthlete].first_login=false;
   closeModal('modal-first-login');
-  showMessage('Mot de passe enregistré','Ton mot de passe personnel est actif. 🎉');
+  // Réinitialiser le tutoriel pour cet athlète (nouveau compte OU nouveau mdp)
+  // → showTutorialWelcome s'affiche même si déjà vu avant
+  localStorage.removeItem(_tutKey());
+  setTimeout(()=>showTutorialWelcome(), 500);
 }
 
 // ─── CHARGEMENT DONNÉES (overlay clignotant) ────────────────────────────
