@@ -3295,10 +3295,9 @@ function buildExistingAthletesList(){
     return;
   }
   const all=Object.values(athletes).filter(a=>{
-    if(a.coachId===coachKey)return false;               // déjà mon athlète
-    if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false; // déjà lié
-    if(a.coachId&&users[a.coachId])return false;        // a déjà un coach actif
-    return true; // orphelin uniquement
+    if(a.coachId===coachKey)return false;                                      // déjà mon athlète (principal)
+    if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false;         // déjà lié (multi-coach)
+    return true; // tous les athlètes non encore liés à ce coach
   }).sort((a,b)=>`${a.nom}${a.prenom}`.localeCompare(`${b.nom}${b.prenom}`));
   if(!all.length){
     container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:16px 0">Tous les athlètes sont déjà associés à votre profil.</p>';
@@ -3306,8 +3305,11 @@ function buildExistingAthletesList(){
   }
   container.innerHTML=all.map(a=>{
     const orphan=!a.coachId||!users[a.coachId];
+    const coachLabel=orphan
+      ? ' <span style="font-size:9px;background:#e06000;color:#fff;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">SANS COACH</span>'
+      : ` <span style="font-size:9px;background:#eee;color:#666;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">${users[a.coachId]?.name||'Coach'}</span>`;
     return`<div class="existing-ath-row" id="ear-${a.id}" onclick="selectExistingAthlete('${a.id}')">
-      <div class="existing-ath-name">${a.prenom} ${a.nom.toUpperCase()}${orphan?' <span style="font-size:9px;background:#e06000;color:#fff;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">SANS COACH</span>':''}</div>
+      <div class="existing-ath-name">${a.prenom} ${a.nom.toUpperCase()}${coachLabel}</div>
       <div class="existing-ath-sub">${a.cat} · née ${a.annee}</div>
     </div>`;
   }).join('');
