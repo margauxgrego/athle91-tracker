@@ -3394,8 +3394,10 @@ async function checkAppVersion() {
     const m = txt.match(/const CACHE = '([^']+)'/);
     if (!m) return;
     const v = m[1];
-    if (!_swVer) { _swVer = v; return; }
-    if (_swVer !== v) { location.reload(); return; }
+    if (!_swVer) { _swVer = v; }
+    else if (_swVer !== v) { location.reload(); return; }
+    // Réseau accessible → si on était en mode hors ligne, tenter reconnexion Supabase
+    if(_offlineMode){ window.dispatchEvent(new Event('online')); return; }
   } catch(e) {}
   // Déclenche aussi la mise à jour du SW lui-même
   if (_swReg) try { await _swReg.update(); } catch(e) {}
