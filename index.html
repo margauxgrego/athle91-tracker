@@ -2934,6 +2934,7 @@ async function confirmAddDisc(){
   inserts.forEach(ins=>{if(!ath.disciplines.includes(ins.discipline))ath.disciplines.push(ins.discipline);});
   closeModal('modal-add-disc');
   charts={};buildTabs();renderAll();
+  switchTab(discKey(inserts[0].discipline));
   broadcastChange();
 }
 
