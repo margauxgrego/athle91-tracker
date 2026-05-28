@@ -3116,9 +3116,10 @@ function buildExistingAthletesList(){
     return;
   }
   const all=Object.values(athletes).filter(a=>{
-    if(a.coachId===coachKey)return false;
-    if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false;
-    return true;
+    if(a.coachId===coachKey)return false;               // déjà mon athlète
+    if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false; // déjà lié
+    if(a.coachId&&users[a.coachId])return false;        // a déjà un coach actif
+    return true; // orphelin uniquement
   }).sort((a,b)=>`${a.nom}${a.prenom}`.localeCompare(`${b.nom}${b.prenom}`));
   if(!all.length){
     container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:16px 0">Tous les athlètes sont déjà associés à votre profil.</p>';
