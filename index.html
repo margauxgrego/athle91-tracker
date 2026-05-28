@@ -1124,6 +1124,8 @@ tr:hover td{background:#222;}
 /* Bouton "Relancer" dans les Paramètres */
 .tut-relaunch-btn{display:flex;align-items:center;gap:10px;background:none;border:1.5px solid #2a2a2a;color:#888;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;padding:10px 14px;border-radius:8px;transition:all .2s;width:100%;}
 .tut-relaunch-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+/* Toast "Passer" */
+.tut-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1c1c1c;border:1px solid #2a2a2a;border-left:3px solid var(--yellow);border-radius:10px;padding:11px 18px;font-size:12px;color:#bbb;z-index:10600;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.55);animation:tut-slide-in .3s ease;}
 
 </style>
 </head>
@@ -2155,8 +2157,14 @@ function _posTutCard(card,sel,pos){
 }
 
 function skipTutorial(){
-  // "Passer" : ferme sans marquer comme vu → réapparaîtra à la prochaine connexion
+  // "Passer" : marque comme vu + toast discret vers Paramètres
+  _tutMarkDone();
   destroyTutorial();
+  const t=document.createElement('div');
+  t.className='tut-toast';
+  t.innerHTML='💡 Retrouve le tutoriel dans <strong style="color:var(--yellow)">Paramètres</strong> à tout moment';
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(()=>t.remove(),400);},4000);
 }
 
 function finishTutorial(){
