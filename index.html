@@ -1507,7 +1507,8 @@ async function loadAllData(clubId){
       if(!athletes[p.athlete_id][dk])athletes[p.athlete_id][dk]=[];
       athletes[p.athlete_id][dk].push({
         id:p.id,date:p.date,val:parseFloat(p.val),
-        type:p.type,lieu:p.lieu||'',niveau:p.niveau||''
+        type:p.type,lieu:p.lieu||'',niveau:p.niveau||'',
+        vent:p.vent??null,hauteur_haie:p.hauteur_haie||null
       });
     });
 
@@ -2026,6 +2027,7 @@ function dataKey(d){
 }
 function isDistDisc(d){return['Hauteur','Longueur','Triple Saut'].includes(d);}
 function isTimeDisc(d){return!isDistDisc(d)&&!d.includes('Poids')&&!d.includes('Disque')&&!d.includes('Marteau')&&!d.includes('Javelot');}
+function isHaiesDisc(d){return d.includes('Haies');}
 
 // ─── TAB BUILDERS ─────────────────────────────────────────────────────────
 function buildDiscTab(disc){
@@ -2034,6 +2036,10 @@ function buildDiscTab(disc){
   if(!el)return;
   const valLabel=isDistDisc(disc)?disc+' (cm)':isTimeDisc(disc)?'Temps (s)':disc+' (cm)';
   const valPh=disc==='Hauteur'?'140':disc==='Longueur'?'460':disc==='Triple Saut'?'900':disc.includes('m')&&!disc.includes('Haies')?'65.0':'100';
+  const haiesField=isHaiesDisc(disc)?`<div class="form-group"><label>Hauteur haie (cm) <span style="color:#555;font-weight:400;font-size:10px">optionnel</span></label><select id="${k}-hauteur_haie"><option value="">—</option><option value="76.2">76.2 cm</option><option value="84">84 cm</option><option value="91.4">91.4 cm</option><option value="100">100 cm</option><option value="106.7">106.7 cm</option></select></div>`:'';
+  const ventField=isTimeDisc(disc)?`<div class="form-group"><label>Vent (m/s) <span style="color:#555;font-weight:400;font-size:10px">optionnel</span></label><input type="number" id="${k}-vent" placeholder="ex : +1.2" step="0.1"></div>`:'';
+  const haiesTh=isHaiesDisc(disc)?'<th>Haie</th>':'';
+  const ventTh=isTimeDisc(disc)?'<th>Vent</th>':'';
   el.innerHTML=`
     <div class="stat-row" id="stats-${k}"></div>
     <div class="legend">
@@ -2070,6 +2076,7 @@ function buildDiscTab(disc){
             <div class="form-group"><label>Lieu</label><input type="text" id="${k}-lieu" placeholder="Lieu..."></div>
           </div>
           <div class="form-group"><label>Niveau</label><input type="text" id="${k}-niveau" placeholder="R5, D2..."></div>
+          ${haiesField}${ventField}
           <button class="btn" onclick="addPerf('${k}','${disc}')">+ Ajouter</button>
         </div>
       </div>
@@ -2080,7 +2087,7 @@ function buildDiscTab(disc){
         </div>
         <div id="hist-body-${k}" style="display:none;margin-top:12px">
           <div class="table-wrap">
-            <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th></tr></thead>
+            <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th>${haiesTh}${ventTh}</tr></thead>
             <tbody id="table-${k}"></tbody></table>
           </div>
         </div>
@@ -2555,12 +2562,15 @@ function renderPerf(k,disc){
   if(tbody)tbody.innerHTML=sorted.map(d=>{
     const isRP=d.val===pr;
     const lvl=d.niveau?`<span class="badge badge-${d.niveau.toLowerCase()}">${d.niveau}</span>`:'—';
+    const haiesTd=isHaiesDisc(disc)?`<td data-label="Haie" style="color:#888;font-size:12px">${d.hauteur_haie?d.hauteur_haie+' cm':'—'}</td>`:'';
+    const ventTd=isTimeDisc(disc)?`<td data-label="Vent" style="color:#888;font-size:12px">${d.vent!=null?d.vent+' m/s':'—'}</td>`:'';
     return`<tr class="perf-row" onclick="openEditPerf('${dk}','${k}','${disc}','${d.id}')">
       <td data-label="Date">${formatDate(d.date)}</td>
       <td data-label="Perf."><span class="perf-val">${fmtPr(d.val)}</span>${isRP?'<span class="rp-badge">RP</span>':''}</td>
       <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
       <td data-label="Niveau">${lvl}</td>
       <td data-label="Lieu" style="color:#888;font-size:12px">${d.lieu||'—'}</td>
+      ${haiesTd}${ventTd}
     </tr>`;
   }).join('');
   buildChart(k);
@@ -2681,34 +2691,41 @@ async function addPerf(k,disc){
   const type=document.getElementById(k+'-type').value;
   const lieu=document.getElementById(k+'-lieu').value;
   const niveau=document.getElementById(k+'-niveau')?.value||'';
+  const ventRaw=document.getElementById(k+'-vent')?.value;
+  const vent=isTimeDisc(disc)&&ventRaw!==''&&ventRaw!=null?parseFloat(ventRaw):null;
+  const hauteur_haie=isHaiesDisc(disc)?(document.getElementById(k+'-hauteur_haie')?.value||null):null;
   if(!date||isNaN(val)){showMessage('Ajout impossible','Date et valeur requis.','danger');return;}
 
-  if(_offlineMode){
-    const tempId=_uuid();
-    const payload={athlete_id:currentAthlete,discipline:disc,val,date,type,lieu,niveau};
-    _enqueue({action:'INSERT',table:'performances',payload,tempId});
-    const dk=dataKey(disc);
-    if(!athletes[currentAthlete][dk])athletes[currentAthlete][dk]=[];
-    athletes[currentAthlete][dk].push({id:tempId,date,val,type,lieu,niveau});
-    _saveCache();
+  function _resetPerfForm(){
     document.getElementById(k+'-val').value='';
     document.getElementById(k+'-lieu').value='';
     if(document.getElementById(k+'-niveau'))document.getElementById(k+'-niveau').value='';
+    if(document.getElementById(k+'-vent'))document.getElementById(k+'-vent').value='';
+    if(document.getElementById(k+'-hauteur_haie'))document.getElementById(k+'-hauteur_haie').value='';
+  }
+
+  if(_offlineMode){
+    const tempId=_uuid();
+    const payload={athlete_id:currentAthlete,discipline:disc,val,date,type,lieu,niveau,vent,hauteur_haie};
+    _enqueue({action:'INSERT',table:'performances',payload,tempId});
+    const dk=dataKey(disc);
+    if(!athletes[currentAthlete][dk])athletes[currentAthlete][dk]=[];
+    athletes[currentAthlete][dk].push({id:tempId,date,val,type,lieu,niveau,vent,hauteur_haie});
+    _saveCache();
+    _resetPerfForm();
     renderPerf(k,disc);
     showMessage('Hors ligne','Performance enregistrée localement — sera envoyée à la reconnexion.','info');
     return;
   }
 
   const {data,error}=await sb.from('performances').insert({
-    athlete_id:currentAthlete,discipline:disc,val,date,type,lieu,niveau
+    athlete_id:currentAthlete,discipline:disc,val,date,type,lieu,niveau,vent,hauteur_haie
   }).select().single();
   if(error){showMessage('Erreur','Impossible d\'ajouter la performance.','danger');return;}
   const dk=dataKey(disc);
   if(!athletes[currentAthlete][dk])athletes[currentAthlete][dk]=[];
-  athletes[currentAthlete][dk].push({id:data.id,date,val,type,lieu,niveau});
-  document.getElementById(k+'-val').value='';
-  document.getElementById(k+'-lieu').value='';
-  if(document.getElementById(k+'-niveau'))document.getElementById(k+'-niveau').value='';
+  athletes[currentAthlete][dk].push({id:data.id,date,val,type,lieu,niveau,vent:data.vent??null,hauteur_haie:data.hauteur_haie||null});
+  _resetPerfForm();
   renderPerf(k,disc);
   broadcastChange();
 }
@@ -2917,6 +2934,7 @@ async function confirmAddDisc(){
   inserts.forEach(ins=>{if(!ath.disciplines.includes(ins.discipline))ath.disciplines.push(ins.discipline);});
   closeModal('modal-add-disc');
   charts={};buildTabs();renderAll();
+  switchTab(discKey(inserts[0].discipline));
   broadcastChange();
 }
 
