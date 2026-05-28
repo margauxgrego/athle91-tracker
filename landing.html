@@ -155,9 +155,17 @@ const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 function setStatus(msg) {
   document.getElementById('install-status').innerHTML = msg;
 }
+function showInstallBtn() {
+  document.getElementById('btn-install').style.display = 'block';
+}
 function showOpen(msg) {
   document.getElementById('btn-open').style.display = 'block';
   if (msg) setStatus(msg);
+}
+
+// ── Enregistrement SW (requis par Chrome pour déclencher beforeinstallprompt) ─
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 
 // ── Déjà installée ────────────────────────────────────────────────────────
@@ -180,20 +188,19 @@ else if (isFirefox) {
 
 // ── Chrome / Edge / Android : installation automatique ───────────────────
 else {
+  // Afficher le bouton d'installation immédiatement (cliquable même avant que le prompt soit prêt)
+  showInstallBtn();
+  setStatus('<span class="spinner"></span>Préparation de l\'installation…');
+
   window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     deferredPrompt = e;
     promptFired = true;
-    // Déclencher automatiquement le prompt d'installation
-    installApp();
+    // Prompt prêt : effacer le spinner, le bouton est cliquable
+    setStatus('');
   });
 
-  // Fallback : si beforeinstallprompt ne se déclenche pas après 3s
-  setTimeout(() => {
-    if (!promptFired && !isInstalled) {
-      showOpen('Installation non disponible sur ce navigateur.<br>Tu peux ouvrir l\'application directement.');
-    }
-  }, 3000);
+  // Pas de fallback artificiel : le bouton reste disponible pour un clic manuel
 }
 
 // ── Après installation : redirection auto vers l'app ─────────────────────
@@ -206,7 +213,11 @@ window.addEventListener('appinstalled', () => {
 
 // ── Fonction d'installation ───────────────────────────────────────────────
 async function installApp() {
-  if (!deferredPrompt) return;
+  if (!deferredPrompt) {
+    // Le prompt n'est pas encore prêt : attendre
+    setStatus('<span class="spinner"></span>Préparation en cours, réessaie dans quelques secondes…');
+    return;
+  }
   const prompt = deferredPrompt;
   deferredPrompt = null;
   setStatus('Installation en cours…');
@@ -214,6 +225,7 @@ async function installApp() {
   const { outcome } = await prompt.userChoice;
   if (outcome === 'dismissed') {
     showOpen('Installation annulée. Tu peux ouvrir l\'application directement.');
+    document.getElementById('btn-install').style.display = 'none';
   }
   // Si 'accepted' : l'événement appinstalled gère la redirection
 }
