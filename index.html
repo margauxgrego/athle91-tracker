@@ -154,13 +154,19 @@ tr:hover td{background:#222;}
 .records-filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
 .records-filters label{font-size:10px;font-weight:400;color:#888;text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
 .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
-.rec-card{background:#1c1c1c;border:1px solid #2a2a2a;border-bottom:3px solid var(--yellow);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.3);}
-.rec-card:hover{border-color:var(--yellow);background:#222;box-shadow:0 2px 12px rgba(224,96,0,.2);}
-.rec-card.open{border-color:var(--orange);}
+.rec-card{background:#1c1c1c;border:1px solid #2a2a2a;border-bottom:3px solid var(--yellow);border-radius:8px;padding:12px 14px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,border-color .18s,background .18s;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.rec-card:hover{border-color:var(--yellow);background:#222;box-shadow:0 6px 20px rgba(224,96,0,.22);transform:translateY(-2px);}
+.rec-card:active{transform:translateY(0);box-shadow:0 1px 6px rgba(0,0,0,.4);}
+.rec-card.open{border-color:var(--orange);border-bottom-color:var(--orange);background:#1e1a15;}
 .rec-card .disc{font-size:10px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
 .rec-card .disc-label{font-size:10px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
 .rec-card .perf{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;color:var(--yellow);line-height:1;margin:4px 0;}
 .rec-card .meta{font-size:10px;color:#888;}
+.rec-hint{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px;padding-top:6px;border-top:1px solid #2a2a2a;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#555;transition:color .18s;}
+.rec-card:hover .rec-hint{color:var(--yellow);}
+.rec-card.open .rec-hint{color:var(--orange);}
+.rec-chevron{display:inline-block;font-size:11px;transition:transform .25s cubic-bezier(.22,1,.36,1);}
+.rec-card.open .rec-chevron{transform:rotate(180deg);}
 .rec-history{display:none;background:#171717;border:1px solid #252525;border-radius:8px;padding:12px;margin-top:8px;}
 .rec-history.show{display:block;}
 .rec-history table{min-width:0;width:100%;}
@@ -388,6 +394,7 @@ tr:hover td{background:#222;}
   .rec-card .disc{font-size:10px;}
   .rec-card .perf{font-size:14px;}
   .rec-card .meta{font-size:10px;}
+  .rec-hint{margin-top:6px;padding-top:5px;font-size:10px;}
   .rec-history{padding:8px;border-radius:6px;}
   .rec-history th,.rec-history td{font-size:12px;padding:4px 5px;}
 
@@ -2554,6 +2561,7 @@ function renderRecords(){
       <div class="disc">${discDisplayNames[c.disc]||c.disc}</div>
       <div class="perf">${c.fmtPr}</div>
       <div class="meta">${c.year}${c.year&&c.cat?' · ':''}${c.cat}</div>
+      <div class="rec-hint">Historique <span class="rec-chevron">▾</span></div>
       <div class="rec-history" id="rec-hist-${i}"></div>
     </div>`).join('');
 }
