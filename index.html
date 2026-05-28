@@ -3875,7 +3875,9 @@ async function saveFirstLoginPw(){
   athletes[currentAthlete].password_hash=hash;
   athletes[currentAthlete].first_login=false;
   closeModal('modal-first-login');
-  // Nouveau compte athlète → lancer le tutoriel de bienvenue
+  // Réinitialiser le tutoriel pour cet athlète (nouveau compte OU nouveau mdp)
+  // → showTutorialWelcome s'affiche même si déjà vu avant
+  localStorage.removeItem(_tutKey());
   setTimeout(()=>showTutorialWelcome(), 500);
 }
 
