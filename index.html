@@ -2210,8 +2210,13 @@ async function _showTutStep(n){
   const targetEl=step.target?document.querySelector(step.target):null;
   // Scroll instantané vers la cible si elle est hors champ
   if(targetEl){
-    targetEl.scrollIntoView({behavior:'instant',block:step.scrollBlock||'nearest'});
-    await new Promise(r=>setTimeout(r,30));
+    if(step.scrollBlock==='end'){
+      // Scroll tout en bas pour les éléments en bas de page (ex: param-disc-card)
+      window.scrollTo({top:document.body.scrollHeight,behavior:'instant'});
+    } else {
+      targetEl.scrollIntoView({behavior:'instant',block:step.scrollBlock||'nearest'});
+    }
+    await new Promise(r=>setTimeout(r,50));
     if(_tutGen!==myGen)return;
   }
   if(spot){
