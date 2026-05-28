@@ -2134,7 +2134,7 @@ async function _showTutStep(n){
   const targetEl=step.target?document.querySelector(step.target):null;
   // Scroll instantané vers la cible si elle est hors champ
   if(targetEl){
-    targetEl.scrollIntoView({block:'nearest'}); // behavior auto = instantané
+    targetEl.scrollIntoView({behavior:'instant',block:'nearest'});
     await new Promise(r=>setTimeout(r,30));
     if(_tutGen!==myGen)return;
   }
@@ -2207,7 +2207,10 @@ function _posTutCard(card,sel,pos){
 
   if(mob){
     if(inLower){
-      card.style.cssText=`top:${marg}px;bottom:auto;left:${Math.max(marg,(vw-cw)/2)}px;`;
+      // Positionner juste sous la topbar (pas en haut de l'écran qui recouvre le header)
+      const topbarBot=document.querySelector('.topbar')?.getBoundingClientRect()?.bottom??0;
+      const topOff=Math.max(marg+4, topbarBot>0 ? topbarBot+10 : 80);
+      card.style.cssText=`top:${topOff}px;bottom:auto;left:${Math.max(marg,(vw-cw)/2)}px;`;
     } else {
       card.style.cssText=`bottom:${marg+tabH}px;top:auto;left:${Math.max(marg,(vw-cw)/2)}px;`;
     }
