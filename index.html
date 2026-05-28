@@ -1103,14 +1103,14 @@ tr:hover td{background:#222;}
 .tut-spotlight{position:fixed;border-radius:12px;background:transparent;border:2px solid rgba(245,166,35,.55);box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 28px rgba(245,166,35,.18);z-index:10001;pointer-events:none;transition:top .38s cubic-bezier(.22,1,.36,1),left .38s cubic-bezier(.22,1,.36,1),width .38s cubic-bezier(.22,1,.36,1),height .38s cubic-bezier(.22,1,.36,1),opacity .3s;}
 
 /* Carte flottante du tutoriel */
-.tut-card{position:fixed;z-index:10002;background:#1c1c1c;border:1px solid #2a2a2a;border-top:2px solid var(--yellow);border-radius:14px;padding:20px 22px 16px;width:min(320px,calc(100vw - 28px));box-shadow:0 12px 48px rgba(0,0,0,.65);pointer-events:all;animation:tut-slide-in .3s cubic-bezier(.22,1,.36,1);}
+.tut-card{position:fixed;z-index:10002;background:#1c1c1c;border:1px solid #2a2a2a;border-top:2px solid var(--yellow);border-radius:12px;padding:12px 14px 10px;width:min(250px,calc(100vw - 28px));box-shadow:0 12px 48px rgba(0,0,0,.65);pointer-events:all;animation:tut-slide-in .3s cubic-bezier(.22,1,.36,1);}
 @keyframes tut-slide-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.tut-step-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:6px;}
-.tut-card-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.2;}
-.tut-card-text{font-size:13px;color:#aaa;line-height:1.65;margin-bottom:16px;}
-.tut-dots{display:flex;gap:4px;align-items:center;justify-content:center;margin-bottom:14px;}
-.tut-dot{width:6px;height:6px;border-radius:50%;background:#252525;transition:all .3s;}
-.tut-dot.active{background:var(--yellow);width:20px;border-radius:3px;}
+.tut-step-label{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:4px;}
+.tut-card-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--text);margin-bottom:5px;line-height:1.2;}
+.tut-card-text{font-size:11px;color:#aaa;line-height:1.5;margin-bottom:10px;}
+.tut-dots{display:flex;gap:4px;align-items:center;justify-content:center;margin-bottom:8px;}
+.tut-dot{width:5px;height:5px;border-radius:50%;background:#252525;transition:all .3s;}
+.tut-dot.active{background:var(--yellow);width:14px;border-radius:3px;}
 .tut-dot.done{background:#2a2a2a;}
 .tut-card-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .tut-skip{font-size:11px;color:#3a3a3a;background:none;border:none;cursor:pointer;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:6px 0;transition:color .2s;flex-shrink:0;}
@@ -1959,7 +1959,7 @@ document.addEventListener('visibilitychange',()=>{
 // État stocké en localStorage, par utilisateur.
 
 const _TUT_KEY='athle91_tut_v2_'; // Bumper la version = reset pour tous les utilisateurs
-let _tutStep=0, _tutActive=false, _tutGen=0;
+let _tutStep=0, _tutActive=false, _tutGen=0, _tutScrollHandler=null;
 
 // ── Définition des étapes ────────────────────────────────────────────────────
 // target  : sélecteur CSS de l'élément à mettre en surbrillance (null = centré)
@@ -1979,12 +1979,12 @@ const TUTORIAL_STEPS=[
   {
     title:'Tes athlètes',
     text:'Cette barre affiche les athlètes disponibles. En tant que coach tu peux en gérer plusieurs. Clique sur un nom pour changer de vue.',
-    target:'.topbar',tab:null,pos:'bottom'
+    target:'.topbar',tab:null,pos:'bottom',skipFor:['athlete']
   },
   {
     title:'Gérer les disciplines',
     text:'Depuis les Paramètres, ajoute ou retire des disciplines. Chaque discipline crée un onglet dédié avec son graphique de progression et son historique complet.',
-    target:null,tab:'parametres'
+    target:'#param-disc-card',tab:'parametres'
   },
   {
     title:'Saisir une performance',
@@ -2075,7 +2075,25 @@ function _destroyTutDOM(){
 }
 
 function destroyTutorial(){
-  _tutGen++;_destroyTutDOM();_tutActive=false;
+  _tutGen++;_destroyTutDOM();_detachTutScroll();_tutActive=false;
+}
+
+// ── Spotlight suit le scroll ──────────────────────────────────────────────────
+function _attachTutScroll(sel){
+  _detachTutScroll();
+  if(!sel)return;
+  _tutScrollHandler=()=>{
+    const spot=document.getElementById('tut-spotlight');
+    const el=document.querySelector(sel);
+    if(!spot||!el||!_tutActive)return;
+    const r=el.getBoundingClientRect(),p=10;
+    // transition:none → spotlight colle instantanément au scroll sans lag
+    spot.style.cssText=`top:${Math.max(0,r.top-p)}px;left:${Math.max(0,r.left-p)}px;width:${r.width+p*2}px;height:${r.height+p*2}px;opacity:1;transition:none;`;
+  };
+  window.addEventListener('scroll',_tutScrollHandler,{passive:true});
+}
+function _detachTutScroll(){
+  if(_tutScrollHandler){window.removeEventListener('scroll',_tutScrollHandler);_tutScrollHandler=null;}
 }
 
 // ── Affichage d'une étape ─────────────────────────────────────────────────────
@@ -2086,6 +2104,9 @@ async function _showTutStep(n){
   if(n<0||n>=total)return;
   _tutStep=n;
   const step=TUTORIAL_STEPS[n];
+
+  // Sauter l'étape si elle ne s'applique pas au type d'utilisateur courant
+  if(step.skipFor&&step.skipFor.includes(currentUser?.type))return _showTutStep(n+1);
 
   // Naviguer vers l'onglet requis
   if(step.tab){
@@ -2110,6 +2131,12 @@ async function _showTutStep(n){
   // Positionner le spotlight sur l'élément cible
   const spot=document.getElementById('tut-spotlight');
   const targetEl=step.target?document.querySelector(step.target):null;
+  // Scroll vers la cible si elle est hors champ (nearest = ne scrolle pas si déjà visible)
+  if(targetEl){
+    targetEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+    await new Promise(r=>setTimeout(r,220));
+    if(_tutGen!==myGen)return;
+  }
   if(spot){
     if(targetEl){
       const r=targetEl.getBoundingClientRect(),p=10;
@@ -2146,25 +2173,41 @@ async function _showTutStep(n){
   await new Promise(r=>setTimeout(r,30));
   if(_tutGen!==myGen)return; // Stale : vérification finale avant de positionner
   _posTutCard(card,step.target,step.pos||'bottom');
+  _attachTutScroll(step.target); // Spotlight suit le scroll
 }
 
 function _posTutCard(card,sel,pos){
   const mob=window.innerWidth<=640;
-  const marg=14;
-  const cw=card.offsetWidth||320,ch=card.offsetHeight||220;
-  const vw=window.innerWidth,vh=window.innerHeight;
-  if(mob||!sel){
-    // Mobile → centré, épinglé en bas au-dessus de la tab bar
-    card.style.cssText=`bottom:${marg+(mob?60:0)}px;top:auto;left:${Math.max(marg,(vw-cw)/2)}px;`;
+  const marg=12, tabH=mob?72:0;
+  const cw=card.offsetWidth||250, ch=card.offsetHeight||160;
+  const vw=window.innerWidth, vh=window.innerHeight;
+  const t=sel?document.querySelector(sel):null;
+  const r=t?t.getBoundingClientRect():null;
+
+  if(!r){
+    // Pas de cible → centré (desktop) ou épinglé en bas (mobile)
+    if(mob) card.style.cssText=`bottom:${marg+tabH}px;top:auto;left:${Math.max(marg,(vw-cw)/2)}px;`;
+    else card.style.cssText=`top:${(vh-ch)/2}px;left:${(vw-cw)/2}px;`;
     return;
   }
-  const t=document.querySelector(sel);
-  if(!t){card.style.cssText=`top:${(vh-ch)/2}px;left:${(vw-cw)/2}px;`;return;}
-  const r=t.getBoundingClientRect();
-  let top,left;
-  top=(pos==='top'&&r.top>ch+marg*2)?Math.max(marg,r.top-ch-marg):Math.min(vh-ch-marg,r.bottom+marg);
-  left=Math.min(vw-cw-marg,Math.max(marg,r.left+(r.width/2)-(cw/2)));
-  card.style.cssText=`top:${top}px;left:${left}px;`;
+
+  // Choisir côté opposé à la cible pour éviter de la cacher
+  const targetMidY=(r.top+r.bottom)/2;
+  const inLower=targetMidY>vh*0.5; // Cible dans la moitié basse → card en haut
+
+  if(mob){
+    if(inLower){
+      card.style.cssText=`top:${marg}px;bottom:auto;left:${Math.max(marg,(vw-cw)/2)}px;`;
+    } else {
+      card.style.cssText=`bottom:${marg+tabH}px;top:auto;left:${Math.max(marg,(vw-cw)/2)}px;`;
+    }
+  } else {
+    const lx=Math.min(vw-cw-marg,Math.max(marg,r.left+(r.width/2)-(cw/2)));
+    let top;
+    if(inLower&&r.top-ch-marg>marg) top=r.top-ch-marg;       // au-dessus
+    else top=Math.min(vh-ch-marg,r.bottom+marg);              // en-dessous
+    card.style.cssText=`top:${top}px;left:${lx}px;`;
+  }
 }
 
 function skipTutorial(){
@@ -2556,7 +2599,7 @@ function buildParamTab(){
         <div id="pw-msg" style="font-size:10px;margin-top:7px;display:none"></div>
       </div>
     </div>
-    <div class="card">
+    <div class="card" id="param-disc-card">
       <div class="card-title">Disciplines actives</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
         ${ath.disciplines.map(d=>`
