@@ -137,7 +137,7 @@ tr:hover td{background:#fafafa;}
 
 /* ── STATS ─────────────────────── */
 .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
-.stat{background:#f9f9f9;border:1px solid #e8e8e8;border-left:3px solid var(--yellow);border-radius:8px;padding:12px 14px;}
+.stat{background:#fff;border:1px solid rgba(224,96,0,.22);border-left:3px solid var(--yellow);border-radius:8px;padding:12px 14px;}
 .stat .n{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;line-height:1;color:var(--yellow);}
 .stat .l{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-top:3px;}
 .trend-up{color:var(--yellow)!important;}
@@ -150,7 +150,7 @@ tr:hover td{background:#fafafa;}
 
 /* ── RECORDS ─────────────────────── */
 .records-filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
-.records-filters label{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
+.records-filters label{font-size:10px;font-weight:400;color:#888;text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
 .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
 .rec-card{background:#fff;border:1px solid #e8e8e8;border-bottom:3px solid var(--yellow);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.05);}
 .rec-card:hover{border-color:var(--yellow);background:#fffbf0;box-shadow:0 2px 8px rgba(224,96,0,.15);}
@@ -2459,15 +2459,18 @@ function renderRecords(){
   });
   const curVal=sel.value||'tout';
   sel.innerHTML='<option value="tout">Toutes</option>'+[...years].sort((a,b)=>b-a).map(y=>`<option value="${y}" ${curVal===y?'selected':''}>${y}</option>`).join('');
+  const year=curVal; // année sélectionnée (stable même après rebuild)
 
   const discDisplayNames={'Poids':'Poids 3kg','Disque':'Disque 1kg'};
   const shown=new Set();
   const cards=[];
 
   // ── 1. Records AUTO-CALCULÉS depuis les performances ──────────────────────
-  // Pour chaque discipline de l'athlète, on calcule le meilleur résultat réel
   ath.disciplines.forEach(disc=>{
-    const data=getAllDataForDisc(disc);
+    let data=getAllDataForDisc(disc);
+    if(!data.length)return;
+    // Filtrer par année si nécessaire — disciplines sans données pour l'année → ignorées
+    if(year!=='tout') data=data.filter(d=>d.date&&d.date.startsWith(year));
     if(!data.length)return;
     const dist=isDistDisc(disc),isTime=isTimeDisc(disc);
     const pr=dist?Math.max(...data.map(d=>d.val)):isTime?Math.min(...data.map(d=>d.val)):Math.max(...data.map(d=>d.val));
@@ -2478,15 +2481,15 @@ function renderRecords(){
   });
 
   // ── 2. Records manuels (table records) pour les disciplines sans perfs ─────
-  // Cela couvre les disciplines saisies directement dans Supabase
   ath.records.forEach(r=>{
-    if(shown.has(r.disc))return; // déjà couvert par les perfs
+    if(shown.has(r.disc))return;
+    if(year!=='tout'&&extractYear(r.date)!==year)return; // hors de l'année filtrée
     shown.add(r.disc);
     cards.push({disc:r.disc,fmtPr:r.perf,year:extractYear(r.date)||'',cat:r.cat||''});
   });
 
   if(!cards.length){
-    grid.innerHTML='<p style="color:#999;font-size:13px;padding:12px 0">Aucun record enregistré</p>';
+    grid.innerHTML='<p style="color:#999;font-size:13px;padding:12px 0">'+(year==='tout'?'Aucun record enregistré':'Aucun record pour '+year)+'</p>';
     return;
   }
 
