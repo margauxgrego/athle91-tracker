@@ -39,6 +39,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .login-user:hover{border-color:var(--yellow);background:rgba(224,96,0,.12);}
 .login-user .uname{font-size:14px;font-weight:600;color:var(--text);}
 .login-user .urole{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.login-club{border-left:3px solid var(--yellow);padding-left:13px;}
+.login-club:hover{border-left-color:var(--orange);}
 .login-back{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;text-align:left;margin-bottom:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
 .login-back:hover{color:var(--text);}
 .login-pw-wrap{display:flex;flex-direction:column;gap:10px;}
@@ -1093,17 +1095,23 @@ tr:hover td{background:#222;}
 <div id="login-screen">
   <div class="login-box">
     <div class="logo-badge"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div>
-    <p class="login-subtitle">Viry-Châtillon · Tracker</p>
+    <p class="login-subtitle" id="login-subtitle">Athlé 91 · Tracker</p>
+    <!-- Étape 0 : choix du club -->
+    <div class="login-step" id="step0">
+      <p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:4px">Sélectionner un club</p>
+      <div id="club-list"></div>
+    </div>
     <!-- Étape 1 : choix du coach -->
-    <div class="login-step show" id="step1">
+    <div class="login-step" id="step1">
+      <button class="login-back" onclick="backStep(0)">← Retour</button>
       <p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:4px">Sélectionner un coach</p>
       <div id="coach-list"></div>
       <!-- Création nouveau coach avec code admin -->
-      <div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
+      <div style="margin-top:14px;border-top:1px solid #2a2a2a;padding-top:12px">
         <button class="btn-cancel" style="width:100%;font-size:12px;letter-spacing:.5px" onclick="toggleNewCoachGate()">+ Nouveau coach</button>
         <div id="new-coach-gate" style="display:none;margin-top:10px">
           <input type="number" id="coach-gate-code" placeholder="Code" maxlength="4"
-            style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px"
+            style="width:100%;padding:8px 12px;background:var(--input-bg);border:1.5px solid var(--input-border);color:var(--text);border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px"
             onkeydown="if(event.key==='Enter')checkCoachCode()">
           <p id="coach-gate-err" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
           <button class="btn" style="width:100%" onclick="checkCoachCode()">Valider</button>
@@ -1362,6 +1370,7 @@ const users    = {};
 const clientId = Math.random().toString(36).slice(2);
 let currentUser=null, currentAthlete=null;
 let charts={}, chartFilters={}, selectedLoginCoach=null;
+let selectedClub=null, clubsData=[];
 
 // ─── MODE HORS LIGNE ──────────────────────────────────────────────────────
 let _offlineMode=false;
@@ -1374,7 +1383,7 @@ const _CACHE_KEY='athle91_data';
 const _QUEUE_KEY='athle91_queue';
 
 function _saveCache(){
-  try{localStorage.setItem(_CACHE_KEY,JSON.stringify({ts:Date.now(),users,athletes}));}catch(e){}
+  try{localStorage.setItem(_CACHE_KEY,JSON.stringify({ts:Date.now(),users,athletes,clubs:clubsData,selectedClub}));}catch(e){}
 }
 function _loadCache(){
   try{
@@ -1383,6 +1392,8 @@ function _loadCache(){
     const saved=JSON.parse(raw);
     Object.assign(users,saved.users||{});
     Object.assign(athletes,saved.athletes||{});
+    clubsData=saved.clubs||[];
+    if(saved.selectedClub)selectedClub=saved.selectedClub;
     return true;
   }catch(e){return false;}
 }
@@ -1452,16 +1463,24 @@ async function hashPassword(pw){
 }
 
 // ─── CHARGEMENT DEPUIS SUPABASE ────────────────────────────────────────────
-async function loadAllData(){
-  const {data:coachesData,error:e1}=await sb.from('coaches').select('*');
+async function loadAllData(clubId){
+  // 1. Coaches filtrés par club
+  const {data:coachesData,error:e1}=await sb.from('coaches').select('*').eq('club_id',clubId);
   if(e1)throw e1;
   coachesData.forEach(c=>{
     users[c.id]={id:c.id,name:`${c.prenom} ${(c.nom||'').toUpperCase()}`,password_hash:c.password_hash,dbId:c.id};
   });
 
-  const {data:athData,error:e2}=await sb.from('athletes')
-    .select('*, athlete_disciplines(discipline,sort_order)');
-  if(e2)throw e2;
+  // 2. Athlètes dont le coach principal appartient au club
+  const coachIds=coachesData.map(c=>c.id);
+  let athData=[];
+  if(coachIds.length){
+    const {data,error:e2}=await sb.from('athletes')
+      .select('*, athlete_disciplines(discipline,sort_order)')
+      .in('coach_id',coachIds);
+    if(e2)throw e2;
+    athData=data||[];
+  }
   athData.forEach(a=>{
     const discs=(a.athlete_disciplines||[])
       .sort((x,y)=>x.sort_order-y.sort_order)
@@ -1477,48 +1496,54 @@ async function loadAllData(){
     };
   });
 
-  const {data:perfsData,error:e3}=await sb.from('performances').select('*');
-  if(e3)throw e3;
-  perfsData.forEach(p=>{
-    if(!athletes[p.athlete_id])return;
-    const dk=dataKey(p.discipline);
-    if(!athletes[p.athlete_id][dk])athletes[p.athlete_id][dk]=[];
-    athletes[p.athlete_id][dk].push({
-      id:p.id,date:p.date,val:parseFloat(p.val),
-      type:p.type,lieu:p.lieu||'',niveau:p.niveau||''
+  // 3. Performances / records / haies — filtrés par les IDs des athlètes du club
+  const athIds=athData.map(a=>a.id);
+  if(athIds.length){
+    const {data:perfsData,error:e3}=await sb.from('performances').select('*').in('athlete_id',athIds);
+    if(e3)throw e3;
+    perfsData.forEach(p=>{
+      if(!athletes[p.athlete_id])return;
+      const dk=dataKey(p.discipline);
+      if(!athletes[p.athlete_id][dk])athletes[p.athlete_id][dk]=[];
+      athletes[p.athlete_id][dk].push({
+        id:p.id,date:p.date,val:parseFloat(p.val),
+        type:p.type,lieu:p.lieu||'',niveau:p.niveau||''
+      });
     });
-  });
 
-  const {data:recsData,error:e4}=await sb.from('records').select('*');
-  if(e4)throw e4;
-  recsData.forEach(r=>{
-    if(!athletes[r.athlete_id])return;
-    athletes[r.athlete_id].records.push({
-      id:r.id,disc:r.disc,perf:r.perf,date:r.date,cat:r.cat
+    const {data:recsData,error:e4}=await sb.from('records').select('*').in('athlete_id',athIds);
+    if(e4)throw e4;
+    recsData.forEach(r=>{
+      if(!athletes[r.athlete_id])return;
+      athletes[r.athlete_id].records.push({
+        id:r.id,disc:r.disc,perf:r.perf,date:r.date,cat:r.cat
+      });
     });
-  });
 
-  const {data:hfData,error:e5}=await sb.from('haies_franchies').select('*').order('date');
-  if(e5)throw e5;
-  hfData.forEach(h=>{
-    if(!athletes[h.athlete_id])return;
-    athletes[h.athlete_id].haiesFranchies.push({
-      id:h.id,date:h.date,val:h.val,
-      type:h.type,dist:h.dist||'',note:h.note||''
+    const {data:hfData,error:e5}=await sb.from('haies_franchies').select('*').in('athlete_id',athIds).order('date');
+    if(e5)throw e5;
+    hfData.forEach(h=>{
+      if(!athletes[h.athlete_id])return;
+      athletes[h.athlete_id].haiesFranchies.push({
+        id:h.id,date:h.date,val:h.val,
+        type:h.type,dist:h.dist||'',note:h.note||''
+      });
+      if(!athletes[h.athlete_id].haiesTotalSince)
+        athletes[h.athlete_id].haiesTotalSince=formatDate(h.date);
     });
-    if(!athletes[h.athlete_id].haiesTotalSince)
-      athletes[h.athlete_id].haiesTotalSince=formatDate(h.date);
-  });
+  }
 
-  // Multi-coach : associations supplémentaires
-  const {data:acData,error:e6}=await sb.from('athlete_coaches').select('*');
-  if(!e6&&acData){
-    acData.forEach(ac=>{
-      if(!athletes[ac.athlete_id])return;
-      if(!athletes[ac.athlete_id].extraCoaches)athletes[ac.athlete_id].extraCoaches=[];
-      if(!athletes[ac.athlete_id].extraCoaches.includes(ac.coach_id))
-        athletes[ac.athlete_id].extraCoaches.push(ac.coach_id);
-    });
+  // 4. Multi-coach : associations supplémentaires (coaches du même club)
+  if(coachIds.length){
+    const {data:acData,error:e6}=await sb.from('athlete_coaches').select('*').in('coach_id',coachIds);
+    if(!e6&&acData){
+      acData.forEach(ac=>{
+        if(!athletes[ac.athlete_id])return;
+        if(!athletes[ac.athlete_id].extraCoaches)athletes[ac.athlete_id].extraCoaches=[];
+        if(!athletes[ac.athlete_id].extraCoaches.includes(ac.coach_id))
+          athletes[ac.athlete_id].extraCoaches.push(ac.coach_id);
+      });
+    }
   }
   // Sauvegarde du cache local pour le mode hors ligne
   _saveCache();
@@ -1530,17 +1555,29 @@ async function initApp(){
   const orig=box.innerHTML;
   box.innerHTML='<div style="text-align:center;padding:48px 0 40px"><div class="logo-badge" style="margin:0 auto 16px"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div><div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement...</div></div>';
   try{
-    await loadAllData();
+    // Chargement léger : la liste des clubs seulement
+    const {data:clubs,error:clubErr}=await sb.from('clubs').select('*').order('nom');
+    if(clubErr)throw clubErr;
+    clubsData=clubs||[];
     box.innerHTML=orig;
-    renderCoachLogin();
-    showStep(1);
+    renderClubStep();
+    showStep(0);
   }catch(err){
     console.warn('Supabase inaccessible — tentative cache local',err);
     if(_loadCache()){
       _offlineMode=true;
       box.innerHTML=orig;
-      renderCoachLogin();
-      showStep(1);
+      // En mode hors-ligne : si un club était déjà sélectionné en cache, aller direct à l'étape 1
+      if(selectedClub&&Object.keys(users).length){
+        const club=clubsData.find(c=>c.id===selectedClub);
+        const sub=document.getElementById('login-subtitle');
+        if(sub&&club)sub.textContent=club.nom+' · Tracker';
+        renderCoachLogin();
+        showStep(1);
+      }else{
+        renderClubStep();
+        showStep(0);
+      }
       _showOfflineBanner();
     }else{
       const detail=err?.message||err?.details||err?.hint||JSON.stringify(err)||'inconnue';
@@ -1563,6 +1600,47 @@ let loginTarget=null;
 function showStep(n){
   document.querySelectorAll('.login-step').forEach(s=>s.classList.remove('show'));
   document.getElementById('step'+n).classList.add('show');
+}
+
+function renderClubStep(){
+  const list=document.getElementById('club-list');
+  if(!list)return;
+  list.innerHTML='<div style="display:flex;flex-direction:column;gap:6px">'+
+    clubsData.map(c=>`
+      <div class="login-user login-club" onclick="selectClub('${c.id}')">
+        <div><div class="uname">${c.nom}</div>${c.code_postal?`<div class="urole">${c.code_postal}</div>`:''}</div>
+        <span style="color:var(--yellow);font-size:14px;font-weight:700">→</span>
+      </div>`).join('')+
+    '</div>';
+}
+
+async function selectClub(id){
+  selectedClub=id;
+  const club=clubsData.find(c=>c.id===id);
+  const sub=document.getElementById('login-subtitle');
+  if(sub&&club)sub.textContent=club.nom+' · Tracker';
+
+  if(_offlineMode){
+    renderCoachLogin();
+    showStep(1);
+    return;
+  }
+
+  // Vider les données de l'éventuel club précédent
+  Object.keys(users).forEach(k=>delete users[k]);
+  Object.keys(athletes).forEach(k=>delete athletes[k]);
+
+  // Afficher l'étape 1 avec un état de chargement
+  showStep(1);
+  const coachList=document.getElementById('coach-list');
+  if(coachList)coachList.innerHTML='<div style="padding:20px;text-align:center;color:#888;font-size:12px;letter-spacing:1px">Chargement...</div>';
+
+  try{
+    await loadAllData(id);
+    renderCoachLogin();
+  }catch(err){
+    if(coachList)coachList.innerHTML='<div style="padding:18px;text-align:center;color:var(--red);font-size:12px">Erreur de chargement — vérifiez votre connexion</div>';
+  }
 }
 
 function renderCoachLogin(){
@@ -1618,6 +1696,14 @@ function selectRole(key){
 }
 
 function backStep(n){
+  if(n===0&&!_offlineMode){
+    // Retour au choix du club : vider les données du club précédent
+    Object.keys(users).forEach(k=>delete users[k]);
+    Object.keys(athletes).forEach(k=>delete athletes[k]);
+    selectedClub=null;
+    const sub=document.getElementById('login-subtitle');
+    if(sub)sub.textContent='Athlé 91 · Tracker';
+  }
   // Réinitialiser le compteur de tentatives quand l'utilisateur revient en arrière
   if(n<=2){_loginAttempts=0;_loginBlockUntil=0;const el=document.getElementById('login-err');if(el){el.textContent='Mot de passe incorrect';el.style.display='none';}}
   showStep(n);
@@ -3285,7 +3371,7 @@ async function createCoach(){
   const pw=document.getElementById('nc-pw').value;
   if(!prenom||!nom||!pw){showMessage('Information manquante','Prénom, nom et mot de passe requis.','danger');return;}
   const password_hash=await hashPassword(pw);
-  const {data:newCoach,error}=await sb.from('coaches').insert({prenom,nom,password_hash}).select().single();
+  const {data:newCoach,error}=await sb.from('coaches').insert({prenom,nom,password_hash,club_id:selectedClub}).select().single();
   if(error){showMessage('Erreur','Impossible d\'ajouter le coach.','danger');return;}
   users[newCoach.id]={id:newCoach.id,name:`${prenom} ${nom.toUpperCase()}`,password_hash,dbId:newCoach.id};
   closeModal('modal-new-coach');
