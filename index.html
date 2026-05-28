@@ -53,8 +53,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .ath-btn.active{background:var(--yellow);border-color:var(--yellow);color:#fff;}
 .ath-btn:hover{color:#111;}
 .ath-btn.coach-add{border-color:var(--yellow);color:var(--yellow);}
-.logout-btn{font-size:11px;font-weight:400;text-transform:uppercase;padding:6px 14px;background:none;border:1.5px solid #ddd;color:#888;cursor:pointer;border-radius:6px;letter-spacing:.5px;}
-.logout-btn:hover{border-color:var(--red);color:var(--red);}
+.logout-btn{font-size:11px;font-weight:400;text-transform:uppercase;padding:6px 14px;background:none;border:1.5px solid rgba(192,57,43,.35);color:var(--red);cursor:pointer;border-radius:6px;letter-spacing:.5px;}
+.logout-btn:hover{border-color:var(--red);opacity:.8;}
 
 /* ── HEADER ─────────────────────────────── */
 header{padding:22px 0 24px;border-bottom:1px solid #e0e0e0;margin-bottom:22px;border-left:3px solid var(--yellow);padding-left:28px;}
@@ -203,7 +203,20 @@ tr:hover td{background:#fafafa;}
 
 /* ── PARAMS ─────────────────────── */
 .danger-zone{border:1px solid rgba(229,57,53,.25);background:#fff5f5;border-radius:8px;padding:16px;margin-top:8px;}
-.danger-zone p{font-size:13px;color:#888;margin-bottom:14px;}
+.danger-zone p{font-size:11px;color:#888;margin-bottom:12px;line-height:1.5;}
+
+/* ── BOUTONS COMPACTS (pages paramètres) ─────────────────────── */
+.btn-sm{background:var(--yellow);color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:11px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
+.btn-sm:hover{opacity:.85;}
+.btn-sm-cancel{background:none;color:#888;border:1px solid #ddd;border-radius:5px;padding:5px 13px;font-size:11px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;}
+.btn-sm-danger{background:var(--red);color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:11px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
+.btn-sm-danger:hover{opacity:.85;}
+
+/* ── TYPOGRAPHIE ITEMS ─────────────────────── */
+.s-title{font-size:12px;font-weight:500;color:#111;}
+.s-desc{font-size:10px;color:#888;margin-top:2px;}
+.s-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f4f4f4;}
+.s-row:last-child{border-bottom:none;}
 
 /* ═══ DESKTOP LARGE (>1200px) ═══════════════ */
 @media(min-width:1200px){
@@ -920,10 +933,10 @@ tr:hover td{background:#fafafa;}
   margin-bottom:6px;
 }
 .profile-danger p{
-  font-size:13px;
+  font-size:11px;
   color:#777;
   margin-bottom:10px;
-  line-height:1.4;
+  line-height:1.5;
 }
 
 @media(max-width:640px){
@@ -1133,8 +1146,8 @@ tr:hover td{background:#fafafa;}
       </div>
       <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><div class="pw-wrap"><input type="password" id="na-pw" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('na-pw')" tabindex="-1">Voir</button></div></div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
-        <button class="btn" style="width:auto" onclick="createAthlete()">Créer</button>
+        <button class="btn-sm-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
+        <button class="btn-sm" style="width:auto" onclick="createAthlete()">Créer</button>
       </div>
     </div>
 
@@ -1143,8 +1156,8 @@ tr:hover td{background:#fafafa;}
       <p style="font-size:12px;color:#888;margin-bottom:10px">Sélectionnez un athlète déjà enregistré pour l'associer à votre profil coach.</p>
       <div class="existing-ath-list" id="na-existing-list"></div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
-        <button class="btn" style="width:auto" onclick="linkExistingAthlete()">Associer</button>
+        <button class="btn-sm-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
+        <button class="btn-sm" style="width:auto" onclick="linkExistingAthlete()">Associer</button>
       </div>
     </div>
   </div>
@@ -1160,8 +1173,8 @@ tr:hover td{background:#fafafa;}
     </div>
     <div class="form-group" style="margin-bottom:10px"><label>Mot de passe</label><div class="pw-wrap"><input type="password" id="nc-pw" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('nc-pw')" tabindex="-1">Voir</button></div></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-new-coach')">Annuler</button>
-      <button class="btn" style="width:auto" onclick="createCoach()">Créer</button>
+      <button class="btn-sm-cancel" onclick="closeModal('modal-new-coach')">Annuler</button>
+      <button class="btn-sm" style="width:auto" onclick="createCoach()">Créer</button>
     </div>
   </div>
 </div>
@@ -1179,11 +1192,11 @@ tr:hover td{background:#fafafa;}
     <div class="profile-danger">
       <div class="profile-danger-title">Zone sensible</div>
       <p>Depuis ce profil, le coach peut aussi supprimer son propre compte.</p>
-      <button class="btn-danger" style="width:100%" onclick="deleteCoach()">Supprimer mon compte coach</button>
+      <button class="btn-sm-danger" style="width:100%" onclick="deleteCoach()">Supprimer mon compte coach</button>
     </div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-edit-coach')">Annuler</button>
-      <button class="btn" style="width:auto" onclick="saveCoachProfile()">Enregistrer</button>
+      <button class="btn-sm-cancel" onclick="closeModal('modal-edit-coach')">Annuler</button>
+      <button class="btn-sm" style="width:auto" onclick="saveCoachProfile()">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -1196,8 +1209,8 @@ tr:hover td{background:#fafafa;}
       style="width:100%;padding:10px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;margin-bottom:12px;outline:none;">
     <div class="disc-pills" id="disc-add-checkboxes"></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-add-disc')">Annuler</button>
-      <button class="btn" style="width:auto" onclick="confirmAddDisc()">Ajouter</button>
+      <button class="btn-sm-cancel" onclick="closeModal('modal-add-disc')">Annuler</button>
+      <button class="btn-sm" style="width:auto" onclick="confirmAddDisc()">Ajouter</button>
     </div>
   </div>
 </div>
@@ -2119,35 +2132,35 @@ function buildParamTab(){
             <select id="p-cat">${CATS_ORDER.map(c=>`<option ${ath.cat===c?'selected':''}>${c}</option>`).join('')}</select>
           </div>
         </div>
-        <button class="btn" onclick="saveParams()">Enregistrer</button>
+        <button class="btn-sm" onclick="saveParams()">Enregistrer</button>
       </div>
       <div class="card">
         <div class="card-title">Mot de passe</div>
-        <div class="form-group" style="margin-bottom:8px"><label>Nouveau</label><div class="pw-wrap"><input type="password" id="p-pw1" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('p-pw1')" tabindex="-1">Voir</button></div></div>
-        <div class="form-group" style="margin-bottom:12px"><label>Confirmer</label><div class="pw-wrap"><input type="password" id="p-pw2" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('p-pw2')" tabindex="-1">Voir</button></div></div>
-        <button class="btn" onclick="changePassword()">Changer</button>
-        <div id="pw-msg" style="font-size:11px;margin-top:8px;display:none"></div>
+        <div class="form-group" style="margin-bottom:7px"><label>Nouveau</label><div class="pw-wrap"><input type="password" id="p-pw1" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('p-pw1')" tabindex="-1">Voir</button></div></div>
+        <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><div class="pw-wrap"><input type="password" id="p-pw2" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('p-pw2')" tabindex="-1">Voir</button></div></div>
+        <button class="btn-sm" onclick="changePassword()">Changer</button>
+        <div id="pw-msg" style="font-size:10px;margin-top:7px;display:none"></div>
       </div>
     </div>
     <div class="card">
       <div class="card-title">Disciplines actives</div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
         ${ath.disciplines.map(d=>`
-          <span style="background:rgba(224,96,0,.1);color:var(--yellow);border:1px solid rgba(224,96,0,.3);font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:6px">
+          <span style="background:rgba(224,96,0,.08);color:var(--yellow);border:1px solid rgba(224,96,0,.25);font-size:10px;font-weight:400;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:5px">
             ${d}
-            <button onclick="removeDisc('${d}')" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:13px;line-height:1;padding:0">×</button>
+            <button onclick="removeDisc('${d}')" style="background:none;border:none;color:#bbb;cursor:pointer;font-size:12px;line-height:1;padding:0">×</button>
           </span>`).join('')}
       </div>
-      <button class="btn" onclick="openAddDisc()">+ Ajouter une discipline</button>
+      <button class="btn-sm" onclick="openAddDisc()">+ Ajouter une discipline</button>
     </div>
     <div class="card">
       <div class="card-title">Options</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
+      <div class="s-row">
         <div>
-          <div style="font-size:13px;font-weight:700;color:#111">Haies franchies</div>
-          <div style="font-size:11px;color:#999;margin-top:2px">Onglet de suivi des haies franchises à l'entraînement</div>
+          <div class="s-title">Haies franchies</div>
+          <div class="s-desc">Suivi des haies à l'entraînement</div>
         </div>
-        <button onclick="toggleHaies()" class="${ath.has_haies?'btn':'btn-cancel'}" style="width:auto;flex-shrink:0;margin-left:12px">
+        <button onclick="toggleHaies()" class="${ath.has_haies?'btn-sm':'btn-sm-cancel'}" style="flex-shrink:0;margin-left:12px">
           ${ath.has_haies?'Activé ✓':'Activer'}
         </button>
       </div>
@@ -2155,8 +2168,8 @@ function buildParamTab(){
     ${isCoach?`
     <div class="card danger-zone">
       <div class="card-title" style="color:var(--red)">Gestion athlète</div>
-      <p>Retirer ${ath.prenom} ${ath.nom} de votre liste. Son compte et ses données restent intacts — l'athlète pourra être réattribué à un autre coach.</p>
-      <button class="btn-danger" onclick="deleteAthlete('${ath.id}')">Retirer de ma liste</button>
+      <p>Retirer ${ath.prenom} ${ath.nom} de votre liste. Son compte et ses données restent intacts.</p>
+      <button class="btn-sm-danger" onclick="deleteAthlete('${ath.id}')">Retirer de ma liste</button>
     </div>`:''}`;
 }
 
