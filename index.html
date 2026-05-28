@@ -2373,6 +2373,7 @@ function dataKey(d){
 function isDistDisc(d){return['Hauteur','Longueur','Triple Saut'].includes(d);}
 function isTimeDisc(d){return!isDistDisc(d)&&!d.includes('Poids')&&!d.includes('Disque')&&!d.includes('Marteau')&&!d.includes('Javelot');}
 function isHaiesDisc(d){return d.includes('Haies');}
+function isVentDisc(d){return isTimeDisc(d)||d.includes('Longueur')||d.includes('Hauteur')||d.includes('Perche');}
 
 // ─── TAB BUILDERS ─────────────────────────────────────────────────────────
 function buildDiscTab(disc){
@@ -2382,9 +2383,9 @@ function buildDiscTab(disc){
   const valLabel=isDistDisc(disc)?disc+' (cm)':isTimeDisc(disc)?'Temps (s)':disc+' (cm)';
   const valPh=disc==='Hauteur'?'140':disc==='Longueur'?'460':disc==='Triple Saut'?'900':disc.includes('m')&&!disc.includes('Haies')?'65.0':'100';
   const haiesField=isHaiesDisc(disc)?`<div class="form-group"><label>Hauteur haie (cm) <span style="color:#555;font-weight:400;font-size:10px">optionnel</span></label><select id="${k}-hauteur_haie"><option value="">—</option><option value="76.2">76.2 cm</option><option value="84">84 cm</option><option value="91.4">91.4 cm</option><option value="100">100 cm</option><option value="106.7">106.7 cm</option></select></div>`:'';
-  const ventField=isTimeDisc(disc)?`<div class="form-group"><label>Vent (m/s) <span style="color:#555;font-weight:400;font-size:10px">optionnel</span></label><input type="number" id="${k}-vent" placeholder="ex : +1.2" step="0.1"></div>`:'';
+  const ventField=isVentDisc(disc)?`<div class="form-group"><label>Vent (m/s) <span style="color:#555;font-weight:400;font-size:10px">optionnel</span></label><input type="number" id="${k}-vent" placeholder="ex : +1.2" step="0.1"></div>`:'';
   const haiesTh=isHaiesDisc(disc)?'<th>Haie</th>':'';
-  const ventTh=isTimeDisc(disc)?'<th>Vent</th>':'';
+  const ventTh=isVentDisc(disc)?'<th>Vent</th>':'';
   el.innerHTML=`
     <div class="stat-row" id="stats-${k}"></div>
     <div class="legend">
@@ -2912,7 +2913,7 @@ function renderPerf(k,disc){
     const isRP=d.val===pr;
     const lvl=d.niveau?`<span class="badge badge-${d.niveau.toLowerCase()}">${d.niveau}</span>`:'—';
     const haiesTd=isHaiesDisc(disc)?`<td data-label="Haie" style="color:#888;font-size:12px">${d.hauteur_haie?d.hauteur_haie+' cm':'—'}</td>`:'';
-    const ventTd=isTimeDisc(disc)?`<td data-label="Vent" style="color:#888;font-size:12px">${d.vent!=null?d.vent+' m/s':'—'}</td>`:'';
+    const ventTd=isVentDisc(disc)?`<td data-label="Vent" style="color:#888;font-size:12px">${d.vent!=null?d.vent+' m/s':'—'}</td>`:'';
     return`<tr class="perf-row" onclick="openEditPerf('${dk}','${k}','${disc}','${d.id}')">
       <td data-label="Date">${formatDate(d.date)}</td>
       <td data-label="Perf."><span class="perf-val">${fmtPr(d.val)}</span>${isRP?'<span class="rp-badge">RP</span>':''}</td>
@@ -3041,7 +3042,7 @@ async function addPerf(k,disc){
   const lieu=document.getElementById(k+'-lieu').value;
   const niveau=document.getElementById(k+'-niveau')?.value||'';
   const ventRaw=document.getElementById(k+'-vent')?.value;
-  const vent=isTimeDisc(disc)&&ventRaw!==''&&ventRaw!=null?parseFloat(ventRaw):null;
+  const vent=isVentDisc(disc)&&ventRaw!==''&&ventRaw!=null?parseFloat(ventRaw):null;
   const hauteur_haie=isHaiesDisc(disc)?(document.getElementById(k+'-hauteur_haie')?.value||null):null;
   if(!date||isNaN(val)){showMessage('Ajout impossible','Date et valeur requis.','danger');return;}
 
