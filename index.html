@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="theme-color" content="#e06000">
+<meta name="theme-color" content="#f5f5f5">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1276,8 +1276,6 @@ tr:hover td{background:#fafafa;}
         <div class="header-sub" id="header-sub">—</div>
       </div>
       <div class="header-records" id="header-records">
-        <div class="record-pill"><div class="val" id="pr-hauteur">—</div><div class="label">RP Hauteur</div></div>
-        <div class="record-pill"><div class="val" id="pr-400h">—</div><div class="label">RP 400m H.</div></div>
         <div class="record-pill"><div class="val" id="nb-comps">—</div><div class="label">Compéts.</div></div>
       </div>
     </div>
@@ -1477,9 +1475,28 @@ function selectRole(key){
   setTimeout(()=>document.getElementById('pw-input').focus(),100);
 }
 
-function backStep(n){showStep(n);}
+function backStep(n){
+  // Réinitialiser le compteur de tentatives quand l'utilisateur revient en arrière
+  if(n<=2){_loginAttempts=0;_loginBlockUntil=0;const el=document.getElementById('login-err');if(el){el.textContent='Mot de passe incorrect';el.style.display='none';}}
+  showStep(n);
+}
+
+let _loginAttempts=0;
+let _loginBlockUntil=0;
+
+function _loginErrMsg(msg){
+  const el=document.getElementById('login-err');
+  if(el){el.textContent=msg;el.style.display='block';}
+}
 
 async function doLogin(){
+  // Vérification blocage
+  if(Date.now()<_loginBlockUntil){
+    const secs=Math.ceil((_loginBlockUntil-Date.now())/1000);
+    const mins=Math.ceil(secs/60);
+    _loginErrMsg('Compte bloqué — réessayez dans '+mins+' min.');
+    return;
+  }
   const pw=document.getElementById('pw-input').value;
   const hash=await hashPassword(pw);
   let ok=false;
@@ -1488,7 +1505,19 @@ async function doLogin(){
   }else if(athletes[loginTarget]&&hash===athletes[loginTarget].password_hash){
     ok=true;currentUser={type:'athlete',key:loginTarget};
   }
-  if(!ok){document.getElementById('login-err').style.display='block';return;}
+  if(!ok){
+    _loginAttempts++;
+    const remaining=3-_loginAttempts;
+    if(_loginAttempts>=3){
+      _loginBlockUntil=Date.now()+5*60*1000;
+      _loginAttempts=0;
+      _loginErrMsg('3 erreurs — compte bloqué 5 min.');
+    }else{
+      _loginErrMsg('Mot de passe incorrect · '+remaining+' tentative'+(remaining>1?'s':'')+' restante'+(remaining>1?'s':''));
+    }
+    return;
+  }
+  _loginAttempts=0;_loginBlockUntil=0;
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
   if(currentUser.type==='athlete'){
@@ -1674,6 +1703,13 @@ function showNoAthleteScreen(){
     </div>`;
 }
 
+function openLinkAthleteModal(){
+  // Ouvre la modale directement sur l'onglet "Athlète existant" (currentUser est défini)
+  buildDiscCheckboxes();
+  origOpenModal('modal-new-athlete');
+  setAthleteMode('link');
+}
+
 function buildSwitcher(){
   const sw=document.getElementById('athlete-switcher');
   if(currentUser.type==='coach'){
@@ -1681,6 +1717,7 @@ function buildSwitcher(){
     sw.innerHTML=coachAthletes.map(a=>
       `<button class="ath-btn ${a.id===currentAthlete?'active':''}" onclick="switchAthlete('${a.id}')">${a.prenom} ${a.nom}</button>`
     ).join('')+
+    `<button class="ath-btn" onclick="openLinkAthleteModal()" title="Associer un athlète existant">+ Associer</button>`+
     `<button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>`;
   }else{
     sw.innerHTML=`<span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
@@ -1704,7 +1741,17 @@ function buildTabs(){
   const obsLabel='Observations';
   const tabList=['observations'].concat(ath.disciplines.map(d=>discKey(d))).concat(hasHaies?['haies_franchies','records','parametres']:['records','parametres']);
   const tabLabels=[obsLabel].concat(ath.disciplines).concat(hasHaies?['Haies Franchies','Records',paramLabel]:['Records',paramLabel]);
-  const defaultIdx=ath.disciplines.length>0?1:0;
+  // Onglet par défaut : discipline dont la dernière perf est la plus récente
+  let defaultIdx=ath.disciplines.length>0?1:0;
+  if(ath.disciplines.length>0){
+    let latestDate='';let latestTabKey=null;
+    ath.disciplines.forEach(d=>{
+      const perfs=ath[dataKey(d)]||[];
+      const best=perfs.reduce((m,p)=>p.date>m?p.date:m,'');
+      if(best>latestDate){latestDate=best;latestTabKey=discKey(d);}
+    });
+    if(latestTabKey){const i=tabList.indexOf(latestTabKey);if(i!==-1)defaultIdx=i;}
+  }
   document.getElementById('main-tabs').innerHTML=
     tabLabels.map((l,i)=>`<button class="tab ${i===defaultIdx?'active':''}" onclick="switchTab('${tabList[i]}')">${l}</button>`).join('')+
     `<button class="tab" onclick="openAddDisc()" style="color:var(--yellow)">+ Discipline</button>`+
@@ -1908,7 +1955,7 @@ function buildObsTab(){
         <div class="form-group" style="margin-bottom:8px">
           <label>Date</label>
           <input type="date" id="obs-date" value="${today}"
-            style="width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;outline:none;">
+            style="width:100%;box-sizing:border-box;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;outline:none;-webkit-appearance:none;appearance:none;">
         </div>
         <div class="form-group" style="margin-bottom:8px">
           <label>Discipline</label>
@@ -2243,16 +2290,11 @@ function renderAll(){
 
 function updateHeaderKPIs(){
   const ath=athletes[currentAthlete];
-  const hData=ath.hauteur||[];
-  const prH=hData.length?Math.max(...hData.map(d=>d.val)):0;
-  document.getElementById('pr-hauteur').textContent=prH?cmToM(prH):'—';
-  const haData=ath.haies||[];
-  const prHa=haData.length?Math.min(...haData.map(d=>d.val)):0;
-  document.getElementById('pr-400h').textContent=prHa?formatTime(prHa):'—';
   const total=['hauteur','haies','longueur','triplesaut',...(ath.disciplines.map(d=>dataKey(d)))]
     .filter((v,i,a)=>a.indexOf(v)===i)
     .reduce((s,k)=>s+(ath[k]||[]).filter(d=>d.type==='compet').length,0);
-  document.getElementById('nb-comps').textContent=total||'—';
+  const el=document.getElementById('nb-comps');
+  if(el)el.textContent=total||'—';
 }
 
 function renderPerf(k,disc){
@@ -2731,15 +2773,24 @@ async function deleteCoach(){
   }
   const coachAthletes=athletesForCoach(coachKey);
   const message=coachAthletes.length
-    ?'Supprimer ce compte coach supprimera également ses athlètes. Cette action est définitive.'
+    ?'Supprimer ce compte coach ? Vos athlètes seront conservés (sans coach) et pourront être réattribués par un autre coach.'
     :'Supprimer ce compte coach ? Cette action est définitive.';
   showConfirm('Supprimer mon compte coach',message,async()=>{
+    // 1. Orphelinage des athlètes : coach_id → NULL (avant la suppression pour éviter le CASCADE)
+    if(coachAthletes.length){
+      const {error:e0}=await sb.from('athletes').update({coach_id:null}).eq('coach_id',coachKey);
+      if(e0){showMessage('Erreur','Impossible de détacher les athlètes.','danger');return;}
+    }
+    // 2. Supprimer le coach
     const {error}=await sb.from('coaches').delete().eq('id',coachKey);
     if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
-    coachAthletes.forEach(a=>delete athletes[a.id]);
+    // 3. Mettre à jour l'état local : garder les athlètes mais les rendre orphelins
+    coachAthletes.forEach(a=>{
+      if(athletes[a.id])athletes[a.id].coachId=null;
+    });
     delete users[coachKey];
     closeModal('modal-edit-coach');
-    showMessage('Compte supprimé','Le compte coach a bien été supprimé.');
+    showMessage('Compte supprimé','Le compte coach a été supprimé. Les athlètes sont conservés.');
     setTimeout(()=>logout(),700);
   },'danger');
 }
@@ -3070,21 +3121,27 @@ function setAthleteMode(mode){
 function buildExistingAthletesList(){
   const coachKey=currentUser&&currentUser.type==='coach'?currentUser.key:null;
   const container=document.getElementById('na-existing-list');
-  if(!coachKey){container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:12px 0">Fonctionnalité réservée aux coachs.</p>';return;}
+  if(!coachKey){
+    container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:16px 0">Connectez-vous en tant que coach puis utilisez le bouton <strong>+ Associer</strong> dans la barre de navigation.</p>';
+    return;
+  }
   const all=Object.values(athletes).filter(a=>{
-    if(a.coachId===coachKey)return false;
-    if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false;
-    return true;
+    if(a.coachId===coachKey)return false;               // déjà mon athlète
+    if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false; // déjà lié
+    if(a.coachId&&users[a.coachId])return false;        // a déjà un coach actif
+    return true; // orphelin uniquement
   }).sort((a,b)=>`${a.nom}${a.prenom}`.localeCompare(`${b.nom}${b.prenom}`));
   if(!all.length){
     container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:16px 0">Tous les athlètes sont déjà associés à votre profil.</p>';
     return;
   }
-  container.innerHTML=all.map(a=>`
-    <div class="existing-ath-row" id="ear-${a.id}" onclick="selectExistingAthlete('${a.id}')">
-      <div class="existing-ath-name">${a.prenom} ${a.nom.toUpperCase()}</div>
+  container.innerHTML=all.map(a=>{
+    const orphan=!a.coachId||!users[a.coachId];
+    return`<div class="existing-ath-row" id="ear-${a.id}" onclick="selectExistingAthlete('${a.id}')">
+      <div class="existing-ath-name">${a.prenom} ${a.nom.toUpperCase()}${orphan?' <span style="font-size:9px;background:#e06000;color:#fff;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">SANS COACH</span>':''}</div>
       <div class="existing-ath-sub">${a.cat} · née ${a.annee}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   selectedExistingAthleteId=null;
 }
 
@@ -3099,12 +3156,22 @@ async function linkExistingAthlete(){
   if(!selectedExistingAthleteId){showMessage('Sélection manquante','Veuillez sélectionner un athlète dans la liste.','danger');return;}
   const coachKey=currentUser&&currentUser.type==='coach'?currentUser.key:null;
   if(!coachKey)return;
-  const {error}=await sb.from('athlete_coaches').insert({athlete_id:selectedExistingAthleteId,coach_id:coachKey});
-  if(error&&error.code!=='23505'){showMessage('Erreur','Impossible d\'associer l\'athlète.','danger');return;}
   const ath=athletes[selectedExistingAthleteId];
-  if(ath){
-    if(!ath.extraCoaches)ath.extraCoaches=[];
-    if(!ath.extraCoaches.includes(coachKey))ath.extraCoaches.push(coachKey);
+  const isOrphan=!ath||!ath.coachId||!users[ath.coachId];
+
+  if(isOrphan){
+    // Athlète sans coach → réattribution directe (mise à jour coach_id)
+    const {error}=await sb.from('athletes').update({coach_id:coachKey}).eq('id',selectedExistingAthleteId);
+    if(error){showMessage('Erreur','Impossible d\'associer l\'athlète.','danger');return;}
+    if(ath)ath.coachId=coachKey;
+  }else{
+    // Athlète avec coach existant → liaison multi-coach (athlete_coaches)
+    const {error}=await sb.from('athlete_coaches').insert({athlete_id:selectedExistingAthleteId,coach_id:coachKey});
+    if(error&&error.code!=='23505'){showMessage('Erreur','Impossible d\'associer l\'athlète.','danger');return;}
+    if(ath){
+      if(!ath.extraCoaches)ath.extraCoaches=[];
+      if(!ath.extraCoaches.includes(coachKey))ath.extraCoaches.push(coachKey);
+    }
   }
   closeModal('modal-new-athlete');
   currentAthlete=selectedExistingAthleteId;
@@ -3196,15 +3263,16 @@ if(window.visualViewport){
 }
 
 if('serviceWorker' in navigator){
+  // Listener immédiat — avant le load pour éviter la race condition avec SW_UPDATED
+  navigator.serviceWorker.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SW_UPDATED') location.reload();
+  });
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
       .then(reg => {
         _swReg = reg;
         reg.update();
       });
-    navigator.serviceWorker.addEventListener('message', event => {
-      if (event.data && event.data.type === 'SW_UPDATED') location.reload();
-    });
   });
 }
 </script>
