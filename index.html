@@ -49,11 +49,11 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 /* ── TOPBAR ─────────────────────────────── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:2px solid var(--yellow);gap:8px;flex-wrap:wrap;background:var(--bg);}
 .topbar-left{display:flex;gap:6px;flex-wrap:wrap;}
-.ath-btn{font-size:12px;font-weight:700;text-transform:uppercase;padding:6px 14px;background:#f0f0f0;border:1.5px solid #ddd;color:#888;cursor:pointer;border-radius:6px;transition:all .2s;letter-spacing:.3px;touch-action:pan-x;}
-.ath-btn.active{background:var(--yellow);border-color:var(--yellow);color:#000;}
+.ath-btn{font-size:12px;font-weight:400;text-transform:uppercase;padding:6px 14px;background:#f0f0f0;border:1.5px solid #ddd;color:#888;cursor:pointer;border-radius:6px;transition:all .2s;letter-spacing:.3px;touch-action:pan-x;}
+.ath-btn.active{background:var(--yellow);border-color:var(--yellow);color:#fff;}
 .ath-btn:hover{color:#111;}
 .ath-btn.coach-add{border-color:var(--yellow);color:var(--yellow);}
-.logout-btn{font-size:11px;font-weight:700;text-transform:uppercase;padding:6px 14px;background:none;border:1.5px solid #ddd;color:#888;cursor:pointer;border-radius:6px;letter-spacing:.5px;}
+.logout-btn{font-size:11px;font-weight:400;text-transform:uppercase;padding:6px 14px;background:none;border:1.5px solid #ddd;color:#888;cursor:pointer;border-radius:6px;letter-spacing:.5px;}
 .logout-btn:hover{border-color:var(--red);color:var(--red);}
 
 /* ── HEADER ─────────────────────────────── */
@@ -124,16 +124,16 @@ tr:hover td{background:#fafafa;}
 .form-group input,.form-group select{width:100%;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;color:#111;font-size:13px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .2s;}
 .form-group input:focus,.form-group select:focus{border-color:var(--yellow);}
 .form-group select option{background:#fff;color:#111;}
-.btn{background:var(--yellow);color:#000;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;width:100%;margin-top:4px;}
+.btn{background:var(--yellow);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;width:100%;margin-top:4px;}
 .btn:hover{opacity:.85;}
 .btn:active{transform:scale(.98);}
-.btn-ghost{background:none;color:var(--red);border:1px solid rgba(239,68,68,.35);padding:4px 8px;font-size:11px;border-radius:4px;cursor:pointer;font-weight:700;}
+.btn-ghost{background:none;color:var(--red);border:1px solid rgba(239,68,68,.35);padding:4px 8px;font-size:11px;border-radius:4px;cursor:pointer;font-weight:400;}
 .btn-ghost:hover{background:rgba(239,68,68,.1);}
 .perf-row{cursor:pointer;transition:background .15s;}
 .perf-row:hover{background:rgba(245,196,0,.07);}
 .perf-row:active{background:rgba(245,196,0,.18);}
-.btn-cancel{background:none;color:#888;border:1px solid #ddd;border-radius:6px;padding:9px 18px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
-.btn-danger{background:var(--red);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
+.btn-cancel{background:none;color:#888;border:1px solid #ddd;border-radius:6px;padding:9px 18px;font-size:11px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
+.btn-danger{background:var(--red);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
 
 /* ── STATS ─────────────────────── */
 .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
@@ -1061,7 +1061,7 @@ tr:hover td{background:#fafafa;}
       <div id="coach-list"></div>
       <!-- Création nouveau coach avec code admin -->
       <div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
-        <button class="btn-cancel" style="width:100%;font-size:11px;font-weight:700;letter-spacing:.5px" onclick="toggleNewCoachGate()">+ Nouveau coach</button>
+        <button class="btn-cancel" style="width:100%;font-size:11px;letter-spacing:.5px" onclick="toggleNewCoachGate()">+ Nouveau coach</button>
         <div id="new-coach-gate" style="display:none;margin-top:10px">
           <input type="number" id="coach-gate-code" placeholder="Code" maxlength="4"
             style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px"
@@ -1556,7 +1556,7 @@ function showAthletes(coachKey){
     (!coachAthletes.length?`<div class="empty-state" style="padding:18px">Aucun athlète pour ce coach</div>`:'')+
     '</div>'+
     `<div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
-      <button class="btn-cancel" style="width:100%;font-size:11px;font-weight:700;letter-spacing:.5px" onclick="toggleAthleteGate()">+ Ajouter un athlète</button>
+      <button class="btn-cancel" style="width:100%;font-size:11px;letter-spacing:.5px" onclick="toggleAthleteGate()">+ Ajouter un athlète</button>
       <div id="new-athlete-gate" style="display:none;margin-top:10px">
         <input type="number" id="athlete-gate-code" placeholder="Code" maxlength="4"
           style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px"
@@ -2080,8 +2080,8 @@ function buildObsTab(){
             placeholder="Points à travailler, ce qui s'est bien passé, axes d'amélioration…"></textarea>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px">
-          <button onclick="saveObservation()" style="flex:1;background:var(--yellow);color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Enregistrer</button>
-          <button onclick="deleteObservation()" style="flex:1;background:#c0392b;color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Supprimer</button>
+          <button onclick="saveObservation()" style="flex:1;background:var(--yellow);color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:400;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Enregistrer</button>
+          <button onclick="deleteObservation()" style="flex:1;background:#c0392b;color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:400;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Supprimer</button>
         </div>
         <div id="obs-msg" style="display:none;font-size:11px;font-weight:700;margin-top:8px"></div>
       </div>
