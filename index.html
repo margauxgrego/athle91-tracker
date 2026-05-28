@@ -1819,8 +1819,12 @@ function logout(){
   if(_ptl)_ptl.textContent='';
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
-  renderCoachLogin();
-  showStep(1);
+  // Réinitialiser le club et le sous-titre → retour à l'étape 1 (choix du club)
+  selectedClub=null;
+  const _sub=document.getElementById('login-subtitle');
+  if(_sub)_sub.textContent='Athlé 91 · Tracker';
+  renderClubStep();
+  showStep(0);
   const ov=document.getElementById('loading-overlay');
   if(ov)ov.style.display='none';
 }
