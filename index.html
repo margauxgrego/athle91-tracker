@@ -2148,9 +2148,9 @@ function buildParamTab(){
     </div>
     ${isCoach?`
     <div class="card danger-zone">
-      <div class="card-title" style="color:var(--red)">Zone dangereuse</div>
-      <p>Supprimer définitivement le compte de ${ath.prenom} ${ath.nom}.</p>
-      <button class="btn-danger" onclick="deleteAthlete('${ath.id}')">Supprimer ce compte</button>
+      <div class="card-title" style="color:var(--red)">Gestion athlète</div>
+      <p>Retirer ${ath.prenom} ${ath.nom} de votre liste. Son compte et ses données restent intacts — l'athlète pourra être réattribué à un autre coach.</p>
+      <button class="btn-danger" onclick="deleteAthlete('${ath.id}')">Retirer de ma liste</button>
     </div>`:''}`;
 }
 
@@ -2721,14 +2721,23 @@ async function changePassword(){
 async function deleteAthlete(key){
   const ath=athletes[key];
   if(!ath)return;
-  showConfirm('Supprimer cet athlète',`Supprimer ${ath.prenom} ${ath.nom} ? Cette action est définitive.`,async()=>{
-    const {error}=await sb.from('athletes').delete().eq('id',key);
-    if(error){showMessage('Erreur','Impossible de supprimer.','danger');return;}
-    delete athletes[key];
-    const remaining=athletesForCoach(currentUser.key).map(a=>a.id);
+  const coachKey=currentUser.key;
+  const isPrimary=ath.coachId===coachKey;
+  const isExtra=ath.extraCoaches&&ath.extraCoaches.includes(coachKey);
+  showConfirm('Retirer cet athlète',`Retirer ${ath.prenom} ${ath.nom} de votre liste ? Son compte et ses données restent intacts.`,async()=>{
+    if(isPrimary){
+      const {error}=await sb.from('athletes').update({coach_id:null}).eq('id',key);
+      if(error){showMessage('Erreur','Impossible de retirer l\'athlète.','danger');return;}
+      ath.coachId=null;
+    }else if(isExtra){
+      const {error}=await sb.from('athlete_coaches').delete().eq('athlete_id',key).eq('coach_id',coachKey);
+      if(error){showMessage('Erreur','Impossible de retirer l\'athlète.','danger');return;}
+      ath.extraCoaches=ath.extraCoaches.filter(c=>c!==coachKey);
+    }
+    const remaining=athletesForCoach(coachKey).map(a=>a.id);
     if(!remaining.length){currentAthlete=null;buildApp();return;}
     currentAthlete=remaining[0];charts={};buildApp();
-    showMessage('Athlète supprimé','L\'athlète a bien été supprimé.');
+    showMessage('Athlète retiré',`${ath.prenom} ${ath.nom} a été retiré de votre liste.`);
   },'danger');
 }
 
