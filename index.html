@@ -1417,6 +1417,7 @@ const clientId = Math.random().toString(36).slice(2);
 let currentUser=null, currentAthlete=null;
 let charts={}, chartFilters={}, selectedLoginCoach=null;
 let selectedClub=null, clubsData=[];
+let _dataLoadedForClub=null; // club dont les données sont déjà en mémoire (préchargement)
 
 // ─── MODE HORS LIGNE ──────────────────────────────────────────────────────
 let _offlineMode=false;
@@ -1661,6 +1662,14 @@ async function initApp(){
     box.innerHTML=orig;
     renderClubStep();
     showStep(0);
+    // Préchargement anticipé du dernier club utilisé → sélection instantanée
+    try{
+      const _cached=JSON.parse(localStorage.getItem(_CACHE_KEY)||'{}');
+      const _preId=_cached.selectedClub;
+      if(_preId&&clubsData.find(c=>c.id===_preId)){
+        loadAllData(_preId).then(()=>{_dataLoadedForClub=_preId;}).catch(()=>{});
+      }
+    }catch(e){}
   }catch(err){
     console.warn('Supabase inaccessible — tentative cache local',err);
     if(_loadCache()){
@@ -1747,15 +1756,22 @@ async function selectClub(id){
     return;
   }
 
-  // Vider les données de l'éventuel club précédent
+  showStep(1);
+
+  if(_dataLoadedForClub===id){
+    // Données déjà en mémoire (préchargement) → affichage instantané
+    renderCoachLogin();
+    _dataLoadedForClub=null;
+    // Rafraîchissement silencieux en arrière-plan (sans bloquer l'UX)
+    loadAllData(id).then(()=>renderCoachLogin()).catch(()=>{});
+    return;
+  }
+
+  // Données pas encore prêtes → chargement classique avec indicateur
   Object.keys(users).forEach(k=>delete users[k]);
   Object.keys(athletes).forEach(k=>delete athletes[k]);
-
-  // Afficher l'étape 1 avec un état de chargement
-  showStep(1);
   const coachList=document.getElementById('coach-list');
   if(coachList)coachList.innerHTML='<div style="padding:20px;text-align:center;color:#888;font-size:12px;letter-spacing:1px">Chargement...</div>';
-
   try{
     await loadAllData(id);
     renderCoachLogin();
