@@ -1958,7 +1958,7 @@ document.addEventListener('visibilitychange',()=>{
 // Onboarding cinématique step-by-step avec spotlight sur les éléments clés.
 // État stocké en localStorage, par utilisateur.
 
-const _TUT_KEY='athle91_tut_v1_';
+const _TUT_KEY='athle91_tut_v2_'; // Bumper la version = reset pour tous les utilisateurs
 let _tutStep=0, _tutActive=false, _tutGen=0;
 
 // ── Définition des étapes ────────────────────────────────────────────────────
@@ -2063,7 +2063,9 @@ function startTutorial(){
   const card=document.createElement('div');
   card.id='tut-card';card.className='tut-card';
   document.body.appendChild(card);
-  _showTutStep(0);
+  // Remonter en haut de page pour que les éléments spotlightés soient visibles
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>_showTutStep(0),350);
 }
 
 function _destroyTutDOM(){
