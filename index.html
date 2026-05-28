@@ -1741,7 +1741,17 @@ function buildTabs(){
   const obsLabel='Observations';
   const tabList=['observations'].concat(ath.disciplines.map(d=>discKey(d))).concat(hasHaies?['haies_franchies','records','parametres']:['records','parametres']);
   const tabLabels=[obsLabel].concat(ath.disciplines).concat(hasHaies?['Haies Franchies','Records',paramLabel]:['Records',paramLabel]);
-  const defaultIdx=ath.disciplines.length>0?1:0;
+  // Onglet par défaut : discipline dont la dernière perf est la plus récente
+  let defaultIdx=ath.disciplines.length>0?1:0;
+  if(ath.disciplines.length>0){
+    let latestDate='';let latestTabKey=null;
+    ath.disciplines.forEach(d=>{
+      const perfs=ath[dataKey(d)]||[];
+      const best=perfs.reduce((m,p)=>p.date>m?p.date:m,'');
+      if(best>latestDate){latestDate=best;latestTabKey=discKey(d);}
+    });
+    if(latestTabKey){const i=tabList.indexOf(latestTabKey);if(i!==-1)defaultIdx=i;}
+  }
   document.getElementById('main-tabs').innerHTML=
     tabLabels.map((l,i)=>`<button class="tab ${i===defaultIdx?'active':''}" onclick="switchTab('${tabList[i]}')">${l}</button>`).join('')+
     `<button class="tab" onclick="openAddDisc()" style="color:var(--yellow)">+ Discipline</button>`+
