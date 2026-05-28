@@ -3409,28 +3409,31 @@ window.addEventListener('orientationchange',()=>setTimeout(()=>Object.values(cha
 })();
 </script>
 <script>
-// ── Mise à jour automatique ────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// RECHARGEMENT AUTOMATIQUE — NE PAS MODIFIER CETTE SECTION
+// Détecte les nouvelles versions via sw.js (toutes les 20s + retour au
+// premier plan + event SW_UPDATED du service worker).
+// RÈGLE : toute modification de index.html DOIT incrémenter CACHE dans sw.js.
+// ═══════════════════════════════════════════════════════════════════════════
 let _swVer = null;
 let _swReg = null;
 
 async function checkAppVersion() {
   try {
-    // ?_ = timestamp : contourne le cache SW ET le cache HTTP à chaque appel
     const r = await fetch('/sw.js?_=' + Date.now(), { cache: 'no-store' });
     const txt = await r.text();
+    // Réseau OK → si mode hors ligne actif, reconnecter Supabase en priorité
+    if (_offlineMode) { window.dispatchEvent(new Event('online')); return; }
     const m = txt.match(/const CACHE = '([^']+)'/);
     if (!m) return;
     const v = m[1];
-    if (!_swVer) { _swVer = v; }
-    else if (_swVer !== v) { location.reload(); return; }
-    // Réseau accessible → si on était en mode hors ligne, tenter reconnexion Supabase
-    if(_offlineMode){ window.dispatchEvent(new Event('online')); return; }
+    if (!_swVer) { _swVer = v; return; }   // 1er appel : mémoriser version
+    if (_swVer !== v) { location.reload(); return; } // version changée → reload
   } catch(e) {}
-  // Déclenche aussi la mise à jour du SW lui-même
+  // Même version → demander au SW de vérifier les mises à jour
   if (_swReg) try { await _swReg.update(); } catch(e) {}
 }
 
-// Vérifie toutes les 20s et dès que l'app revient au premier plan
 setInterval(checkAppVersion, 20000);
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') checkAppVersion();
