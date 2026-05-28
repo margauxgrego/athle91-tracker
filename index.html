@@ -1310,6 +1310,87 @@ const clientId = Math.random().toString(36).slice(2);
 let currentUser=null, currentAthlete=null;
 let charts={}, chartFilters={}, selectedLoginCoach=null;
 
+// ─── MODE HORS LIGNE ──────────────────────────────────────────────────────
+let _offlineMode=false;
+
+function _uuid(){
+  return 'offline_'+(Date.now().toString(36)+Math.random().toString(36).slice(2)).slice(0,16);
+}
+
+const _CACHE_KEY='athle91_data';
+const _QUEUE_KEY='athle91_queue';
+
+function _saveCache(){
+  try{localStorage.setItem(_CACHE_KEY,JSON.stringify({ts:Date.now(),users,athletes}));}catch(e){}
+}
+function _loadCache(){
+  try{
+    const raw=localStorage.getItem(_CACHE_KEY);
+    if(!raw)return false;
+    const saved=JSON.parse(raw);
+    Object.assign(users,saved.users||{});
+    Object.assign(athletes,saved.athletes||{});
+    return true;
+  }catch(e){return false;}
+}
+
+function _getQueue(){try{return JSON.parse(localStorage.getItem(_QUEUE_KEY)||'[]');}catch{return[];}}
+function _setQueue(q){try{localStorage.setItem(_QUEUE_KEY,JSON.stringify(q));}catch{}}
+function _enqueue(item){const q=_getQueue();q.push(item);_setQueue(q);}
+
+function _showOfflineBanner(){
+  let b=document.getElementById('offline-banner');
+  if(!b){
+    b=document.createElement('div');
+    b.id='offline-banner';
+    b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#c0392b;color:#fff;text-align:center;font-size:11px;font-weight:700;letter-spacing:1px;padding:7px 12px;text-transform:uppercase';
+    b.textContent='⚠ Hors ligne — modifications en attente de synchronisation';
+    document.body.prepend(b);
+  }
+  b.style.display='block';
+}
+function _hideOfflineBanner(){
+  const b=document.getElementById('offline-banner');
+  if(b)b.style.display='none';
+}
+
+async function _processQueue(){
+  const q=_getQueue();
+  if(!q.length)return;
+  const failed=[];
+  for(const item of q){
+    try{
+      if(item.action==='INSERT'){
+        if(item.table==='performances'){
+          const {data,error}=await sb.from('performances').insert(item.payload).select().single();
+          if(error)throw error;
+          const dk=dataKey(item.payload.discipline);
+          const arr=(athletes[item.payload.athlete_id]||{})[dk]||[];
+          const idx=arr.findIndex(p=>String(p.id)===String(item.tempId));
+          if(idx!==-1)arr[idx].id=data.id;
+        }else if(item.table==='haies_franchies'){
+          const {data,error}=await sb.from('haies_franchies').insert(item.payload).select().single();
+          if(error)throw error;
+          const arr=(athletes[item.payload.athlete_id]||{}).haiesFranchies||[];
+          const idx=arr.findIndex(p=>String(p.id)===String(item.tempId));
+          if(idx!==-1)arr[idx].id=data.id;
+        }else if(item.table==='coach_observations'){
+          const {error}=await sb.from('coach_observations').insert(item.payload);
+          if(error)throw error;
+        }
+      }else if(item.action==='UPDATE'&&item.table==='coach_observations'){
+        const {error}=await sb.from('coach_observations').update(item.payload).eq('id',item.id);
+        if(error)throw error;
+      }
+    }catch(e){
+      console.warn('Sync échoué',item,e);
+      failed.push(item);
+    }
+  }
+  _setQueue(failed);
+  return failed.length===0;
+}
+
 // ─── CRYPTO — hachage SHA-256 côté client ──────────────────────────────────
 async function hashPassword(pw){
   const data = new TextEncoder().encode(pw);
@@ -1386,6 +1467,8 @@ async function loadAllData(){
         athletes[ac.athlete_id].extraCoaches.push(ac.coach_id);
     });
   }
+  // Sauvegarde du cache local pour le mode hors ligne
+  _saveCache();
 }
 
 // ─── INIT APP ─────────────────────────────────────────────────────────────
@@ -1399,9 +1482,17 @@ async function initApp(){
     renderCoachLogin();
     showStep(1);
   }catch(err){
-    console.error('Erreur Supabase',err);
-    const detail=err?.message||err?.details||err?.hint||JSON.stringify(err)||'inconnue';
-    box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:13px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><p style="color:#888;font-size:10px;margin-top:8px;word-break:break-all">'+detail+'</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
+    console.warn('Supabase inaccessible — tentative cache local',err);
+    if(_loadCache()){
+      _offlineMode=true;
+      box.innerHTML=orig;
+      renderCoachLogin();
+      showStep(1);
+      _showOfflineBanner();
+    }else{
+      const detail=err?.message||err?.details||err?.hint||JSON.stringify(err)||'inconnue';
+      box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:13px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><p style="color:#888;font-size:10px;margin-top:8px;word-break:break-all">'+detail+'</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
+    }
   }
 }
 
@@ -2438,6 +2529,23 @@ async function addPerf(k,disc){
   const lieu=document.getElementById(k+'-lieu').value;
   const niveau=document.getElementById(k+'-niveau')?.value||'';
   if(!date||isNaN(val)){showMessage('Ajout impossible','Date et valeur requis.','danger');return;}
+
+  if(_offlineMode){
+    const tempId=_uuid();
+    const payload={athlete_id:currentAthlete,discipline:disc,val,date,type,lieu,niveau};
+    _enqueue({action:'INSERT',table:'performances',payload,tempId});
+    const dk=dataKey(disc);
+    if(!athletes[currentAthlete][dk])athletes[currentAthlete][dk]=[];
+    athletes[currentAthlete][dk].push({id:tempId,date,val,type,lieu,niveau});
+    _saveCache();
+    document.getElementById(k+'-val').value='';
+    document.getElementById(k+'-lieu').value='';
+    if(document.getElementById(k+'-niveau'))document.getElementById(k+'-niveau').value='';
+    renderPerf(k,disc);
+    showMessage('Hors ligne','Performance enregistrée localement — sera envoyée à la reconnexion.','info');
+    return;
+  }
+
   const {data,error}=await sb.from('performances').insert({
     athlete_id:currentAthlete,discipline:disc,val,date,type,lieu,niveau
   }).select().single();
@@ -2459,6 +2567,22 @@ async function addHF(){
   const dist=document.getElementById('hf-dist').value;
   const note=document.getElementById('hf-note').value;
   if(!date||!val||val<0){showMessage('Ajout impossible','Date et nombre de haies requis.','danger');return;}
+
+  if(_offlineMode){
+    const tempId=_uuid();
+    const payload={athlete_id:currentAthlete,val,date,type,dist,note};
+    _enqueue({action:'INSERT',table:'haies_franchies',payload,tempId});
+    if(!athletes[currentAthlete].haiesTotalSince)athletes[currentAthlete].haiesTotalSince=formatDate(date);
+    if(!athletes[currentAthlete].haiesFranchies)athletes[currentAthlete].haiesFranchies=[];
+    athletes[currentAthlete].haiesFranchies.push({id:tempId,date,val,type,dist,note});
+    _saveCache();
+    document.getElementById('hf-val').value='';
+    document.getElementById('hf-note').value='';
+    renderHF();
+    showMessage('Hors ligne','Enregistré localement — sera envoyé à la reconnexion.','info');
+    return;
+  }
+
   const {data,error}=await sb.from('haies_franchies').insert({
     athlete_id:currentAthlete,val,date,type,dist,note
   }).select().single();
@@ -2476,6 +2600,7 @@ async function addHF(){
 let _editPerf=null;
 
 function openEditPerf(dk,k,disc,id){
+  if(String(id).startsWith('offline_')){showMessage('Hors ligne','Impossible de modifier une performance non encore synchronisée.','danger');return;}
   const ath=athletes[currentAthlete];
   const d=(ath[dk]||[]).find(p=>String(p.id)===String(id));
   if(!d)return;
@@ -2878,6 +3003,30 @@ async function saveObservation(){
   const texte=document.getElementById('obs-texte')?.value.trim();
   if(!date||!texte){showMessage('Champ manquant','La date et les notes sont requises.','danger');return;}
   const now=new Date().toISOString();
+
+  if(_offlineMode){
+    if(window._currentObsId){
+      // Modification d'une obs existante (ou temp locale)
+      _enqueue({action:'UPDATE',table:'coach_observations',id:window._currentObsId,payload:{date,discipline:disc,type,texte,updated_at:now}});
+      if(window._coachObsData){
+        const idx=window._coachObsData.findIndex(o=>String(o.id)===String(window._currentObsId));
+        if(idx!==-1)window._coachObsData[idx]={...window._coachObsData[idx],date,discipline:disc,type,texte};
+      }
+    }else{
+      // Nouvelle observation
+      const tempId=_uuid();
+      _enqueue({action:'INSERT',table:'coach_observations',payload:{athlete_id:athleteId,coach_id:coachDbId,date,discipline:disc,type,texte,updated_at:now},tempId});
+      if(!window._coachObsData)window._coachObsData=[];
+      window._coachObsData.unshift({id:tempId,date,discipline:disc,type,texte});
+    }
+    // Rafraîchir la liste depuis la mémoire locale
+    _renderObsFromMemory();
+    const msg=document.getElementById('obs-msg');
+    if(msg){msg.textContent='Enregistré hors ligne ✓';msg.style.color='var(--yellow)';msg.style.display='block';setTimeout(()=>msg.style.display='none',2500);}
+    _resetObsForm();
+    return;
+  }
+
   let error;
   if(window._currentObsId){
     // Modification d'une observation existante
@@ -2898,6 +3047,29 @@ async function saveObservation(){
   _resetObsForm();
   loadCoachObservations(athleteId);
   if(disc)loadDiscObservations(disc,athleteId);
+}
+
+function _renderObsFromMemory(){
+  const el=document.getElementById('coach-obs-list');
+  if(!el)return;
+  const data=window._coachObsData||[];
+  if(!data.length){el.innerHTML='<div class="empty-state" style="padding:16px">Aucune observation enregistrée</div>';return;}
+  el.innerHTML=data.map((o,i)=>{
+    const typeBg=o.type==='compet'?'rgba(245,196,0,.15)':'rgba(224,96,0,.12)';
+    const typeCol=o.type==='compet'?'#a07800':'var(--yellow)';
+    const typeLabel=o.type==='compet'?'Compétition':'Entraînement';
+    const isTemp=String(o.id).startsWith('offline_');
+    return`<div class="obs-entry" onclick="editObservation(${i})" style="cursor:pointer;border-left:3px solid #eee;padding-left:10px;transition:border-color .15s" onmouseenter="this.style.borderColor='var(--yellow)'" onmouseleave="this.style.borderColor='#eee'">
+      <div class="obs-entry-date" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span>${new Date(o.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>
+        ${o.discipline?`<span style="background:rgba(224,96,0,.12);color:var(--yellow);font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${o.discipline}</span>`:''}
+        <span style="background:${typeBg};color:${typeCol};font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
+        ${isTemp?`<span style="background:#f39c12;color:#fff;font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">En attente</span>`:''}
+        <span style="margin-left:auto;font-size:10px;color:#bbb;font-weight:600">Modifier →</span>
+      </div>
+      <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
+    </div>`;
+  }).join('');
 }
 
 async function deleteObservation(){
@@ -2943,28 +3115,24 @@ function editObservation(i){
 async function loadCoachObservations(athleteId){
   const el=document.getElementById('coach-obs-list');
   if(!el)return;
+  // Mode hors ligne : afficher depuis la mémoire si dispo
+  if(_offlineMode){
+    if(window._coachObsData)_renderObsFromMemory();
+    else el.innerHTML='<div class="empty-state" style="padding:16px">Observations non disponibles hors ligne</div>';
+    return;
+  }
   const coachDbId=users[currentUser.key]?.id;
   try{
     const {data}=await sb.from('coach_observations')
       .select('id,date,discipline,type,texte').eq('athlete_id',athleteId).eq('coach_id',coachDbId)
       .order('date',{ascending:false}).limit(30);
-    if(!data||!data.length){el.innerHTML='<div class="empty-state" style="padding:16px">Aucune observation enregistrée</div>';return;}
+    if(!data||!data.length){el.innerHTML='<div class="empty-state" style="padding:16px">Aucune observation enregistrée</div>';window._coachObsData=[];return;}
     window._coachObsData=data;
-    el.innerHTML=data.map((o,i)=>{
-      const typeBg=o.type==='compet'?'rgba(245,196,0,.15)':'rgba(224,96,0,.12)';
-      const typeCol=o.type==='compet'?'#a07800':'var(--yellow)';
-      const typeLabel=o.type==='compet'?'Compétition':'Entraînement';
-      return`<div class="obs-entry" onclick="editObservation(${i})" style="cursor:pointer;border-left:3px solid #eee;padding-left:10px;transition:border-color .15s" onmouseenter="this.style.borderColor='var(--yellow)'" onmouseleave="this.style.borderColor='#eee'">
-        <div class="obs-entry-date" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span>${new Date(o.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>
-          ${o.discipline?`<span style="background:rgba(224,96,0,.12);color:var(--yellow);font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${o.discipline}</span>`:''}
-          <span style="background:${typeBg};color:${typeCol};font-size:9px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
-          <span style="margin-left:auto;font-size:10px;color:#bbb;font-weight:600">Modifier →</span>
-        </div>
-        <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
-      </div>`;
-    }).join('');
-  }catch(e){el.innerHTML='<div class="empty-state" style="padding:16px">Erreur de chargement</div>';}
+    _renderObsFromMemory();
+  }catch(e){
+    if(window._coachObsData){_renderObsFromMemory();}
+    else el.innerHTML='<div class="empty-state" style="padding:16px">Erreur de chargement</div>';
+  }
 }
 
 async function loadAthleteObservations(athleteId){
@@ -3259,6 +3427,36 @@ if(window.visualViewport){
     },80);
   });
 }
+
+// ─── CONNECTIVITÉ ─────────────────────────────────────────────────────────
+window.addEventListener('offline', () => {
+  if(_offlineMode)return;
+  _offlineMode=true;
+  _showOfflineBanner();
+});
+
+window.addEventListener('online', async () => {
+  if(!_offlineMode)return;
+  _offlineMode=false;
+  _hideOfflineBanner();
+  // Synchroniser les modifications en attente
+  const synced=await _processQueue();
+  // Recharger les données depuis Supabase
+  try{
+    Object.keys(athletes).forEach(k=>delete athletes[k]);
+    Object.keys(users).forEach(k=>delete users[k]);
+    await loadAllData();
+    if(currentUser){
+      buildSwitcher();
+      if(currentAthlete)rebuildCurrentView();
+      if(synced)showMessage('Synchronisé ✓','Modifications envoyées avec succès.','info');
+    }else{
+      renderCoachLogin();
+    }
+  }catch(e){
+    console.warn('Rechargement post-online échoué',e);
+  }
+});
 
 if('serviceWorker' in navigator){
   // Listener immédiat — avant le load pour éviter la race condition avec SW_UPDATED
