@@ -1427,6 +1427,7 @@ function _uuid(){
 
 const _CACHE_KEY='athle91_data';
 const _QUEUE_KEY='athle91_queue';
+const _SESSION_KEY='athle91_session';
 
 function _saveCache(){
   try{localStorage.setItem(_CACHE_KEY,JSON.stringify({ts:Date.now(),users,athletes,clubs:clubsData,selectedClub}));}catch(e){}
@@ -1442,6 +1443,24 @@ function _loadCache(){
     if(saved.selectedClub)selectedClub=saved.selectedClub;
     return true;
   }catch(e){return false;}
+}
+
+function _saveSession(){
+  try{localStorage.setItem(_SESSION_KEY,JSON.stringify({currentUser,currentAthlete,selectedClub,ts:Date.now()}));}catch(e){}
+}
+function _clearSession(){
+  try{localStorage.removeItem(_SESSION_KEY);}catch(e){}
+}
+function _loadSession(){
+  try{
+    const raw=localStorage.getItem(_SESSION_KEY);
+    if(!raw)return null;
+    const s=JSON.parse(raw);
+    if(!s||!s.currentUser||!s.selectedClub)return null;
+    // Expiration : 30 jours
+    if(Date.now()-s.ts>30*24*60*60*1000){localStorage.removeItem(_SESSION_KEY);return null;}
+    return s;
+  }catch(e){return null;}
 }
 
 function _getQueue(){try{return JSON.parse(localStorage.getItem(_QUEUE_KEY)||'[]');}catch{return[];}}
@@ -1606,6 +1625,39 @@ async function initApp(){
     const {data:clubs,error:clubErr}=await sb.from('clubs').select('*').order('nom');
     if(clubErr)throw clubErr;
     clubsData=clubs||[];
+
+    // Tentative de restauration de session (connexion persistante)
+    const savedSession=_loadSession();
+    if(savedSession&&savedSession.selectedClub){
+      const clubExists=clubsData.find(c=>c.id===savedSession.selectedClub);
+      if(clubExists){
+        try{
+          await loadAllData(savedSession.selectedClub);
+          const cu=savedSession.currentUser;
+          const userExists=cu.type==='coach'?!!users[cu.key]:!!athletes[cu.key];
+          if(userExists){
+            selectedClub=savedSession.selectedClub;
+            currentUser=cu;
+            if(cu.type==='athlete'){
+              currentAthlete=cu.key;
+            }else{
+              currentAthlete=savedSession.currentAthlete&&athletes[savedSession.currentAthlete]
+                ?savedSession.currentAthlete
+                :(athletesForCoach(cu.key)[0]?.id||null);
+            }
+            box.innerHTML=orig;
+            document.getElementById('login-screen').style.display='none';
+            document.getElementById('app').style.display='block';
+            buildApp();
+            return;
+          }
+        }catch(e){
+          console.warn('Restauration de session échouée',e);
+          _clearSession();
+        }
+      }
+    }
+
     box.innerHTML=orig;
     renderClubStep();
     showStep(0);
@@ -1614,7 +1666,29 @@ async function initApp(){
     if(_loadCache()){
       _offlineMode=true;
       box.innerHTML=orig;
-      // En mode hors-ligne : si un club était déjà sélectionné en cache, aller direct à l'étape 1
+      // Tentative de restauration de session en mode hors ligne
+      const savedSession=_loadSession();
+      if(savedSession&&savedSession.selectedClub&&Object.keys(users).length){
+        const cu=savedSession.currentUser;
+        const userExists=cu.type==='coach'?!!users[cu.key]:!!athletes[cu.key];
+        if(userExists){
+          selectedClub=savedSession.selectedClub;
+          currentUser=cu;
+          if(cu.type==='athlete'){
+            currentAthlete=cu.key;
+          }else{
+            currentAthlete=savedSession.currentAthlete&&athletes[savedSession.currentAthlete]
+              ?savedSession.currentAthlete
+              :(athletesForCoach(cu.key)[0]?.id||null);
+          }
+          document.getElementById('login-screen').style.display='none';
+          document.getElementById('app').style.display='block';
+          _showOfflineBanner();
+          buildApp();
+          return;
+        }
+      }
+      // En mode hors-ligne sans session : si un club était déjà sélectionné en cache, aller direct à l'étape 1
       if(selectedClub&&Object.keys(users).length){
         const club=clubsData.find(c=>c.id===selectedClub);
         const sub=document.getElementById('login-subtitle');
@@ -1801,6 +1875,7 @@ async function doLogin(){
     const first=athletesForCoach(currentUser.key)[0];
     currentAthlete=first?first.id:null;
   }
+  _saveSession();
   const isFirstLogin=currentUser.type==='athlete'&&athletes[loginTarget]?.first_login===true;
   buildApp();
   if(isFirstLogin){
@@ -1813,6 +1888,7 @@ async function doLogin(){
 
 function logout(){
   currentUser=null;currentAthlete=null;charts={};
+  _clearSession();
   stopPolling();
   stopRealtime();
   const _ptl=document.getElementById('page-title');
