@@ -1081,6 +1081,50 @@ tr:hover td{background:#222;}
   input,select,textarea{font-size:16px!important;}
 }
 
+/* ── TUTORIEL INTERACTIF ────────────────────────────────────── */
+
+/* Modale d'accueil */
+.tut-welcome-overlay{position:fixed;inset:0;background:rgba(0,0,0,.84);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);z-index:10500;display:flex;align-items:center;justify-content:center;padding:20px;}
+.tut-welcome-box{background:#1c1c1c;border:1px solid #2a2a2a;border-top:3px solid var(--yellow);border-radius:20px;padding:32px 28px;width:100%;max-width:360px;box-shadow:0 24px 80px rgba(0,0,0,.7);animation:tut-pop .45s cubic-bezier(.22,1,.36,1);}
+@keyframes tut-pop{from{opacity:0;transform:scale(.88) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.tut-welcome-emoji{font-size:44px;display:block;text-align:center;margin-bottom:18px;animation:tut-bounce .9s ease-in-out infinite alternate;}
+@keyframes tut-bounce{from{transform:translateY(0);}to{transform:translateY(-7px);}}
+.tut-welcome-title{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--text);text-align:center;margin-bottom:8px;letter-spacing:.5px;}
+.tut-welcome-sub{font-size:13px;color:#888;text-align:center;line-height:1.7;margin-bottom:26px;}
+.tut-welcome-actions{display:flex;flex-direction:column;gap:8px;}
+.tut-btn-start{font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:var(--yellow);border:none;color:#fff;cursor:pointer;padding:14px;border-radius:10px;transition:all .2s;}
+.tut-btn-start:hover{background:var(--orange);transform:translateY(-1px);box-shadow:0 6px 20px rgba(224,96,0,.35);}
+.tut-btn-later{font-size:12px;font-weight:600;background:none;border:1.5px solid #2a2a2a;color:#888;cursor:pointer;padding:12px;border-radius:10px;transition:all .2s;}
+.tut-btn-later:hover{border-color:#444;color:var(--text);}
+.tut-btn-never{font-size:11px;font-weight:600;background:none;border:none;color:#3a3a3a;cursor:pointer;padding:8px;text-align:center;transition:color .2s;letter-spacing:.3px;}
+.tut-btn-never:hover{color:#666;}
+
+/* Spotlight — box-shadow géant crée le fond sombre autour de l'élément ciblé */
+.tut-spotlight{position:fixed;border-radius:12px;background:transparent;border:2px solid rgba(245,166,35,.55);box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 28px rgba(245,166,35,.18);z-index:10001;pointer-events:none;transition:top .38s cubic-bezier(.22,1,.36,1),left .38s cubic-bezier(.22,1,.36,1),width .38s cubic-bezier(.22,1,.36,1),height .38s cubic-bezier(.22,1,.36,1),opacity .3s;}
+
+/* Carte flottante du tutoriel */
+.tut-card{position:fixed;z-index:10002;background:#1c1c1c;border:1px solid #2a2a2a;border-top:2px solid var(--yellow);border-radius:14px;padding:20px 22px 16px;width:min(320px,calc(100vw - 28px));box-shadow:0 12px 48px rgba(0,0,0,.65);pointer-events:all;animation:tut-slide-in .3s cubic-bezier(.22,1,.36,1);}
+@keyframes tut-slide-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.tut-step-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:6px;}
+.tut-card-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.2;}
+.tut-card-text{font-size:13px;color:#aaa;line-height:1.65;margin-bottom:16px;}
+.tut-dots{display:flex;gap:4px;align-items:center;justify-content:center;margin-bottom:14px;}
+.tut-dot{width:6px;height:6px;border-radius:50%;background:#252525;transition:all .3s;}
+.tut-dot.active{background:var(--yellow);width:20px;border-radius:3px;}
+.tut-dot.done{background:#2a2a2a;}
+.tut-card-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.tut-skip{font-size:11px;color:#3a3a3a;background:none;border:none;cursor:pointer;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:6px 0;transition:color .2s;flex-shrink:0;}
+.tut-skip:hover{color:#666;}
+.tut-nav-btns{display:flex;gap:6px;align-items:center;}
+.tut-prev{font-size:12px;font-weight:700;background:none;border:1.5px solid #2a2a2a;color:#666;cursor:pointer;padding:8px 14px;border-radius:8px;transition:all .2s;}
+.tut-prev:hover{border-color:#444;color:var(--text);}
+.tut-next{font-size:12px;font-weight:800;background:var(--yellow);border:none;color:#fff;cursor:pointer;padding:8px 18px;border-radius:8px;transition:all .2s;letter-spacing:.3px;}
+.tut-next:hover{background:var(--orange);}
+
+/* Bouton "Relancer" dans les Paramètres */
+.tut-relaunch-btn{display:flex;align-items:center;gap:10px;background:none;border:1.5px solid #2a2a2a;color:#888;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;padding:10px 14px;border-radius:8px;transition:all .2s;width:100%;}
+.tut-relaunch-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+
 </style>
 </head>
 <body>
@@ -1760,6 +1804,8 @@ async function doLogin(){
   if(isFirstLogin){
     // Délai court pour laisser l'interface s'afficher avant le modal
     setTimeout(()=>openModal('modal-first-login'),600);
+  } else if(!_tutDismissed()){
+    setTimeout(()=>showTutorialWelcome(),800);
   }
 }
 
@@ -1901,6 +1947,230 @@ document.addEventListener('visibilitychange',()=>{
     syncFromServer();
   }
 });
+
+// ─── TUTORIEL INTERACTIF ────────────────────────────────────────────────────
+// Onboarding cinématique step-by-step avec spotlight sur les éléments clés.
+// État stocké en localStorage, par utilisateur.
+
+const _TUT_KEY='athle91_tut_v1_';
+let _tutStep=0, _tutActive=false;
+
+// ── Définition des étapes ────────────────────────────────────────────────────
+// target  : sélecteur CSS de l'élément à mettre en surbrillance (null = centré)
+// tab     : onglet à ouvrir avant l'étape (null = conserver l'onglet actuel)
+// pos     : 'top' | 'bottom' — côté préféré pour la carte (desktop)
+const TUTORIAL_STEPS=[
+  {
+    title:'Bienvenue sur Athlé 91 !',
+    text:'Ce tutoriel te guide en quelques étapes pour maîtriser toutes les fonctionnalités. Tu peux l\'arrêter à tout moment et le relancer depuis les Paramètres.',
+    target:null,tab:null
+  },
+  {
+    title:'La navigation',
+    text:'Ces onglets te permettent de passer entre tes disciplines, observations, records et paramètres. Sur mobile, le nom de l\'onglet actif s\'affiche en haut de l\'écran.',
+    target:'.tabs',tab:null,pos:'top'
+  },
+  {
+    title:'Tes athlètes',
+    text:'Cette barre affiche les athlètes disponibles. En tant que coach tu peux en gérer plusieurs. Clique sur un nom pour changer de vue.',
+    target:'.topbar',tab:null,pos:'bottom'
+  },
+  {
+    title:'Gérer les disciplines',
+    text:'Depuis les Paramètres, ajoute ou retire des disciplines. Chaque discipline crée un onglet dédié avec son graphique de progression et son historique complet.',
+    target:null,tab:'parametres'
+  },
+  {
+    title:'Saisir une performance',
+    text:'Dans l\'onglet d\'une discipline, ce formulaire permet d\'enregistrer une performance : date, valeur, type (compétition ou entraînement), lieu, niveau — et le vent pour les courses.',
+    target:'.disc-card-add',tab:null,pos:'top'
+  },
+  {
+    title:'Les observations',
+    text:'L\'onglet Observations permet d\'échanger des notes entre coach et athlète : retours de séance, axes de progression, encouragements. Un espace de communication intégré.',
+    target:'#tab-observations',tab:'observations',pos:'top'
+  },
+  {
+    title:'Records & Historique',
+    text:'L\'onglet Records centralise tous tes records personnels par discipline. Clique sur une carte pour dérouler l\'historique complet avec le compteur de performances.',
+    target:'.records-grid',tab:'records',pos:'top'
+  },
+  {
+    title:'Graphique de progression',
+    text:'Chaque discipline affiche un graphique interactif. Filtre par période ou par type de séance pour analyser finement ta progression.',
+    target:'.disc-card-chart',tab:null,pos:'bottom'
+  },
+  {
+    title:'C\'est parti ! 🎯',
+    text:'Tu maîtrises maintenant l\'essentiel ! Tu peux relancer ce tutoriel à tout moment depuis l\'onglet Paramètres. Bonne chance sur les pistes !',
+    target:null,tab:null
+  }
+];
+
+// ── Gestion de l'état ────────────────────────────────────────────────────────
+function _tutKey(){return _TUT_KEY+(currentUser?.key||'anon');}
+function _tutDismissed(){return localStorage.getItem(_tutKey())==='dismissed';}
+function _tutMarkDone(){localStorage.setItem(_tutKey(),'dismissed');}
+
+// ── Modale d'accueil ──────────────────────────────────────────────────────────
+function showTutorialWelcome(){
+  if(_tutDismissed())return;
+  const existing=document.getElementById('tut-welcome');
+  if(existing)existing.remove();
+  const el=document.createElement('div');
+  el.id='tut-welcome';
+  el.className='tut-welcome-overlay';
+  el.innerHTML=`
+    <div class="tut-welcome-box">
+      <span class="tut-welcome-emoji">🎬</span>
+      <div class="tut-welcome-title">Découvrir l'application</div>
+      <div class="tut-welcome-sub">Un tutoriel interactif pour prendre en main toutes les fonctionnalités d'Athlé 91 Tracker en 2 minutes.</div>
+      <div class="tut-welcome-actions">
+        <button class="tut-btn-start" onclick="startTutorial()">▶ Commencer le tutoriel</button>
+        <button class="tut-btn-later" onclick="closeTutorialWelcome()">Plus tard</button>
+        <button class="tut-btn-never" onclick="dismissTutorialForever()">Ignorer définitivement</button>
+      </div>
+    </div>`;
+  document.body.appendChild(el);
+}
+
+function closeTutorialWelcome(){
+  const el=document.getElementById('tut-welcome');
+  if(el){el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300);}
+}
+
+function dismissTutorialForever(){
+  _tutMarkDone();
+  closeTutorialWelcome();
+}
+
+// ── Démarrage ────────────────────────────────────────────────────────────────
+function startTutorial(){
+  closeTutorialWelcome();
+  _tutActive=true;_tutStep=0;
+  // Créer les éléments DOM du tutoriel
+  _destroyTutDOM();
+  const spot=document.createElement('div');
+  spot.id='tut-spotlight';spot.className='tut-spotlight';
+  spot.style.cssText='top:0;left:0;width:0;height:0;opacity:0;';
+  document.body.appendChild(spot);
+  const card=document.createElement('div');
+  card.id='tut-card';card.className='tut-card';
+  document.body.appendChild(card);
+  _showTutStep(0);
+}
+
+function _destroyTutDOM(){
+  ['tut-spotlight','tut-card','tut-welcome'].forEach(id=>{
+    const e=document.getElementById(id);if(e)e.remove();
+  });
+}
+
+function destroyTutorial(){
+  _destroyTutDOM();_tutActive=false;
+}
+
+// ── Affichage d'une étape ─────────────────────────────────────────────────────
+async function _showTutStep(n){
+  const total=TUTORIAL_STEPS.length;
+  if(n<0||n>=total)return;
+  _tutStep=n;
+  const step=TUTORIAL_STEPS[n];
+
+  // Naviguer vers l'onglet requis
+  if(step.tab){
+    const tabEl=document.getElementById('tab-'+step.tab);
+    if(tabEl)switchTab(step.tab);
+    await new Promise(r=>setTimeout(r,400));
+  }
+
+  // Pour les étapes liées aux disciplines, naviguer vers la 1re discipline
+  if(step.target&&(step.target==='.disc-card-add'||step.target==='.disc-card-chart')){
+    const ath=athletes[currentAthlete];
+    if(ath&&ath.disciplines.length){
+      switchTab(discKey(ath.disciplines[0]));
+      await new Promise(r=>setTimeout(r,400));
+    } else {
+      return _showTutStep(n+1); // Pas de discipline → étape suivante
+    }
+  }
+
+  // Positionner le spotlight sur l'élément cible
+  const spot=document.getElementById('tut-spotlight');
+  const targetEl=step.target?document.querySelector(step.target):null;
+  if(spot){
+    if(targetEl){
+      const r=targetEl.getBoundingClientRect(),p=10;
+      spot.style.cssText=`top:${Math.max(0,r.top-p)}px;left:${Math.max(0,r.left-p)}px;width:${r.width+p*2}px;height:${r.height+p*2}px;opacity:1;`;
+    } else {
+      spot.style.cssText='top:0;left:0;width:0;height:0;opacity:0;';
+    }
+  }
+
+  // Construire le contenu de la carte
+  const isFirst=n===0,isLast=n===total-1;
+  const dots=TUTORIAL_STEPS.map((_,i)=>`<div class="tut-dot${i===n?' active':i<n?' done':''}"></div>`).join('');
+  const card=document.getElementById('tut-card');
+  if(!card)return;
+  // Forcer le re-déclenchement de l'animation CSS
+  card.style.animation='none';void card.offsetWidth;card.style.animation='';
+  card.innerHTML=`
+    <div class="tut-step-label">Étape ${n+1} / ${total}</div>
+    <div class="tut-card-title">${step.title}</div>
+    <div class="tut-card-text">${step.text}</div>
+    <div class="tut-dots">${dots}</div>
+    <div class="tut-card-actions">
+      <button class="tut-skip" onclick="skipTutorial()">Passer</button>
+      <div class="tut-nav-btns">
+        ${!isFirst?`<button class="tut-prev" onclick="_showTutStep(${n-1})">← Préc.</button>`:''}
+        ${isLast
+          ?`<button class="tut-next" onclick="finishTutorial()">Terminer ✓</button>`
+          :`<button class="tut-next" onclick="_showTutStep(${n+1})">Suivant →</button>`
+        }
+      </div>
+    </div>`;
+
+  // Positionner la carte après que le DOM ait été rendu
+  await new Promise(r=>setTimeout(r,30));
+  _posTutCard(card,step.target,step.pos||'bottom');
+}
+
+function _posTutCard(card,sel,pos){
+  const mob=window.innerWidth<=640;
+  const marg=14;
+  const cw=card.offsetWidth||320,ch=card.offsetHeight||220;
+  const vw=window.innerWidth,vh=window.innerHeight;
+  if(mob||!sel){
+    // Mobile → centré, épinglé en bas au-dessus de la tab bar
+    card.style.cssText=`bottom:${marg+(mob?60:0)}px;top:auto;left:${Math.max(marg,(vw-cw)/2)}px;`;
+    return;
+  }
+  const t=document.querySelector(sel);
+  if(!t){card.style.cssText=`top:${(vh-ch)/2}px;left:${(vw-cw)/2}px;`;return;}
+  const r=t.getBoundingClientRect();
+  let top,left;
+  top=(pos==='top'&&r.top>ch+marg*2)?Math.max(marg,r.top-ch-marg):Math.min(vh-ch-marg,r.bottom+marg);
+  left=Math.min(vw-cw-marg,Math.max(marg,r.left+(r.width/2)-(cw/2)));
+  card.style.cssText=`top:${top}px;left:${left}px;`;
+}
+
+function skipTutorial(){
+  // "Passer" : ferme sans marquer comme vu → réapparaîtra à la prochaine connexion
+  destroyTutorial();
+}
+
+function finishTutorial(){
+  // "Terminer" : marque comme vu définitivement
+  _tutMarkDone();
+  destroyTutorial();
+  showMessage('Tutoriel terminé 🎯','Tu peux le relancer depuis tes Paramètres à tout moment.');
+}
+
+function relaunchTutorial(){
+  // Bouton "Relancer" dans les Paramètres
+  localStorage.removeItem(_tutKey());
+  showTutorialWelcome();
+}
 
 initApp();
 
@@ -2295,7 +2565,11 @@ function buildParamTab(){
       <div class="card-title" style="color:var(--red)">Gestion athlète</div>
       <p>Retirer ${ath.prenom} ${ath.nom} de votre liste. Son compte et ses données restent intacts.</p>
       <button class="btn-sm-danger" onclick="deleteAthlete('${ath.id}')">Retirer de ma liste</button>
-    </div>`:''}`;
+    </div>`:''}
+    <div class="card">
+      <div class="card-title">Aide</div>
+      <button class="tut-relaunch-btn" onclick="relaunchTutorial()">🎬 &nbsp;Relancer le tutoriel</button>
+    </div>`;
 }
 
 function openAddOptions(){
