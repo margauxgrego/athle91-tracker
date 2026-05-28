@@ -2060,7 +2060,7 @@ const TUTORIAL_STEPS=[
   {
     title:'Gérer les disciplines',
     text:'Depuis les Paramètres, ajoute ou retire des disciplines. Chaque discipline crée un onglet dédié avec son graphique de progression et son historique complet.',
-    target:'#param-disc-card',tab:'parametres'
+    target:'#param-disc-card',tab:'parametres',scrollBlock:'end'
   },
   {
     title:'Saisir une performance',
@@ -2210,7 +2210,7 @@ async function _showTutStep(n){
   const targetEl=step.target?document.querySelector(step.target):null;
   // Scroll instantané vers la cible si elle est hors champ
   if(targetEl){
-    targetEl.scrollIntoView({behavior:'instant',block:'nearest'});
+    targetEl.scrollIntoView({behavior:'instant',block:step.scrollBlock||'nearest'});
     await new Promise(r=>setTimeout(r,30));
     if(_tutGen!==myGen)return;
   }
