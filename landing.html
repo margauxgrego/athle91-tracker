@@ -43,7 +43,7 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 #btn-install:active{transform:translateY(0);}
 
 #btn-open{
-  display:block;
+  display:none;
   width:100%;padding:18px;
   background:#f5c400;color:#000;
   font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:2px;
@@ -54,6 +54,9 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 #btn-open:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,196,0,.5);}
 
 #install-status{margin-top:14px;font-size:13px;color:#666;line-height:1.5;}
+
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #444;border-top-color:#f5c400;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
 .instructions{margin-top:20px;background:#1a1a1a;border-radius:12px;padding:16px 18px;text-align:left;}
 .instructions p{font-size:13px;color:#888;margin-bottom:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
@@ -113,8 +116,8 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 
   <div class="install-section">
     <button id="btn-install" onclick="installApp()">⬇ INSTALLER L'APPLICATION</button>
-    <a id="btn-open" href="/index.html">OUVRIR L'APPLICATION →</a>
-    <div id="install-status"></div>
+    <a id="btn-open" href="/">OUVRIR L'APPLICATION →</a>
+    <div id="install-status"><span class="spinner"></span>Préparation…</div>
 
     <div class="instructions" id="ios-instructions" style="display:none">
       <p>Installer sur iPhone / iPad</p>
@@ -142,61 +145,77 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 
 <script>
 let deferredPrompt = null;
+let promptFired = false;
 
-// Détecte si déjà installée
 const isInstalled = window.matchMedia('(display-mode: standalone)').matches
   || window.navigator.standalone === true;
-
-// Détecte iOS
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-// Détecte Firefox
 const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('btn-install').style.display = 'block';
-  document.getElementById('btn-open').style.display = 'none';
-  document.getElementById('install-status').textContent =
-    'Compatible avec Chrome, Edge et Android.';
-});
-
-window.addEventListener('appinstalled', () => {
-  document.getElementById('btn-install').style.display = 'none';
+function setStatus(msg) {
+  document.getElementById('install-status').innerHTML = msg;
+}
+function showOpen(msg) {
   document.getElementById('btn-open').style.display = 'block';
-  document.getElementById('install-status').textContent =
-    'Application installée ! Retrouve-la sur ton écran d\'accueil.';
-  deferredPrompt = null;
-});
-
-async function installApp() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') {
-    document.getElementById('install-status').textContent = 'Installation en cours…';
-  }
-  deferredPrompt = null;
+  if (msg) setStatus(msg);
 }
 
-// iOS : pas de beforeinstallprompt, affiche les instructions
-if (isIOS && !isInstalled) {
-  document.getElementById('ios-instructions').style.display = 'block';
-  document.getElementById('install-status').textContent =
-    'Sur iPhone, utilise Safari pour installer l\'app.';
-}
-
-// Firefox : affiche les instructions spécifiques
-if (isFirefox && !isInstalled) {
-  document.getElementById('firefox-instructions').style.display = 'block';
-  document.getElementById('install-status').textContent =
-    'Sur Firefox, regarde l\'icône dans la barre d\'adresse pour installer.';
-}
-
-// Déjà installée
+// ── Déjà installée ────────────────────────────────────────────────────────
 if (isInstalled) {
   document.getElementById('btn-open').textContent = '→ OUVRIR L\'APPLICATION';
-  document.getElementById('install-status').textContent = 'Application déjà installée.';
+  showOpen('Application déjà installée.');
+}
+
+// ── iOS : pas de beforeinstallprompt, instructions manuelles ──────────────
+else if (isIOS) {
+  document.getElementById('ios-instructions').style.display = 'block';
+  showOpen('Sur iPhone, utilise Safari pour installer l\'app.');
+}
+
+// ── Firefox : instructions spécifiques ───────────────────────────────────
+else if (isFirefox) {
+  document.getElementById('firefox-instructions').style.display = 'block';
+  showOpen('Sur Firefox, regarde l\'icône dans la barre d\'adresse pour installer.');
+}
+
+// ── Chrome / Edge / Android : installation automatique ───────────────────
+else {
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    promptFired = true;
+    // Déclencher automatiquement le prompt d'installation
+    installApp();
+  });
+
+  // Fallback : si beforeinstallprompt ne se déclenche pas après 3s
+  setTimeout(() => {
+    if (!promptFired && !isInstalled) {
+      showOpen('Installation non disponible sur ce navigateur.<br>Tu peux ouvrir l\'application directement.');
+    }
+  }, 3000);
+}
+
+// ── Après installation : redirection auto vers l'app ─────────────────────
+window.addEventListener('appinstalled', () => {
+  setStatus('✓ Application installée ! Ouverture en cours…');
+  document.getElementById('btn-install').style.display = 'none';
+  deferredPrompt = null;
+  setTimeout(() => { window.location.href = '/'; }, 1500);
+});
+
+// ── Fonction d'installation ───────────────────────────────────────────────
+async function installApp() {
+  if (!deferredPrompt) return;
+  const prompt = deferredPrompt;
+  deferredPrompt = null;
+  setStatus('Installation en cours…');
+  prompt.prompt();
+  const { outcome } = await prompt.userChoice;
+  if (outcome === 'dismissed') {
+    showOpen('Installation annulée. Tu peux ouvrir l\'application directement.');
+  }
+  // Si 'accepted' : l'événement appinstalled gère la redirection
 }
 </script>
 
