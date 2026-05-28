@@ -455,18 +455,16 @@ tr:hover td{background:#fafafa;}
     grid-template-columns:1fr!important;
   }
 
-  /* Les KPI ne restent plus serrés en 2 colonnes sur téléphone */
+  /* KPI : 2 colonnes × 2 lignes sur téléphone */
   .stat-row{
-    grid-template-columns:1fr!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:6px;
   }
   .stat{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
+    display:block;
   }
-  .stat .n{font-size:24px;text-align:right;white-space:nowrap;}
-  .stat .l{font-size:9px;margin-top:0;}
+  .stat .n{font-size:20px;text-align:left;white-space:nowrap;}
+  .stat .l{font-size:8px;margin-top:2px;}
 
   /* Les records passent en un bloc par ligne */
   .records-grid{
@@ -1978,7 +1976,7 @@ function buildObsTab(){
             placeholder="Points à travailler, ce qui s'est bien passé, axes d'amélioration…"></textarea>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px">
-          <button class="btn" onclick="saveObservation()" style="flex:1;padding:7px 12px;font-size:11px">Enregistrer</button>
+          <button onclick="saveObservation()" style="flex:1;background:var(--yellow);color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Enregistrer</button>
           <button onclick="deleteObservation()" style="flex:1;background:#c0392b;color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Supprimer</button>
         </div>
         <div id="obs-msg" style="display:none;font-size:11px;font-weight:700;margin-top:8px"></div>
