@@ -1048,6 +1048,23 @@ tr:hover td{background:#fafafa;}
   }
 }
 
+/* ═══ TITRE DE PAGE (mobile) ════════════════════════════════════════════════ */
+#page-title{display:none;}
+@media(max-width:640px){
+  #page-title{
+    display:block;
+    text-align:center;
+    font-size:14px;
+    font-weight:800;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    color:#111;
+    padding:10px 16px 8px;
+    border-bottom:1px solid #ececec;
+    margin-bottom:4px;
+  }
+}
+
 /* ═══ ANTI-ZOOM iOS : les inputs < 16px déclenchent un zoom automatique ══════ */
 @media(max-width:768px){
   input,select,textarea{font-size:16px!important;}
@@ -1305,6 +1322,7 @@ tr:hover td{background:#fafafa;}
     </div>
   </header>
   <div class="tabs" id="main-tabs"></div>
+  <div id="page-title"></div>
   <div id="tab-contents"></div>
 </div>
 
@@ -2227,6 +2245,9 @@ function switchTab(name){
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   const btn=[...document.querySelectorAll('.tab')].find(t=>t.getAttribute('onclick')?.includes("'"+name+"'"));
   if(btn)btn.classList.add('active');
+  // Titre de page centré (visible sur mobile uniquement)
+  const titleEl=document.getElementById('page-title');
+  if(titleEl&&btn)titleEl.textContent=btn.textContent.trim();
   const el=document.getElementById('tab-'+name);
   if(el)el.classList.add('active');
   // Rafraîchit les observations à chaque visite de l'onglet
