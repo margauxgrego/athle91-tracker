@@ -1809,12 +1809,12 @@ function showAthletes(coachKey){
     '<div style="display:flex;flex-direction:column;gap:6px">'+
     `<div class="login-user" onclick="selectRole('${coachKey}')">
       <span class="uname">${coach.name}</span>
-      <span class="urole">Coach</span>
+      <span class="urole">Coach →</span>
     </div>`+
     coachAthletes.map(a=>`
       <div class="login-user" onclick="selectRole('${a.id}')">
         <span class="uname">${a.prenom} ${a.nom}</span>
-        <span class="urole">Athlète · ${a.cat}</span>
+        <span class="urole">Athlète →</span>
       </div>`).join('')+
     (!coachAthletes.length?`<div class="empty-state" style="padding:18px">Aucun athlète pour ce coach</div>`:'')+
     '</div>'+
