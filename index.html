@@ -1607,10 +1607,10 @@ async function initApp(){
   // ── Écran de démarrage plein écran ─────────────────────────────────────
   const splash=document.createElement('div');
   splash.id='splash-screen';
-  splash.style.cssText='position:fixed;inset:0;background:#0a0a0a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
-  splash.innerHTML='<div class="logo-badge"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div>'
+  splash.style.cssText='position:fixed;inset:0;background:#fff;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+  splash.innerHTML='<img src="/icon-192.png" style="width:120px;height:120px;border-radius:28px;">'
     +'<div style="position:absolute;bottom:max(36px,env(safe-area-inset-bottom,36px));left:0;right:0;text-align:center;">'
-    +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#333;">from </span>'
+    +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#bbb;">from </span>'
     +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:900;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(90deg,#f5c400,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">MG</span>'
     +'</div>';
   document.body.appendChild(splash);
