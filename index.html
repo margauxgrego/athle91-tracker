@@ -32,7 +32,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .logo-badge{display:inline-flex;align-items:stretch;border-radius:10px;overflow:hidden;margin-bottom:14px;}
 .logo-athle{background:#f5c400;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;padding:8px 16px;letter-spacing:3px;line-height:1;}
 .logo-91{background:#f5a623;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;padding:8px 14px;line-height:1;}
-.login-subtitle{font-size:10px;color:#999;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;font-weight:600;}
+.login-subtitle{font-size:10px;color:#fff;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;font-weight:600;}
 .login-step{display:none;flex-direction:column;gap:8px;}
 .login-step.show{display:flex;}
 .login-user{display:flex;align-items:center;justify-content:space-between;background:#252525;border:1px solid #333;border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .2s;}
@@ -52,7 +52,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 /* ── TOPBAR ─────────────────────────────── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:2px solid var(--yellow);gap:8px;flex-wrap:wrap;background:var(--bg);}
 .topbar-left{display:flex;gap:6px;flex-wrap:wrap;}
-.ath-btn{font-size:12px;font-weight:400;text-transform:uppercase;padding:6px 14px;background:#252525;border:1.5px solid #333;color:#888;cursor:pointer;border-radius:6px;transition:all .2s;letter-spacing:.3px;touch-action:pan-x;}
+.ath-btn{font-size:12px;font-weight:400;text-transform:uppercase;padding:6px 14px;background:#252525;border:1.5px solid #333;color:#fff;cursor:pointer;border-radius:6px;transition:all .2s;letter-spacing:.3px;touch-action:pan-x;}
 .ath-btn.active{background:var(--yellow);border-color:var(--yellow);color:#fff;}
 .ath-btn:hover{color:var(--text);}
 .ath-btn.coach-add{border-color:var(--yellow);color:var(--yellow);}
@@ -68,7 +68,7 @@ header{padding:22px 0 24px;border-bottom:1px solid #2a2a2a;margin-bottom:22px;bo
 .logo-inline .l9{background:var(--orange);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;padding:3px 7px;line-height:1;}
 .header-name{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,6vw,64px);font-weight:900;line-height:1;letter-spacing:1px;color:var(--text);}
 .header-name span{color:var(--yellow);}
-.header-sub{font-size:10px;color:#999;letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.header-sub{font-size:10px;color:#fff;letter-spacing:2px;text-transform:uppercase;font-weight:600;}
 .header-records{display:flex;gap:8px;flex-wrap:wrap;}
 .record-pill{background:#1c1c1c;border:2px solid var(--yellow);border-radius:8px;padding:8px 14px;text-align:center;min-width:80px;box-shadow:0 1px 4px rgba(0,0,0,.4);}
 .record-pill .val{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--yellow);line-height:1;}
@@ -77,7 +77,7 @@ header{padding:22px 0 24px;border-bottom:1px solid #2a2a2a;margin-bottom:22px;bo
 /* ── TABS ─────────────────────────────── */
 .tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #2a2a2a;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;background:none;border:none;color:#666;cursor:pointer;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s;touch-action:pan-x;}
+.tab{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;background:none;border:none;color:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s;touch-action:pan-x;}
 .tab.active{color:#fff;background:var(--yellow);border-bottom-color:var(--yellow);font-weight:800;}
 .tab:hover:not(.active){color:var(--text);}
 .tab-content{display:none;width:100%;}
@@ -97,7 +97,7 @@ header{padding:22px 0 24px;border-bottom:1px solid #2a2a2a;margin-bottom:22px;bo
 /* ── CHART FILTERS ─────────────────── */
 .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
 .filter-row{display:flex;gap:4px;flex-wrap:wrap;}
-.filter-btn{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;background:none;border:1.5px solid #333;color:#666;cursor:pointer;border-radius:4px;transition:all .15s;}
+.filter-btn{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;background:none;border:1.5px solid #333;color:#fff;cursor:pointer;border-radius:4px;transition:all .15s;}
 .filter-btn.active{border-color:var(--yellow);color:#fff;background:var(--yellow);}
 .filter-btn.f-compet.active{background:#f5c400;border-color:#f5c400;color:#000;}
 .filter-btn.f-entrainement.active{background:var(--yellow);border-color:var(--yellow);color:#fff;}
@@ -124,7 +124,7 @@ tr:hover td{background:#222;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
 .form-col{display:flex;flex-direction:column;gap:8px;}
 .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.form-group label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:4px;}
+.form-group label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-bottom:4px;}
 .form-group input,.form-group select{width:100%;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:6px;padding:9px 11px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .2s;}
 .form-group input:focus,.form-group select:focus{border-color:var(--yellow);}
 /* Calendrier natif en blanc sur desktop */
@@ -141,35 +141,35 @@ tr:hover td{background:#222;}
 .perf-row{cursor:pointer;transition:background .15s;}
 .perf-row:hover{background:rgba(245,196,0,.07);}
 .perf-row:active{background:rgba(245,196,0,.18);}
-.btn-cancel{background:none;color:#888;border:1px solid #333;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
+.btn-cancel{background:none;color:#fff;border:1px solid #333;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
 .btn-danger{background:var(--red);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
 
 /* ── STATS ─────────────────────── */
 .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
 .stat{background:#1c1c1c;border:1px solid #2a2a2a;border-left:3px solid var(--yellow);border-radius:8px;padding:12px 14px;}
 .stat .n{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;line-height:1;color:var(--yellow);}
-.stat .l{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-top:3px;}
+.stat .l{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-top:3px;}
 .trend-up{color:var(--yellow)!important;}
 .trend-down{color:var(--red)!important;}
 
 /* ── LEGEND ─────────────────────── */
 .legend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#999;font-weight:600;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#fff;font-weight:600;}
 .legend-dot{width:10px;height:10px;border-radius:50%;}
 
 /* ── RECORDS ─────────────────────── */
 .records-filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
-.records-filters label{font-size:10px;font-weight:400;color:#888;text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
+.records-filters label{font-size:10px;font-weight:400;color:#fff;text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
 .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
 .rec-card{background:#1c1c1c;border:1px solid #2a2a2a;border-bottom:3px solid var(--yellow);border-radius:8px;padding:12px 14px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,border-color .18s,background .18s;box-shadow:0 2px 8px rgba(0,0,0,.3);}
 .rec-card:hover{border-color:var(--yellow);background:#222;box-shadow:0 6px 20px rgba(224,96,0,.22);transform:translateY(-2px);}
 .rec-card:active{transform:translateY(0);box-shadow:0 1px 6px rgba(0,0,0,.4);}
 .rec-card.open{border-color:var(--orange);border-bottom-color:var(--orange);background:#1e1a15;}
-.rec-card .disc{font-size:10px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
-.rec-card .disc-label{font-size:10px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+.rec-card .disc{font-size:10px;color:#fff;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+.rec-card .disc-label{font-size:10px;color:#fff;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
 .rec-card .perf{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;color:var(--yellow);line-height:1;margin:4px 0;}
-.rec-card .meta{font-size:10px;color:#888;}
-.rec-hint{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px;padding-top:6px;border-top:1px solid #2a2a2a;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#555;transition:color .18s;}
+.rec-card .meta{font-size:10px;color:#fff;}
+.rec-hint{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px;padding-top:6px;border-top:1px solid #2a2a2a;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;transition:color .18s;}
 .rec-card:hover .rec-hint{color:var(--yellow);}
 .rec-card.open .rec-hint{color:var(--orange);}
 .rec-chevron{display:inline-block;font-size:11px;transition:transform .25s cubic-bezier(.22,1,.36,1);}
@@ -182,8 +182,8 @@ tr:hover td{background:#222;}
 /* ── HAIES ─────────────────────── */
 .hurdles-hero{text-align:center;padding:28px 0 20px;}
 .hurdles-counter{font-family:'Barlow Condensed',sans-serif;font-size:96px;font-weight:900;line-height:1;color:var(--orange);}
-.hurdles-label{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#888;margin-top:6px;font-weight:700;}
-.hurdles-since{font-size:12px;color:#888;margin-top:8px;}
+.hurdles-label{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#fff;margin-top:6px;font-weight:700;}
+.hurdles-since{font-size:12px;color:#fff;margin-top:8px;}
 
 /* ── MODAL ─────────────────────── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
@@ -192,44 +192,44 @@ tr:hover td{background:#222;}
 .modal h3{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--text);margin-bottom:18px;}
 .modal-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
 .disc-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
-.disc-pill label{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#888;cursor:pointer;background:#252525;border:1px solid #333;padding:5px 10px;border-radius:4px;transition:all .15s;}
+.disc-pill label{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:#252525;border:1px solid #333;padding:5px 10px;border-radius:4px;transition:all .15s;}
 .disc-pill label:hover{border-color:var(--yellow);color:var(--text);}
 .disc-pill input:checked+span{color:var(--yellow);}
 .disc-pill label:has(input:checked){background:rgba(224,96,0,.1);border-color:var(--yellow);}
 
 /* ── MODE TABS (modal nouvel athlète) ─── */
 .mode-tab-bar{display:flex;gap:6px;margin-bottom:16px;background:#171717;border-radius:8px;padding:4px;}
-.mode-tab{flex:1;padding:8px 10px;border:none;border-radius:6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;background:transparent;color:#666;transition:all .15s;}
+.mode-tab{flex:1;padding:8px 10px;border:none;border-radius:6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;background:transparent;color:#fff;transition:all .15s;}
 .mode-tab.active{background:#2a2a2a;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.4);}
 .existing-ath-list{max-height:280px;overflow-y:auto;margin:4px 0 4px;}
 .existing-ath-row{padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:4px;border:2px solid transparent;background:#222;transition:all .15s;}
 .existing-ath-row:hover{background:#2a2a2a;}
 .existing-ath-row.selected{border-color:#f5c400;background:rgba(245,196,0,.1);}
 .existing-ath-name{font-size:14px;font-weight:700;color:var(--text);}
-.existing-ath-sub{font-size:12px;color:#999;margin-top:2px;}
+.existing-ath-sub{font-size:12px;color:#fff;margin-top:2px;}
 
 /* ── LOADING OVERLAY (zone données) ─── */
 #tab-contents{position:relative;}
 @keyframes blink-load{0%,100%{opacity:1}50%{opacity:.1}}
-.tab-load-overlay{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(20,20,20,.97);padding:12px 28px;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.5);z-index:300;font-size:12px;font-weight:800;letter-spacing:3px;color:#aaa;text-transform:uppercase;animation:blink-load 1s ease-in-out infinite;pointer-events:none;white-space:nowrap;}
+.tab-load-overlay{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(20,20,20,.97);padding:12px 28px;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.5);z-index:300;font-size:12px;font-weight:800;letter-spacing:3px;color:#fff;text-transform:uppercase;animation:blink-load 1s ease-in-out infinite;pointer-events:none;white-space:nowrap;}
 
 /* ── EMPTY STATE ─────────────────── */
-.empty-state{text-align:center;padding:36px;color:#888;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.empty-state{text-align:center;padding:36px;color:#fff;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 
 /* ── PARAMS ─────────────────────── */
 .danger-zone{border:1px solid rgba(229,57,53,.3);background:rgba(229,57,53,.07);border-radius:8px;padding:16px;margin-top:8px;}
-.danger-zone p{font-size:12px;color:#888;margin-bottom:12px;line-height:1.5;}
+.danger-zone p{font-size:12px;color:#fff;margin-bottom:12px;line-height:1.5;}
 
 /* ── BOUTONS COMPACTS (pages paramètres) ─────────────────────── */
 .btn-sm{background:var(--yellow);color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:12px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
 .btn-sm:hover{opacity:.85;}
-.btn-sm-cancel{background:none;color:#888;border:1px solid #333;border-radius:5px;padding:5px 13px;font-size:12px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;}
+.btn-sm-cancel{background:none;color:#fff;border:1px solid #333;border-radius:5px;padding:5px 13px;font-size:12px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;}
 .btn-sm-danger{background:var(--red);color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:12px;font-weight:400;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
 .btn-sm-danger:hover{opacity:.85;}
 
 /* ── TYPOGRAPHIE ITEMS ─────────────────────── */
 .s-title{font-size:12px;font-weight:500;color:var(--text);}
-.s-desc{font-size:10px;color:#888;margin-top:2px;}
+.s-desc{font-size:10px;color:#fff;margin-top:2px;}
 .s-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #2a2a2a;}
 .s-row:last-child{border-bottom:none;}
 
@@ -579,7 +579,7 @@ tr:hover td{background:#222;}
     font-weight:800;
     letter-spacing:1px;
     text-transform:uppercase;
-    color:#999;
+    color:#fff;
   }
   .table-wrap td:last-child,
   .rec-history td:last-child{
@@ -926,7 +926,7 @@ tr:hover td{background:#222;}
   margin-bottom:8px;
 }
 .confirm-modal p{
-  color:#aaa;
+  color:#fff;
   font-size:14px;
   line-height:1.45;
 }
@@ -950,7 +950,7 @@ tr:hover td{background:#222;}
 }
 .profile-danger p{
   font-size:12px;
-  color:#999;
+  color:#fff;
   margin-bottom:10px;
   line-height:1.5;
 }
@@ -977,7 +977,7 @@ tr:hover td{background:#222;}
 .obs-entry{border-bottom:1px solid #252525;padding:12px 0;}
 .obs-entry:last-child{border-bottom:none;}
 .obs-entry-date{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--yellow);margin-bottom:6px;}
-.obs-entry-text{font-size:12px;color:#ccc;line-height:1.55;white-space:pre-wrap;}
+.obs-entry-text{font-size:12px;color:#fff;line-height:1.55;white-space:pre-wrap;}
 
 /* ═══ BOTTOM NAV MOBILE — barre fixe en bas comme Money Time ═══════════════ */
 @media(max-width:640px){
@@ -1024,7 +1024,7 @@ tr:hover td{background:#222;}
     border-bottom:none!important;
     border-top:3px solid transparent!important;
     margin-bottom:0!important;
-    color:#aaa!important;
+    color:#fff!important;
     background:none!important;
     border-radius:0!important;
     transition:color .15s,border-color .15s,background .15s!important;
@@ -1081,14 +1081,14 @@ tr:hover td{background:#222;}
 .tut-welcome-emoji{font-size:44px;display:block;text-align:center;margin-bottom:18px;animation:tut-bounce .9s ease-in-out infinite alternate;}
 @keyframes tut-bounce{from{transform:translateY(0);}to{transform:translateY(-7px);}}
 .tut-welcome-title{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--text);text-align:center;margin-bottom:8px;letter-spacing:.5px;}
-.tut-welcome-sub{font-size:13px;color:#888;text-align:center;line-height:1.7;margin-bottom:26px;}
+.tut-welcome-sub{font-size:13px;color:#fff;text-align:center;line-height:1.7;margin-bottom:26px;}
 .tut-welcome-actions{display:flex;flex-direction:column;gap:8px;}
 .tut-btn-start{font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:var(--yellow);border:none;color:#fff;cursor:pointer;padding:14px;border-radius:10px;transition:all .2s;}
 .tut-btn-start:hover{background:var(--orange);transform:translateY(-1px);box-shadow:0 6px 20px rgba(224,96,0,.35);}
-.tut-btn-later{font-size:12px;font-weight:600;background:none;border:1.5px solid #2a2a2a;color:#888;cursor:pointer;padding:12px;border-radius:10px;transition:all .2s;}
+.tut-btn-later{font-size:12px;font-weight:600;background:none;border:1.5px solid #2a2a2a;color:#fff;cursor:pointer;padding:12px;border-radius:10px;transition:all .2s;}
 .tut-btn-later:hover{border-color:#444;color:var(--text);}
-.tut-btn-never{font-size:11px;font-weight:600;background:none;border:none;color:#3a3a3a;cursor:pointer;padding:8px;text-align:center;transition:color .2s;letter-spacing:.3px;}
-.tut-btn-never:hover{color:#666;}
+.tut-btn-never{font-size:11px;font-weight:600;background:none;border:none;color:#fff;cursor:pointer;padding:8px;text-align:center;transition:color .2s;letter-spacing:.3px;}
+.tut-btn-never:hover{color:#fff;}
 
 /* Spotlight — box-shadow géant crée le fond sombre autour de l'élément ciblé */
 .tut-spotlight{position:fixed;border-radius:12px;background:transparent;border:2px solid rgba(245,166,35,.55);box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 28px rgba(245,166,35,.18);z-index:10001;pointer-events:none;transition:top .38s cubic-bezier(.22,1,.36,1),left .38s cubic-bezier(.22,1,.36,1),width .38s cubic-bezier(.22,1,.36,1),height .38s cubic-bezier(.22,1,.36,1),opacity .3s;}
@@ -1098,25 +1098,25 @@ tr:hover td{background:#222;}
 @keyframes tut-slide-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .tut-step-label{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:4px;}
 .tut-card-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--text);margin-bottom:5px;line-height:1.2;}
-.tut-card-text{font-size:11px;color:#aaa;line-height:1.5;margin-bottom:10px;}
+.tut-card-text{font-size:11px;color:#fff;line-height:1.5;margin-bottom:10px;}
 .tut-dots{display:flex;gap:4px;align-items:center;justify-content:center;margin-bottom:8px;}
 .tut-dot{width:5px;height:5px;border-radius:50%;background:#252525;transition:all .3s;}
 .tut-dot.active{background:var(--yellow);width:14px;border-radius:3px;}
 .tut-dot.done{background:#2a2a2a;}
 .tut-card-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;}
-.tut-skip{font-size:11px;color:#3a3a3a;background:none;border:none;cursor:pointer;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:6px 0;transition:color .2s;flex-shrink:0;}
-.tut-skip:hover{color:#666;}
+.tut-skip{font-size:11px;color:#fff;background:none;border:none;cursor:pointer;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:6px 0;transition:color .2s;flex-shrink:0;}
+.tut-skip:hover{color:#fff;}
 .tut-nav-btns{display:flex;gap:6px;align-items:center;}
-.tut-prev{font-size:12px;font-weight:700;background:none;border:1.5px solid #2a2a2a;color:#666;cursor:pointer;padding:8px 14px;border-radius:8px;transition:all .2s;}
+.tut-prev{font-size:12px;font-weight:700;background:none;border:1.5px solid #2a2a2a;color:#fff;cursor:pointer;padding:8px 14px;border-radius:8px;transition:all .2s;}
 .tut-prev:hover{border-color:#444;color:var(--text);}
 .tut-next{font-size:12px;font-weight:800;background:var(--yellow);border:none;color:#fff;cursor:pointer;padding:8px 18px;border-radius:8px;transition:all .2s;letter-spacing:.3px;}
 .tut-next:hover{background:var(--orange);}
 
 /* Bouton "Relancer" dans les Paramètres */
-.tut-relaunch-btn{display:flex;align-items:center;gap:10px;background:none;border:1.5px solid #2a2a2a;color:#888;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;padding:10px 14px;border-radius:8px;transition:all .2s;width:100%;}
+.tut-relaunch-btn{display:flex;align-items:center;gap:10px;background:none;border:1.5px solid #2a2a2a;color:#fff;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;padding:10px 14px;border-radius:8px;transition:all .2s;width:100%;}
 .tut-relaunch-btn:hover{border-color:var(--yellow);color:var(--yellow);}
 /* Toast "Passer" */
-.tut-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1c1c1c;border:1px solid #2a2a2a;border-left:3px solid var(--yellow);border-radius:10px;padding:11px 18px;font-size:12px;color:#bbb;z-index:10600;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.55);animation:tut-slide-in .3s ease;}
+.tut-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1c1c1c;border:1px solid #2a2a2a;border-left:3px solid var(--yellow);border-radius:10px;padding:11px 18px;font-size:12px;color:#fff;z-index:10600;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.55);animation:tut-slide-in .3s ease;}
 
 </style>
 </head>
@@ -1126,14 +1126,14 @@ tr:hover td{background:#222;}
 <div id="splash-screen" style="position:fixed;inset:0;background:#fff;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
   <img src="/icon-192.png" style="width:120px;height:120px;border-radius:28px;" alt="">
   <div style="position:absolute;bottom:max(36px,env(safe-area-inset-bottom,36px));left:0;right:0;text-align:center;">
-    <span style="font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#bbb;">from </span><span style="font-family:'Barlow',sans-serif;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(90deg,#f5c400,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">MG</span>
+    <span style="font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#fff;">from </span><span style="font-family:'Barlow',sans-serif;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(90deg,#f5c400,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">MG</span>
   </div>
 </div>
 
 <!-- OVERLAY CHARGEMENT (back button iOS) -->
 <div id="loading-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#ececec;align-items:center;justify-content:center;flex-direction:column;gap:12px">
   <div class="logo-badge"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div>
-  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement…</div>
+  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff">Chargement…</div>
 </div>
 
 <!-- LOGIN -->
@@ -1232,7 +1232,7 @@ tr:hover td{background:#222;}
 
     <!-- Mode : Athlète existant -->
     <div id="na-form-link" style="display:none">
-      <p style="font-size:12px;color:#888;margin-bottom:10px">Sélectionnez un athlète déjà enregistré pour l'associer à votre profil coach.</p>
+      <p style="font-size:12px;color:#fff;margin-bottom:10px">Sélectionnez un athlète déjà enregistré pour l'associer à votre profil coach.</p>
       <div class="existing-ath-list" id="na-existing-list"></div>
       <div class="modal-actions">
         <button class="btn-sm-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
@@ -1300,7 +1300,7 @@ tr:hover td{background:#222;}
     <div style="text-align:center;margin-bottom:20px">
       <div style="font-size:36px;margin-bottom:10px">👋</div>
       <h3 style="margin-bottom:8px">Bienvenue !</h3>
-      <p style="font-size:12px;color:#888;line-height:1.5">Ton compte a été créé par ton coach.<br>Pour sécuriser ton profil, choisis ton propre mot de passe.</p>
+      <p style="font-size:12px;color:#fff;line-height:1.5">Ton compte a été créé par ton coach.<br>Pour sécuriser ton profil, choisis ton propre mot de passe.</p>
     </div>
     <div class="form-group" style="margin-bottom:10px"><label>Nouveau mot de passe</label><div class="pw-wrap"><input type="password" id="fl-pw1" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('fl-pw1')" tabindex="-1">Voir</button></div></div>
     <div class="form-group" style="margin-bottom:10px"><label>Confirmer</label><div class="pw-wrap"><input type="password" id="fl-pw2" placeholder="••••••"><button type="button" class="pw-eye" onclick="togglePw('fl-pw2')" tabindex="-1">Voir</button></div></div>
@@ -1708,7 +1708,7 @@ async function _initCore(box){
       _showOfflineBanner();
     }else{
       const detail=err?.message||err?.details||err?.hint||JSON.stringify(err)||'inconnue';
-      box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:14px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><p style="color:#888;font-size:10px;margin-top:8px;word-break:break-all">'+detail+'</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
+      box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:14px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><p style="color:#fff;font-size:10px;margin-top:8px;word-break:break-all">'+detail+'</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
     }
   }
 }
@@ -1776,7 +1776,7 @@ async function selectClub(id){
     // Aucun cache pour ce club → indicateur de chargement classique
     Object.keys(users).forEach(k=>delete users[k]);
     Object.keys(athletes).forEach(k=>delete athletes[k]);
-    if(coachList)coachList.innerHTML='<div style="padding:20px;text-align:center;color:#888;font-size:12px;letter-spacing:1px">Chargement...</div>';
+    if(coachList)coachList.innerHTML='<div style="padding:20px;text-align:center;color:#fff;font-size:12px;letter-spacing:1px">Chargement...</div>';
   }
 
   // Rafraîchissement réseau (remplace les données en mémoire)
@@ -2381,7 +2381,7 @@ function showNoAthleteScreen(){
   document.getElementById('tab-contents').innerHTML=`
     <div class="card">
       <div class="card-title">Espace coach</div>
-      <p style="font-size:12px;color:#888;margin-bottom:12px">Ce coach n'a pas encore d'athlète. Ajoutez-en un depuis la page d'authentification.</p>
+      <p style="font-size:12px;color:#fff;margin-bottom:12px">Ce coach n'a pas encore d'athlète. Ajoutez-en un depuis la page d'authentification.</p>
       <button class="btn" style="width:100%;background:#252525;color:var(--text);border:1px solid #333" onclick="openCoachProfile()">Modifier mon profil</button>
     </div>`;
 }
@@ -2403,7 +2403,7 @@ function buildSwitcher(){
     `<button class="ath-btn" onclick="openLinkAthleteModal()" title="Associer un athlète existant">+ Associer</button>`+
     `<button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>`;
   }else{
-    sw.innerHTML=`<span style="font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
+    sw.innerHTML=`<span style="font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
   }
   // Drag-to-scroll : slide la barre même en tenant un bouton
   if(sw&&!sw._di){
@@ -2499,8 +2499,8 @@ function buildDiscTab(disc){
   if(!el)return;
   const valLabel=isDistDisc(disc)?disc+' (cm)':isTimeDisc(disc)?'Temps (s)':disc+' (cm)';
   const valPh=disc==='Hauteur'?'140':disc==='Longueur'?'460':disc==='Triple Saut'?'900':disc.includes('m')&&!disc.includes('Haies')?'65.0':'100';
-  const haiesField=isHaiesDisc(disc)?`<div class="form-group"><label>Hauteur haie (cm) <span style="color:#555;font-weight:400;font-size:10px">optionnel</span></label><select id="${k}-hauteur_haie"><option value="">—</option><option value="76.2">76.2 cm</option><option value="84">84 cm</option><option value="91.4">91.4 cm</option><option value="100">100 cm</option><option value="106.7">106.7 cm</option></select></div>`:'';
-  const ventField=isVentDisc(disc)?`<div class="form-group"><label>Vent (m/s) <span style="color:#555;font-weight:400;font-size:10px">optionnel</span></label><input type="number" id="${k}-vent" placeholder="ex : +1.2" step="0.1"></div>`:'';
+  const haiesField=isHaiesDisc(disc)?`<div class="form-group"><label>Hauteur haie (cm) <span style="color:#fff;font-weight:400;font-size:10px">optionnel</span></label><select id="${k}-hauteur_haie"><option value="">—</option><option value="76.2">76.2 cm</option><option value="84">84 cm</option><option value="91.4">91.4 cm</option><option value="100">100 cm</option><option value="106.7">106.7 cm</option></select></div>`:'';
+  const ventField=isVentDisc(disc)?`<div class="form-group"><label>Vent (m/s) <span style="color:#fff;font-weight:400;font-size:10px">optionnel</span></label><input type="number" id="${k}-vent" placeholder="ex : +1.2" step="0.1"></div>`:'';
   const haiesTh=isHaiesDisc(disc)?'<th>Haie</th>':'';
   const ventTh=isVentDisc(disc)?'<th>Vent</th>':'';
   el.innerHTML=`
@@ -2546,7 +2546,7 @@ function buildDiscTab(disc){
       <div class="card disc-card-hist">
         <div class="card-title" style="cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between" onclick="toggleHist('${k}')">
           <span>Historique</span>
-          <span id="hist-chevron-${k}" style="font-size:12px;color:#bbb;display:inline-block;transition:transform .25s;${window.innerWidth>640?'transform:rotate(180deg)':''}">▼</span>
+          <span id="hist-chevron-${k}" style="font-size:12px;color:#fff;display:inline-block;transition:transform .25s;${window.innerWidth>640?'transform:rotate(180deg)':''}">▼</span>
         </div>
         <div id="hist-body-${k}" style="display:${window.innerWidth>640?'block':'none'};margin-top:12px">
           <div class="table-wrap">
@@ -2559,7 +2559,7 @@ function buildDiscTab(disc){
     <div class="card">
       <div class="card-title">Notes du coach</div>
       <div id="disc-obs-list-${k}">
-        <div style="font-size:12px;color:#bbb;padding:8px 0;font-weight:600">Chargement…</div>
+        <div style="font-size:12px;color:#fff;padding:8px 0;font-weight:600">Chargement…</div>
       </div>
     </div>`;
   loadDiscObservations(disc,athletes[currentAthlete].id);
@@ -2688,7 +2688,7 @@ function buildObsTab(){
       </div>
       <div class="card" style="margin-top:12px">
         <div class="card-title">Historique</div>
-        <div id="coach-obs-list"><div style="font-size:12px;color:#bbb;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div></div>
+        <div id="coach-obs-list"><div style="font-size:12px;color:#fff;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div></div>
       </div>`;
     loadCoachObservations(ath.id);
   }else{
@@ -2696,7 +2696,7 @@ function buildObsTab(){
       <div class="card">
         <div class="card-title">Observations du coach</div>
         <div id="athlete-obs-list">
-          <div style="font-size:12px;color:#bbb;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div>
+          <div style="font-size:12px;color:#fff;text-align:center;padding:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Chargement…</div>
         </div>
       </div>`;
     loadAthleteObservations(ath.id);
@@ -2736,7 +2736,7 @@ function buildParamTab(){
         ${ath.disciplines.map(d=>`
           <span style="background:rgba(224,96,0,.08);color:var(--yellow);border:1px solid rgba(224,96,0,.25);font-size:10px;font-weight:400;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:5px">
             ${d}
-            <button onclick="removeDisc('${d}')" style="background:none;border:none;color:#bbb;cursor:pointer;font-size:12px;line-height:1;padding:0">×</button>
+            <button onclick="removeDisc('${d}')" style="background:none;border:none;color:#fff;cursor:pointer;font-size:12px;line-height:1;padding:0">×</button>
           </span>`).join('')}
       </div>
       <button class="btn-sm" onclick="openAddDisc()">+ Ajouter une discipline</button>
@@ -2771,7 +2771,7 @@ function openAddOptions(){
     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0">
       <div>
         <div style="font-size:14px;font-weight:700;color:var(--text)">Haies franchies</div>
-        <div style="font-size:12px;color:#999;margin-top:3px">Suivi des haies franchies à l'entraînement</div>
+        <div style="font-size:12px;color:#fff;margin-top:3px">Suivi des haies franchies à l'entraînement</div>
       </div>
       <button id="haies-opt-btn" onclick="toggleHaiesModal()" class="${ath.has_haies?'btn':'btn-cancel'}" style="width:auto;flex-shrink:0;margin-left:16px">
         ${ath.has_haies?'Activé ✓':'Activer'}
@@ -3042,14 +3042,14 @@ function renderPerf(k,disc){
   if(tbody)tbody.innerHTML=sorted.map(d=>{
     const isRP=d.val===pr;
     const lvl=d.niveau?`<span class="badge badge-${d.niveau.toLowerCase()}">${d.niveau}</span>`:'—';
-    const haiesTd=isHaiesDisc(disc)?`<td data-label="Haie" style="color:#888;font-size:12px">${d.hauteur_haie?d.hauteur_haie+' cm':'—'}</td>`:'';
-    const ventTd=isVentDisc(disc)?`<td data-label="Vent" style="color:#888;font-size:12px">${d.vent!=null?d.vent+' m/s':'—'}</td>`:'';
+    const haiesTd=isHaiesDisc(disc)?`<td data-label="Haie" style="color:#fff;font-size:12px">${d.hauteur_haie?d.hauteur_haie+' cm':'—'}</td>`:'';
+    const ventTd=isVentDisc(disc)?`<td data-label="Vent" style="color:#fff;font-size:12px">${d.vent!=null?d.vent+' m/s':'—'}</td>`:'';
     return`<tr class="perf-row" onclick="openEditPerf('${dk}','${k}','${disc}','${d.id}')">
       <td data-label="Date">${formatDate(d.date)}</td>
       <td data-label="Perf."><span class="perf-val">${fmtPr(d.val)}</span>${isRP?'<span class="rp-badge">RP</span>':''}</td>
       <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
       <td data-label="Niveau">${lvl}</td>
-      <td data-label="Lieu" style="color:#888;font-size:12px">${d.lieu||'—'}</td>
+      <td data-label="Lieu" style="color:#fff;font-size:12px">${d.lieu||'—'}</td>
       ${haiesTd}${ventTd}
     </tr>`;
   }).join('');
@@ -3070,8 +3070,8 @@ function renderHF(){
     <td data-label="Date">${formatDate(d.date)}</td>
     <td data-label="Haies"><span class="perf-val">+${d.val}</span></td>
     <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type}</span></td>
-    <td data-label="Distance" style="color:#888;font-size:12px">${d.dist}</td>
-    <td data-label="Note" style="color:#888;font-size:12px">${d.note||'—'}</td>
+    <td data-label="Distance" style="color:#fff;font-size:12px">${d.dist}</td>
+    <td data-label="Note" style="color:#fff;font-size:12px">${d.note||'—'}</td>
     <td data-label="Action"><button class="btn-ghost del-hf-btn" data-id="${d.id}">✕</button></td>
   </tr>`).join('')||'<tr><td colspan="6" class="empty-state">Aucune entrée</td></tr>';
   buildChartHF();
@@ -3128,7 +3128,7 @@ function renderRecords(){
   });
 
   if(!cards.length){
-    grid.innerHTML='<p style="color:#999;font-size:12px;padding:12px 0">'+(year==='tout'?'Aucun record enregistré':'Aucun record pour '+year)+'</p>';
+    grid.innerHTML='<p style="color:#fff;font-size:12px;padding:12px 0">'+(year==='tout'?'Aucun record enregistré':'Aucun record pour '+year)+'</p>';
     return;
   }
 
@@ -3164,7 +3164,7 @@ function toggleRecHistory(i,disc){
       <td data-label="Date" style="white-space:nowrap">${formatDate(d.date)}</td>
       <td data-label="Perf."><span class="perf-val" style="font-size:14px">${fmt(d.val)}</span></td>
       <td data-label="Type"><span class="${d.type==='compet'?'type-compet':'type-entrainement'}">${d.type==='compet'?'Compét.':'Entraîn.'}</span></td>
-      <td data-label="Lieu" style="color:#888;font-size:12px">${d.lieu||'—'}</td>
+      <td data-label="Lieu" style="color:#fff;font-size:12px">${d.lieu||'—'}</td>
     </tr>`).join('')}</tbody></table></div>`;
   el.classList.add('show');card.classList.add('open');
 }
@@ -3736,7 +3736,7 @@ function _renderObsFromMemory(){
         ${o.discipline?`<span style="background:rgba(224,96,0,.12);color:var(--yellow);font-size:10px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${o.discipline}</span>`:''}
         <span style="background:${typeBg};color:${typeCol};font-size:10px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">${typeLabel}</span>
         ${isTemp?`<span style="background:#f39c12;color:#fff;font-size:10px;font-weight:800;padding:1px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase">En attente</span>`:''}
-        <span style="margin-left:auto;font-size:10px;color:#bbb;font-weight:600">Modifier →</span>
+        <span style="margin-left:auto;font-size:10px;color:#fff;font-weight:600">Modifier →</span>
       </div>
       <div class="obs-entry-text">${o.texte.replace(/</g,'&lt;')}</div>
     </div>`;
@@ -3837,7 +3837,7 @@ async function loadDiscObservations(disc,athleteId){
     const {data}=await sb.from('coach_observations')
       .select('date,type,texte').eq('athlete_id',athleteId).eq('discipline',disc)
       .order('date',{ascending:false}).limit(5);
-    if(!data||!data.length){el.innerHTML='<div style="font-size:12px;color:#bbb;padding:8px 0;font-weight:600">Aucune note pour cette discipline</div>';return;}
+    if(!data||!data.length){el.innerHTML='<div style="font-size:12px;color:#fff;padding:8px 0;font-weight:600">Aucune note pour cette discipline</div>';return;}
     el.innerHTML=data.map(o=>{
       const typeBg=o.type==='compet'?'rgba(245,196,0,.15)':'rgba(224,96,0,.12)';
       const typeCol=o.type==='compet'?'#a07800':'var(--yellow)';
@@ -3965,7 +3965,7 @@ function buildExistingAthletesList(){
   const coachKey=currentUser&&currentUser.type==='coach'?currentUser.key:null;
   const container=document.getElementById('na-existing-list');
   if(!coachKey){
-    container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:16px 0">Connectez-vous en tant que coach puis utilisez le bouton <strong>+ Associer</strong> dans la barre de navigation.</p>';
+    container.innerHTML='<p style="text-align:center;color:#fff;font-size:12px;padding:16px 0">Connectez-vous en tant que coach puis utilisez le bouton <strong>+ Associer</strong> dans la barre de navigation.</p>';
     return;
   }
   const all=Object.values(athletes).filter(a=>{
@@ -3974,14 +3974,14 @@ function buildExistingAthletesList(){
     return true; // tous les athlètes non encore liés à ce coach
   }).sort((a,b)=>`${a.nom}${a.prenom}`.localeCompare(`${b.nom}${b.prenom}`));
   if(!all.length){
-    container.innerHTML='<p style="text-align:center;color:#888;font-size:12px;padding:16px 0">Tous les athlètes sont déjà associés à votre profil.</p>';
+    container.innerHTML='<p style="text-align:center;color:#fff;font-size:12px;padding:16px 0">Tous les athlètes sont déjà associés à votre profil.</p>';
     return;
   }
   container.innerHTML=all.map(a=>{
     const orphan=!a.coachId||!users[a.coachId];
     const coachLabel=orphan
       ? ' <span style="font-size:10px;background:#e06000;color:#fff;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">SANS COACH</span>'
-      : ` <span style="font-size:10px;background:#eee;color:#666;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">${users[a.coachId]?.name||'Coach'}</span>`;
+      : ` <span style="font-size:10px;background:#333;color:#fff;border-radius:3px;padding:1px 5px;vertical-align:middle;letter-spacing:.5px">${users[a.coachId]?.name||'Coach'}</span>`;
     return`<div class="existing-ath-row" id="ear-${a.id}" onclick="selectExistingAthlete('${a.id}')">
       <div class="existing-ath-name">${a.prenom} ${a.nom.toUpperCase()}${coachLabel}</div>
       <div class="existing-ath-sub">${a.cat} · née ${a.annee}</div>
