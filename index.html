@@ -1604,8 +1604,16 @@ async function loadAllData(clubId=selectedClub){
 // ─── INIT APP ─────────────────────────────────────────────────────────────
 async function initApp(){
   const box=document.querySelector('.login-box');
-  const orig=box.innerHTML;
-  box.innerHTML='<div style="text-align:center;padding:48px 0 40px"><div class="logo-badge" style="margin:0 auto 16px"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div><div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa">Chargement...</div></div>';
+  // ── Écran de démarrage plein écran ─────────────────────────────────────
+  const splash=document.createElement('div');
+  splash.id='splash-screen';
+  splash.style.cssText='position:fixed;inset:0;background:#0a0a0a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+  splash.innerHTML='<div class="logo-badge"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div>'
+    +'<div style="position:absolute;bottom:max(36px,env(safe-area-inset-bottom,36px));left:0;right:0;text-align:center;">'
+    +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#333;">from </span>'
+    +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:900;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(90deg,#f5c400,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">MG</span>'
+    +'</div>';
+  document.body.appendChild(splash);
   try{
     // Chargement léger : la liste des clubs seulement
     const {data:clubs,error:clubErr}=await sb.from('clubs').select('*').order('nom');
@@ -1631,7 +1639,7 @@ async function initApp(){
                 ?savedSession.currentAthlete
                 :(athletesForCoach(cu.key)[0]?.id||null);
             }
-            box.innerHTML=orig;
+            splash.remove();
             document.getElementById('login-screen').style.display='none';
             document.getElementById('app').style.display='block';
             buildApp();
@@ -1644,14 +1652,14 @@ async function initApp(){
       }
     }
 
-    box.innerHTML=orig;
+    splash.remove();
     renderClubStep();
     showStep(0);
   }catch(err){
     console.warn('Supabase inaccessible — tentative cache local',err);
     if(_loadCache()){
       _offlineMode=true;
-      box.innerHTML=orig;
+      splash.remove();
       // Tentative de restauration de session en mode hors ligne
       const savedSession=_loadSession();
       if(savedSession&&savedSession.selectedClub&&Object.keys(users).length){
@@ -1687,6 +1695,7 @@ async function initApp(){
       }
       _showOfflineBanner();
     }else{
+      splash.remove();
       const detail=err?.message||err?.details||err?.hint||JSON.stringify(err)||'inconnue';
       box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:14px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><p style="color:#888;font-size:10px;margin-top:8px;word-break:break-all">'+detail+'</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
     }
