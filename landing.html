@@ -203,12 +203,15 @@ else {
   // Pas de fallback artificiel : le bouton reste disponible pour un clic manuel
 }
 
-// ── Après installation : redirection auto vers l'app ─────────────────────
+// ── Après installation ────────────────────────────────────────────────────
 window.addEventListener('appinstalled', () => {
-  setStatus('✓ Application installée ! Ouverture en cours…');
   document.getElementById('btn-install').style.display = 'none';
   deferredPrompt = null;
-  setTimeout(() => { window.location.href = '/'; }, 1500);
+  // Ne pas rediriger dans le navigateur : ça ouvrirait en mode web, pas standalone.
+  // L'icône ajoutée à l'écran d'accueil ouvrira directement l'app installée.
+  document.getElementById('btn-open').textContent = '→ OUVRIR L\'APPLICATION';
+  showOpen('');
+  setStatus('✓ Application installée ! Ouvre-la depuis l\'icône sur ton écran d\'accueil.');
 });
 
 // ── Fonction d'installation ───────────────────────────────────────────────
