@@ -1819,7 +1819,7 @@ function showAthletes(coachKey){
     (!coachAthletes.length?`<div class="empty-state" style="padding:18px">Aucun athlète pour ce coach</div>`:'')+
     '</div>'+
     `<div style="margin-top:14px;border-top:1px solid #2a2a2a;padding-top:12px">
-      <button style="width:100%;background:none;border:1.5px solid #fff;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:#fff" onclick="toggleAthleteGate()">+ Ajouter un athlète</button>
+      <button class="btn-cancel" style="width:100%;font-size:12px;letter-spacing:.5px" onclick="toggleAthleteGate()">+ Ajouter un athlète</button>
       <div id="new-athlete-gate" style="display:none;margin-top:10px">
         <input type="number" id="athlete-gate-code" placeholder="Code" maxlength="4"
           style="width:100%;padding:8px 12px;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px;color:var(--text)"
