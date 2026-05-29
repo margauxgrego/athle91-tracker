@@ -1064,22 +1064,8 @@ tr:hover td{background:#222;}
   }
 }
 
-/* ═══ TITRE DE PAGE (mobile) ════════════════════════════════════════════════ */
-#page-title{display:none;}
-@media(max-width:640px){
-  #page-title{
-    display:block;
-    text-align:center;
-    font-size:14px;
-    font-weight:800;
-    letter-spacing:.8px;
-    text-transform:uppercase;
-    color:var(--text);
-    padding:10px 16px 8px;
-    border-bottom:1px solid #2a2a2a;
-    margin-bottom:4px;
-  }
-}
+/* ═══ TITRE DE PAGE — masqué sur tous les appareils ════════════════════════ */
+#page-title{display:none!important;}
 
 /* ═══ ANTI-ZOOM iOS : les inputs < 16px déclenchent un zoom automatique ══════ */
 @media(max-width:768px){
