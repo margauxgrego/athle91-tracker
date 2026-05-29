@@ -2475,6 +2475,16 @@ function buildTabs(){
     _tb.addEventListener('touchmove',e=>{const d=_sx-e.touches[0].clientX;if(Math.abs(d)>4){_mv=true;_tb.scrollLeft=_ss+d;e.preventDefault();}},{passive:false});
     _tb.addEventListener('touchend',e=>{if(_mv)e.preventDefault();},{passive:false});
   }
+  // Centrer l'onglet actif par défaut dans la barre (mobile) après rendu
+  if(window.innerWidth<=640){
+    requestAnimationFrame(()=>{
+      const bar=document.getElementById('main-tabs');
+      const activeBtn=bar?.querySelector('.tab.active');
+      if(bar&&activeBtn){
+        bar.scrollLeft=activeBtn.offsetLeft-(bar.offsetWidth/2)+(activeBtn.offsetWidth/2);
+      }
+    });
+  }
 }
 
 function discKey(d){return d.toLowerCase().replace(/ /g,'_').replace(/[^a-z0-9_]/g,'');}
