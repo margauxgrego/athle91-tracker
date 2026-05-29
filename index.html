@@ -127,6 +127,8 @@ tr:hover td{background:#222;}
 .form-group label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:4px;}
 .form-group input,.form-group select{width:100%;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:6px;padding:9px 11px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .2s;}
 .form-group input:focus,.form-group select:focus{border-color:var(--yellow);}
+/* Calendrier natif en blanc sur desktop */
+@media(min-width:641px){input[type="date"]{color-scheme:light;}}
 .form-group select option{background:#252525;color:var(--text);}
 .btn{background:var(--yellow);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:12px;font-weight:400;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;width:100%;margin-top:4px;}
 .btn:hover{opacity:.85;}
