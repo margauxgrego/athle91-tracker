@@ -1081,30 +1081,6 @@ tr:hover td{background:#222;}
   }
 }
 
-/* ═══ FLASH NOM D'ONGLET — centré au milieu de l'écran (mobile) ═══════════ */
-#tab-flash{
-  display:none;
-  position:fixed;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%) scale(.85);
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:26px;font-weight:900;letter-spacing:3px;text-transform:uppercase;
-  color:#fff;
-  background:rgba(0,0,0,.72);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  padding:14px 28px;border-radius:14px;
-  border:1.5px solid rgba(255,255,255,.08);
-  z-index:8000;pointer-events:none;
-  opacity:0;
-  transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);
-}
-@media(max-width:640px){
-  #tab-flash{display:block;}
-}
-#tab-flash.show{
-  opacity:1;
-  transform:translate(-50%,-50%) scale(1);
-}
 
 /* ═══ ANTI-ZOOM iOS : les inputs < 16px déclenchent un zoom automatique ══════ */
 @media(max-width:768px){
@@ -1426,8 +1402,6 @@ tr:hover td{background:#222;}
   <div id="page-title"></div>
   <div id="tab-contents"></div>
 </div>
-<!-- Flash nom d'onglet centré (mobile) -->
-<div id="tab-flash"></div>
 
 
 <script>
@@ -2857,14 +2831,12 @@ function switchTab(name){
   // Titre de page centré (visible sur mobile uniquement)
   const titleEl=document.getElementById('page-title');
   if(titleEl&&btn)titleEl.textContent=btn.textContent.trim();
-  // Flash du nom au centre de l'écran (mobile uniquement)
+  // Centrer l'onglet actif dans la barre du bas (mobile)
   if(window.innerWidth<=640&&btn){
-    const fl=document.getElementById('tab-flash');
-    if(fl){
-      fl.textContent=btn.textContent.trim();
-      fl.classList.add('show');
-      clearTimeout(fl._t);
-      fl._t=setTimeout(()=>fl.classList.remove('show'),700);
+    const bar=document.getElementById('main-tabs');
+    if(bar){
+      const target=btn.offsetLeft-(bar.offsetWidth/2)+(btn.offsetWidth/2);
+      bar.scrollTo({left:target,behavior:'smooth'});
     }
   }
   const el=document.getElementById('tab-'+name);
