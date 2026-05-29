@@ -1146,6 +1146,30 @@ tr:hover td{background:#222;}
     <div class="login-step" id="step0">
       <p style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#f55a00;margin-bottom:4px">Sélectionner un club</p>
       <div id="club-list"></div>
+      <!-- Création nouveau club avec code admin -->
+      <div style="margin-top:14px;border-top:1px solid #2a2a2a;padding-top:12px">
+        <button class="btn-cancel" style="width:100%;font-size:12px;letter-spacing:.5px" onclick="toggleNewClubGate()">+ Ajouter un club</button>
+        <div id="new-club-gate" style="display:none;margin-top:10px">
+          <!-- Phase 1 : code -->
+          <div id="club-gate-phase1">
+            <input type="number" id="club-gate-code" placeholder="Code" maxlength="4"
+              style="width:100%;padding:8px 12px;background:var(--input-bg);border:1.5px solid var(--input-border);color:var(--text);border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px"
+              onkeydown="if(event.key==='Enter')checkClubCode()">
+            <p id="club-gate-err" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
+            <button class="btn" style="width:100%" onclick="checkClubCode()">Valider</button>
+          </div>
+          <!-- Phase 2 : formulaire -->
+          <div id="club-gate-phase2" style="display:none">
+            <div class="form-group" style="margin-bottom:8px"><label>Nom du club</label><input type="text" id="new-club-nom" placeholder="Club Athlétisme..." onkeydown="if(event.key==='Enter')createClub()"></div>
+            <div class="form-group" style="margin-bottom:10px"><label>Code postal</label><input type="number" id="new-club-cp" placeholder="75000" onkeydown="if(event.key==='Enter')createClub()"></div>
+            <p id="club-create-err" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-bottom:6px">Erreur lors de la création</p>
+            <div style="display:flex;gap:8px">
+              <button class="btn-cancel" style="flex:1" onclick="toggleNewClubGate()">Annuler</button>
+              <button class="btn" style="flex:1;margin-top:0" onclick="createClub()">Créer</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- Étape 1 : choix du coach -->
     <div class="login-step" id="step1">
@@ -1740,6 +1764,50 @@ function renderClubStep(){
         <span style="color:var(--yellow);font-size:14px;font-weight:700">→</span>
       </div>`).join('')+
     '</div>';
+}
+
+// ─── NOUVEAU CLUB depuis écran login ──────────────────────────────────────
+function toggleNewClubGate(){
+  const gate=document.getElementById('new-club-gate');
+  if(!gate)return;
+  const open=gate.style.display==='none'||gate.style.display==='';
+  gate.style.display=open?'block':'none';
+  document.getElementById('club-gate-phase1').style.display='block';
+  document.getElementById('club-gate-phase2').style.display='none';
+  document.getElementById('club-gate-err').style.display='none';
+  document.getElementById('club-gate-code').value='';
+  if(open)setTimeout(()=>document.getElementById('club-gate-code').focus(),100);
+}
+
+function checkClubCode(){
+  const code=document.getElementById('club-gate-code').value.trim();
+  if(code==='2026'){
+    document.getElementById('club-gate-err').style.display='none';
+    document.getElementById('club-gate-phase1').style.display='none';
+    document.getElementById('club-gate-phase2').style.display='block';
+    document.getElementById('new-club-nom').value='';
+    document.getElementById('new-club-cp').value='';
+    document.getElementById('club-create-err').style.display='none';
+    setTimeout(()=>document.getElementById('new-club-nom').focus(),100);
+  }else{
+    document.getElementById('club-gate-err').style.display='block';
+    document.getElementById('club-gate-code').value='';
+    setTimeout(()=>document.getElementById('club-gate-code').focus(),50);
+  }
+}
+
+async function createClub(){
+  const nom=document.getElementById('new-club-nom').value.trim();
+  const cp=document.getElementById('new-club-cp').value.trim();
+  if(!nom){showMessage('Information manquante','Le nom du club est requis.','danger');return;}
+  document.getElementById('club-create-err').style.display='none';
+  const {data:newClub,error}=await sb.from('clubs').insert({nom,code_postal:cp||null}).select().single();
+  if(error){document.getElementById('club-create-err').style.display='block';return;}
+  clubsData.push({id:newClub.id,nom:newClub.nom,code_postal:newClub.code_postal});
+  clubsData.sort((a,b)=>a.nom.localeCompare(b.nom));
+  document.getElementById('new-club-gate').style.display='none';
+  renderClubStep();
+  selectClub(newClub.id);
 }
 
 async function selectClub(id){
