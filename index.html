@@ -3380,9 +3380,19 @@ async function deleteAthlete(key){
       ath.extraCoaches=ath.extraCoaches.filter(c=>c!==coachKey);
     }
     const remaining=athletesForCoach(coachKey).map(a=>a.id);
-    if(!remaining.length){currentAthlete=null;buildApp();return;}
-    currentAthlete=remaining[0];charts={};buildApp();
-    showMessage('Athlète retiré',`${ath.prenom} ${ath.nom} a été retiré de votre liste.`);
+    const name=`${ath.prenom} ${ath.nom}`;
+    if(!remaining.length){
+      currentAthlete=null;
+      buildApp();
+      broadcastChange();
+      showMessage('Athlète retiré',`${name} a été retiré de votre liste.`);
+      return;
+    }
+    currentAthlete=remaining[0];
+    charts={};
+    buildApp();
+    broadcastChange();
+    showMessage('Athlète retiré',`${name} a été retiré de votre liste.`);
   },'danger');
 }
 
