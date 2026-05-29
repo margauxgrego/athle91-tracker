@@ -2103,7 +2103,7 @@ const TUTORIAL_STEPS=[
   {
     title:'Les observations',
     text:'L\'onglet Observations permet d\'échanger des notes entre coach et athlète : retours de séance, axes de progression, encouragements. Un espace de communication intégré.',
-    target:'#tab-observations',tab:'observations',pos:'top'
+    target:'#tab-observations',mobileTarget:'#tab-observations .card',tab:'observations',pos:'top'
   },
   {
     title:'Records & Historique',
@@ -2238,9 +2238,13 @@ async function _showTutStep(n){
     }
   }
 
+  // Résoudre le sélecteur effectif : mobileTarget sur téléphone si défini
+  const _isMob=window.innerWidth<=640;
+  const effectiveSel=(_isMob&&step.mobileTarget)?step.mobileTarget:step.target;
+
   // Positionner le spotlight sur l'élément cible
   const spot=document.getElementById('tut-spotlight');
-  const targetEl=step.target?document.querySelector(step.target):null;
+  const targetEl=effectiveSel?document.querySelector(effectiveSel):null;
   // Scroll instantané vers la cible si elle est hors champ
   if(targetEl){
     if(step.scrollBlock==='end'){
@@ -2296,8 +2300,8 @@ async function _showTutStep(n){
   // Positionner la carte après que le DOM ait été rendu
   await new Promise(r=>setTimeout(r,30));
   if(_tutGen!==myGen)return; // Stale : vérification finale avant de positionner
-  _posTutCard(card,step.target,step.pos||'bottom');
-  _attachTutScroll(step.target); // Spotlight suit le scroll
+  _posTutCard(card,effectiveSel,step.pos||'bottom');
+  _attachTutScroll(effectiveSel); // Spotlight suit le scroll
 }
 
 function _posTutCard(card,sel,pos){
