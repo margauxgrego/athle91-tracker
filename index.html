@@ -1818,15 +1818,13 @@ function showAthletes(coachKey){
       </div>`).join('')+
     (!coachAthletes.length?`<div class="empty-state" style="padding:18px">Aucun athlète pour ce coach</div>`:'')+
     '</div>'+
-    `<div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
-      <button class="btn-cancel" style="width:100%;font-size:12px;letter-spacing:.5px" onclick="toggleAthleteGate()">+ Ajouter un athlète</button>
-      <div id="new-athlete-gate" style="display:none;margin-top:10px">
-        <input type="number" id="athlete-gate-code" placeholder="Code" maxlength="4"
-          style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px"
-          onkeydown="if(event.key==='Enter')checkAthleteCode()">
-        <p id="athlete-gate-err" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
-        <button class="btn" style="width:100%" onclick="checkAthleteCode()">Valider</button>
-      </div>
+    `<div style="margin-top:14px;border-top:1px solid #2a2a2a;padding-top:12px">
+      <p style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#f55a00;margin-bottom:8px">+ Associer un athlète</p>
+      <input type="number" id="athlete-gate-code" placeholder="Code" maxlength="4"
+        style="width:100%;padding:8px 12px;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px;color:var(--text)"
+        onkeydown="if(event.key==='Enter')checkAthleteCode()">
+      <p id="athlete-gate-err" style="display:none;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-bottom:6px">Code incorrect</p>
+      <button class="btn" style="width:100%" onclick="checkAthleteCode()">Valider</button>
     </div>`;
   showStep(2);
 }
@@ -3638,7 +3636,8 @@ function toggleAthleteGate(){
 function checkAthleteCode(){
   const code=document.getElementById('athlete-gate-code').value.trim();
   if(code==='2026'){
-    toggleAthleteGate();
+    document.getElementById('athlete-gate-code').value='';
+    document.getElementById('athlete-gate-err').style.display='none';
     buildDiscCheckboxes();
     ['na-prenom','na-nom','na-annee','na-pw'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     const cat=document.getElementById('na-cat');if(cat)cat.selectedIndex=0;
