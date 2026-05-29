@@ -56,8 +56,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .ath-btn.active{background:var(--yellow);border-color:var(--yellow);color:#fff;}
 .ath-btn:hover{color:var(--text);}
 .ath-btn.coach-add{border-color:var(--yellow);color:var(--yellow);}
-.logout-btn{font-size:16px;font-weight:700;padding:5px 12px;background:#fff;border:none;color:var(--red);cursor:pointer;border-radius:6px;line-height:1;transition:opacity .2s;}
-.logout-btn:hover{opacity:.75;}
+.logout-btn{padding:6px 10px;background:none;border:1.5px solid rgba(192,57,43,.35);color:var(--red);cursor:pointer;border-radius:6px;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.logout-btn:hover{border-color:var(--red);opacity:.8;}
 
 /* ── HEADER ─────────────────────────────── */
 header{padding:22px 0 24px;border-bottom:1px solid #2a2a2a;margin-bottom:22px;border-left:3px solid var(--yellow);padding-left:28px;}
@@ -1367,7 +1367,7 @@ tr:hover td{background:#222;}
 <div class="container" id="app" style="display:none">
   <div class="topbar">
     <div class="topbar-left" id="athlete-switcher"></div>
-    <button class="logout-btn" onclick="logout()" title="D&#233;connexion">&#x23FB;</button>
+    <button class="logout-btn" onclick="logout()" title="D&#233;connexion"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg></button>
   </div>
   <header>
     <div class="header-inner">
