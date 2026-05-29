@@ -4063,27 +4063,26 @@ window.addEventListener('orientationchange',()=>setTimeout(()=>Object.values(cha
 </script>
 <script>
 // ═══════════════════════════════════════════════════════════════════════════
-// RECHARGEMENT AUTOMATIQUE — NE PAS MODIFIER CETTE SECTION
-// Détecte les nouvelles versions via sw.js (toutes les 20s + retour au
-// premier plan + event SW_UPDATED du service worker).
-// RÈGLE : toute modification de index.html DOIT incrémenter CACHE dans sw.js.
+// RECHARGEMENT AUTOMATIQUE
+// Compare l'ETag de index.html (généré par Vercel à chaque déploiement).
+// Aucune modification manuelle nécessaire — le rechargement est entièrement
+// automatique dès qu'un nouveau déploiement est détecté.
 // ═══════════════════════════════════════════════════════════════════════════
 let _swVer = null;
 let _swReg = null;
 
 async function checkAppVersion() {
   try {
-    const r = await fetch('/sw.js?_=' + Date.now(), { cache: 'no-store' });
-    const txt = await r.text();
+    // HEAD request + timestamp → bypass cache SW, va directement au réseau
+    const r = await fetch('/index.html?_=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
     // Réseau OK → si mode hors ligne actif, reconnecter Supabase en priorité
     if (_offlineMode) { window.dispatchEvent(new Event('online')); return; }
-    const m = txt.match(/const CACHE = '([^']+)'/);
-    if (!m) return;
-    const v = m[1];
-    if (!_swVer) { _swVer = v; return; }   // 1er appel : mémoriser version
-    if (_swVer !== v) { location.reload(); return; } // version changée → reload
+    // ETag Vercel = empreinte du fichier, change automatiquement à chaque déploiement
+    const ver = r.headers.get('etag') || r.headers.get('last-modified');
+    if (!ver) return;
+    if (!_swVer) { _swVer = ver; return; }  // 1er appel : mémoriser
+    if (_swVer !== ver) { location.reload(); return; }  // changé → reload auto
   } catch(e) {}
-  // Même version → demander au SW de vérifier les mises à jour
   if (_swReg) try { await _swReg.update(); } catch(e) {}
 }
 
