@@ -1615,13 +1615,25 @@ async function initApp(){
     +'</div>';
   document.body.appendChild(splash);
   const minSplash=new Promise(r=>setTimeout(r,1000));
+
+  // ── try/finally : le splash est TOUJOURS retiré, même sur erreur inattendue ─
+  try{
+    await _initCore(box);
+  }finally{
+    await minSplash;
+    const s=document.getElementById('splash-screen');
+    if(s)s.remove();
+  }
+}
+
+async function _initCore(box){
   try{
     // Chargement léger : la liste des clubs seulement
     const {data:clubs,error:clubErr}=await sb.from('clubs').select('*').order('nom');
     if(clubErr)throw clubErr;
     clubsData=clubs||[];
 
-    // Tentative de restauration de session (connexion persistante)
+    // ── Restauration de session persistante ──────────────────────────────
     const savedSession=_loadSession();
     if(savedSession&&savedSession.selectedClub){
       const clubExists=clubsData.find(c=>c.id===savedSession.selectedClub);
@@ -1640,27 +1652,29 @@ async function initApp(){
                 ?savedSession.currentAthlete
                 :(athletesForCoach(cu.key)[0]?.id||null);
             }
-            await minSplash; splash.remove();
+            _saveSession(); // Rafraîchir le timer → 30 jours depuis cette ouverture
             document.getElementById('login-screen').style.display='none';
             document.getElementById('app').style.display='block';
             buildApp();
             return;
+          }else{
+            // Utilisateur introuvable en base → session obsolète
+            _clearSession();
           }
         }catch(e){
-          console.warn('Restauration de session échouée',e);
-          _clearSession();
+          // Erreur réseau : garder la session, réessayer au prochain lancement
+          console.warn('Restauration de session échouée (réseau ?)',e);
         }
       }
     }
 
-    await minSplash; splash.remove();
+    // Pas de session valide → écran de login
     renderClubStep();
     showStep(0);
   }catch(err){
     console.warn('Supabase inaccessible — tentative cache local',err);
     if(_loadCache()){
       _offlineMode=true;
-      await minSplash; splash.remove();
       // Tentative de restauration de session en mode hors ligne
       const savedSession=_loadSession();
       if(savedSession&&savedSession.selectedClub&&Object.keys(users).length){
@@ -1696,7 +1710,6 @@ async function initApp(){
       }
       _showOfflineBanner();
     }else{
-      await minSplash; splash.remove();
       const detail=err?.message||err?.details||err?.hint||JSON.stringify(err)||'inconnue';
       box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:14px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><p style="color:#888;font-size:10px;margin-top:8px;word-break:break-all">'+detail+'</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
     }
