@@ -71,17 +71,6 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 .instructions li{font-size:13px;color:#bbb;line-height:1.7;}
 .instructions li strong{color:#f5c400;}
 
-#btn-chrome{
-  display:none;
-  width:100%;padding:18px;
-  background:#fff;color:#111;
-  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:2px;
-  border:none;border-radius:14px;cursor:pointer;text-align:center;margin-top:16px;
-  transition:transform .15s,box-shadow .15s;
-  box-shadow:0 4px 24px rgba(255,255,255,.15);
-}
-#btn-chrome:hover{transform:translateY(-2px);}
-
 .divider{width:40px;height:3px;background:#f5c400;border-radius:2px;margin:40px auto;}
 .footer{font-size:11px;color:#444;text-align:center;margin-top:32px;letter-spacing:1px;}
 
@@ -136,7 +125,6 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
   <div class="install-section">
     <button id="btn-install" onclick="installApp()">⬇ INSTALLER L'APPLICATION</button>
     <a id="btn-open" href="/">OUVRIR L'APPLICATION →</a>
-    <button id="btn-chrome" onclick="openInChrome()">OUVRIR DANS CHROME →</button>
     <div id="progress-wrap">
       <div id="progress-bar"><div id="progress-fill"></div></div>
       <div id="progress-label">Installation en cours…</div>
@@ -164,16 +152,6 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
       </ol>
     </div>
 
-    <!-- Google App / navigateur intégré (GSA) -->
-    <div class="instructions" id="gsa-instructions" style="display:none">
-      <p>⚠️ Navigateur incompatible</p>
-      <ol>
-        <li>Cette page est ouverte dans <strong>l'application Google</strong>, qui ne peut pas installer de vraie application</li>
-        <li>Appuie sur <strong>« OUVRIR DANS CHROME »</strong> ci-dessous</li>
-        <li>Dans Chrome, reviens sur cette page et appuie sur <strong>« Installer »</strong></li>
-      </ol>
-    </div>
-
     <!-- Android : si beforeinstallprompt ne se déclenche pas (ancienne version installée) -->
     <div class="instructions" id="android-help" style="display:none">
       <p>⚠️ Ancienne version détectée</p>
@@ -193,15 +171,11 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 let deferredPrompt = null;
 let promptFired = false;
 
-const ua = navigator.userAgent;
 const isInstalled = window.matchMedia('(display-mode: standalone)').matches
   || window.navigator.standalone === true;
-const isIOS     = /iphone|ipad|ipod/i.test(ua) && !window.MSStream;
-const isFirefox = /firefox\//i.test(ua);
-const isAndroid = /android/i.test(ua);
-// Navigateurs intégrés incapables d'installer une PWA en WebAPK :
-// GSA = Google Search App, FBAN/FBAV = Facebook, Instagram, etc.
-const isInAppBrowser = /gsa\//i.test(ua) || /fban|fbav/i.test(ua) || /instagram/i.test(ua);
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+const isAndroid = /android/i.test(navigator.userAgent);
 
 function setStatus(msg) {
   document.getElementById('install-status').innerHTML = msg;
@@ -219,32 +193,10 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 
-// ── Fonction : ouvrir dans Chrome via intent Android ─────────────────────────
-function openInChrome() {
-  const url  = window.location.href;
-  const host = window.location.hostname;
-  const path = window.location.pathname + window.location.search;
-  // intent:// force l'ouverture dans l'app Chrome (package com.android.chrome)
-  // S.browser_fallback_url = URL de secours si Chrome n'est pas installé
-  const intent = 'intent://' + host + path
-    + '#Intent;scheme=https'
-    + ';package=com.android.chrome'
-    + ';S.browser_fallback_url=' + encodeURIComponent(url)
-    + ';end';
-  window.location.href = intent;
-}
-
 // ── Déjà installée en mode standalone ────────────────────────────────────────
 if (isInstalled) {
   document.getElementById('btn-open').textContent = '→ OUVRIR L\'APPLICATION';
   showOpen('Application déjà installée.');
-}
-
-// ── Navigateur intégré (Google App, Facebook, Instagram…) ────────────────────
-else if (isInAppBrowser && isAndroid) {
-  document.getElementById('gsa-instructions').style.display = 'block';
-  document.getElementById('btn-chrome').style.display = 'block';
-  setStatus('');
 }
 
 // ── iOS ───────────────────────────────────────────────────────────────────────
