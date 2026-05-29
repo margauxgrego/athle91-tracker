@@ -2460,6 +2460,16 @@ function buildTabs(){
     _tb.addEventListener('touchmove',e=>{const d=_sx-e.touches[0].clientX;if(Math.abs(d)>4){_mv=true;_tb.scrollLeft=_ss+d;e.preventDefault();}},{passive:false});
     _tb.addEventListener('touchend',e=>{if(_mv)e.preventDefault();},{passive:false});
   }
+  // Centrer l'onglet actif par défaut dans la barre (mobile) après rendu
+  if(window.innerWidth<=640){
+    requestAnimationFrame(()=>{
+      const bar=document.getElementById('main-tabs');
+      const activeBtn=bar?.querySelector('.tab.active');
+      if(bar&&activeBtn){
+        bar.scrollLeft=activeBtn.offsetLeft-(bar.offsetWidth/2)+(activeBtn.offsetWidth/2);
+      }
+    });
+  }
 }
 
 function discKey(d){return d.toLowerCase().replace(/ /g,'_').replace(/[^a-z0-9_]/g,'');}
@@ -2807,8 +2817,9 @@ function refreshObservations(){
 }
 
 function switchTab(name){
-  // Retour en haut fluide à chaque changement de page
-  window.scrollTo({top:0,behavior:'smooth'});
+  // Retour en haut après le reflow — couvre tous les onglets y compris futures disciplines
+  window.scrollTo({top:0,behavior:'instant'});
+  requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'instant'}));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   const btn=[...document.querySelectorAll('.tab')].find(t=>t.getAttribute('onclick')?.includes("'"+name+"'"));
@@ -2816,12 +2827,24 @@ function switchTab(name){
   // Titre de page centré (visible sur mobile uniquement)
   const titleEl=document.getElementById('page-title');
   if(titleEl&&btn)titleEl.textContent=btn.textContent.trim();
+  // Centrer l'onglet actif dans la barre du bas (mobile)
+  if(window.innerWidth<=640&&btn){
+    const bar=document.getElementById('main-tabs');
+    if(bar){
+      const target=btn.offsetLeft-(bar.offsetWidth/2)+(btn.offsetWidth/2);
+      bar.scrollTo({left:target,behavior:'smooth'});
+    }
+  }
   const el=document.getElementById('tab-'+name);
   if(el)el.classList.add('active');
   // Rafraîchit les observations à chaque visite de l'onglet
   if(name==='observations'){
     if(currentUser?.type==='coach')loadCoachObservations(currentAthlete);
     else loadAthleteObservations(currentAthlete);
+  }
+  // Records : re-render à chaque visite pour garder les données à jour
+  if(name==='records'){
+    renderRecords();
   }
   const ath=athletes[currentAthlete];
   if(ath){
