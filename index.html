@@ -1131,6 +1131,14 @@ tr:hover td{background:#222;}
 </head>
 <body>
 
+<!-- SPLASH — premier élément du DOM : visible dès le premier pixel rendu, avant tout JS -->
+<div id="splash-screen" style="position:fixed;inset:0;background:#fff;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <img src="/icon-192.png" style="width:120px;height:120px;border-radius:28px;" alt="">
+  <div style="position:absolute;bottom:max(36px,env(safe-area-inset-bottom,36px));left:0;right:0;text-align:center;">
+    <span style="font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#bbb;">from </span><span style="font-family:'Barlow',sans-serif;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(90deg,#f5c400,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">MG</span>
+  </div>
+</div>
+
 <!-- OVERLAY CHARGEMENT (back button iOS) -->
 <div id="loading-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#ececec;align-items:center;justify-content:center;flex-direction:column;gap:12px">
   <div class="logo-badge"><span class="logo-athle">ATHLÉ</span><span class="logo-91">91</span></div>
@@ -1604,16 +1612,8 @@ async function loadAllData(clubId=selectedClub){
 // ─── INIT APP ─────────────────────────────────────────────────────────────
 async function initApp(){
   const box=document.querySelector('.login-box');
-  // ── Écran de démarrage plein écran ─────────────────────────────────────
-  const splash=document.createElement('div');
-  splash.id='splash-screen';
-  splash.style.cssText='position:fixed;inset:0;background:#fff;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
-  splash.innerHTML='<img src="/icon-192.png" style="width:120px;height:120px;border-radius:28px;">'
-    +'<div style="position:absolute;bottom:max(36px,env(safe-area-inset-bottom,36px));left:0;right:0;text-align:center;">'
-    +'<span style="font-family:\'Barlow\',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#bbb;">from </span>'
-    +'<span style="font-family:\'Barlow\',sans-serif;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(90deg,#f5c400,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">MG</span>'
-    +'</div>';
-  document.body.appendChild(splash);
+  // Le splash est déjà dans le HTML (premier élément du <body>),
+  // visible dès le premier rendu — pas besoin de le créer en JS.
   const minSplash=new Promise(r=>setTimeout(r,1000));
 
   // ── try/finally : le splash est TOUJOURS retiré, même sur erreur inattendue ─
