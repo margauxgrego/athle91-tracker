@@ -1064,22 +1064,8 @@ tr:hover td{background:#222;}
   }
 }
 
-/* ═══ TITRE DE PAGE (mobile) ════════════════════════════════════════════════ */
-#page-title{display:none;}
-@media(max-width:640px){
-  #page-title{
-    display:block;
-    text-align:center;
-    font-size:14px;
-    font-weight:800;
-    letter-spacing:.8px;
-    text-transform:uppercase;
-    color:var(--text);
-    padding:10px 16px 8px;
-    border-bottom:1px solid #2a2a2a;
-    margin-bottom:4px;
-  }
-}
+/* ═══ TITRE DE PAGE (mobile) — masqué ══════════════════════════════════════ */
+#page-title{display:none!important;}
 
 
 /* ═══ ANTI-ZOOM iOS : les inputs < 16px déclenchent un zoom automatique ══════ */
@@ -2832,8 +2818,8 @@ function refreshObservations(){
 }
 
 function switchTab(name){
-  // Retour en haut fluide à chaque changement de page
-  window.scrollTo({top:0,behavior:'smooth'});
+  // Retour en haut instantané à chaque changement de page
+  window.scrollTo({top:0,behavior:'instant'});
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   const btn=[...document.querySelectorAll('.tab')].find(t=>t.getAttribute('onclick')?.includes("'"+name+"'"));
@@ -2855,6 +2841,11 @@ function switchTab(name){
   if(name==='observations'){
     if(currentUser?.type==='coach')loadCoachObservations(currentAthlete);
     else loadAthleteObservations(currentAthlete);
+  }
+  // Records : re-render puis re-scroll après le reflow (les historiques ouverts gonflent la hauteur)
+  if(name==='records'){
+    renderRecords();
+    requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'instant'}));
   }
   const ath=athletes[currentAthlete];
   if(ath){
