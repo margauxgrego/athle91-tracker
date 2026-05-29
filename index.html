@@ -1802,7 +1802,13 @@ async function createClub(){
   if(!nom){showMessage('Information manquante','Le nom du club est requis.','danger');return;}
   document.getElementById('club-create-err').style.display='none';
   const {data:newClub,error}=await sb.from('clubs').insert({nom,code_postal:cp||null}).select().single();
-  if(error){document.getElementById('club-create-err').style.display='block';return;}
+  if(error){
+    console.error('createClub error:',error);
+    const errEl=document.getElementById('club-create-err');
+    errEl.textContent=error.message||'Erreur lors de la création';
+    errEl.style.display='block';
+    return;
+  }
   clubsData.push({id:newClub.id,nom:newClub.nom,code_postal:newClub.code_postal});
   clubsData.sort((a,b)=>a.nom.localeCompare(b.nom));
   document.getElementById('new-club-gate').style.display='none';
