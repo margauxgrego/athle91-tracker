@@ -2818,8 +2818,9 @@ function refreshObservations(){
 }
 
 function switchTab(name){
-  // Retour en haut instantané à chaque changement de page
+  // Retour en haut après le reflow — couvre tous les onglets y compris futures disciplines
   window.scrollTo({top:0,behavior:'instant'});
+  requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'instant'}));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   const btn=[...document.querySelectorAll('.tab')].find(t=>t.getAttribute('onclick')?.includes("'"+name+"'"));
@@ -2842,10 +2843,9 @@ function switchTab(name){
     if(currentUser?.type==='coach')loadCoachObservations(currentAthlete);
     else loadAthleteObservations(currentAthlete);
   }
-  // Records : re-render puis re-scroll après le reflow (les historiques ouverts gonflent la hauteur)
+  // Records : re-render à chaque visite pour garder les données à jour
   if(name==='records'){
     renderRecords();
-    requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'instant'}));
   }
   const ath=athletes[currentAthlete];
   if(ath){
