@@ -1,16 +1,30 @@
-const CACHE = 'athle91-v100';
-const ASSETS = [
+const CACHE = 'athle91-v101';
+
+// Ressources critiques : si elles échouent, le SW ne s'installe pas
+const CORE_ASSETS = [
   '/',
   '/index.html',
   '/icon-192.png',
   '/icon-512.png',
   '/manifest.json',
+  '/screenshot.png'
+];
+
+// Ressources CDN : on tente de les mettre en cache, mais un échec n'empêche pas l'installation
+const CDN_ASSETS = [
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
   'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  e.waitUntil(
+    caches.open(CACHE).then(async c => {
+      // Cacher les ressources critiques (bloque l'installation si ça échoue)
+      await c.addAll(CORE_ASSETS);
+      // Cacher les CDN en arrière-plan (échec toléré)
+      await Promise.allSettled(CDN_ASSETS.map(url => c.add(url)));
+    })
+  );
   self.skipWaiting();
 });
 

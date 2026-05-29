@@ -15,6 +15,13 @@
         { "key": "Cache-Control", "value": "no-cache" },
         { "key": "Content-Type", "value": "application/javascript" }
       ]
+    },
+    {
+      "source": "/screenshot.png",
+      "headers": [
+        { "key": "Content-Type", "value": "image/png" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
     }
   ]
 }
