@@ -1622,7 +1622,13 @@ async function initApp(){
   }finally{
     await minSplash;
     const s=document.getElementById('splash-screen');
-    if(s)s.remove();
+    if(s){
+      // Fade-out vers la page d'authentification ou l'app
+      s.style.transition='opacity 0.2s ease';
+      s.style.opacity='0';
+      await new Promise(r=>setTimeout(r,200));
+      s.remove();
+    }
   }
 }
 
