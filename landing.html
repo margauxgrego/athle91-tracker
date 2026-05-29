@@ -30,7 +30,6 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 
 .install-section{text-align:center;width:100%;max-width:400px;margin:0 auto;}
 
-/* Bouton principal */
 #btn-install{
   display:none;
   width:100%;padding:18px;
@@ -43,7 +42,6 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 #btn-install:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,196,0,.5);}
 #btn-install:active{transform:translateY(0);}
 
-/* Bouton ouvrir */
 #btn-open{
   display:none;
   width:100%;padding:18px;
@@ -57,7 +55,9 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 
 #install-status{margin-top:14px;font-size:13px;color:#666;line-height:1.5;}
 
-/* Barre de progression */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #444;border-top-color:#f5c400;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
 #progress-wrap{display:none;width:100%;margin-top:4px;}
 #progress-bar{background:#2a2a2a;border-radius:8px;height:14px;overflow:hidden;position:relative;}
 #progress-fill{height:100%;width:0%;border-radius:8px;background:linear-gradient(90deg,#f5c400,#f5a623);transition:width .4s ease;}
@@ -65,49 +65,11 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 #progress-label{font-size:13px;color:#888;margin-top:10px;text-align:center;letter-spacing:.5px;}
 
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid #444;border-top-color:#f5c400;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* Blocs d'instructions */
 .instructions{margin-top:20px;background:#1a1a1a;border-radius:12px;padding:16px 18px;text-align:left;}
 .instructions p{font-size:13px;color:#888;margin-bottom:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
 .instructions ol{padding-left:18px;}
 .instructions li{font-size:13px;color:#bbb;line-height:1.7;}
 .instructions li strong{color:#f5c400;}
-
-/* Séparateur "OU" */
-.separator{display:flex;align-items:center;gap:12px;margin:28px 0 20px;}
-.separator::before,.separator::after{content:'';flex:1;height:1px;background:#2a2a2a;}
-.separator span{font-size:11px;color:#444;letter-spacing:2px;white-space:nowrap;}
-
-/* Section "Ouvrir dans Chrome" */
-.chrome-section{background:#1a1a1a;border-radius:14px;padding:20px 18px;text-align:left;}
-.chrome-section h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:1px;}
-.chrome-section p{font-size:13px;color:#888;margin-bottom:16px;line-height:1.5;}
-
-#btn-chrome{
-  width:100%;padding:15px;
-  background:#fff;color:#111;
-  font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:2px;
-  border:none;border-radius:12px;cursor:pointer;
-  transition:transform .15s;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-}
-#btn-chrome:hover{transform:translateY(-2px);}
-#btn-chrome img{width:24px;height:24px;}
-
-/* Copier l'URL */
-.url-row{display:flex;gap:8px;margin-top:12px;}
-.url-box{flex:1;background:#111;border:1px solid #333;border-radius:10px;padding:10px 12px;font-size:12px;color:#888;font-family:monospace;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-#btn-copy{
-  padding:10px 16px;
-  background:#2a2a2a;color:#f5c400;
-  font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;
-  border:1px solid #3a3a3a;border-radius:10px;cursor:pointer;white-space:nowrap;
-  transition:background .15s;
-}
-#btn-copy:hover{background:#333;}
-#btn-copy.copied{background:#1a3a1a;color:#4caf50;border-color:#4caf50;}
 
 .divider{width:40px;height:3px;background:#f5c400;border-radius:2px;margin:40px auto;}
 .footer{font-size:11px;color:#444;text-align:center;margin-top:32px;letter-spacing:1px;}
@@ -161,16 +123,12 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
   </div>
 
   <div class="install-section">
-
-    <!-- ── Bouton principal + barre de progression ── -->
     <button id="btn-install" onclick="installApp()">⬇ INSTALLER L'APPLICATION</button>
     <a id="btn-open" href="/">OUVRIR L'APPLICATION →</a>
-
     <div id="progress-wrap">
       <div id="progress-bar"><div id="progress-fill"></div></div>
       <div id="progress-label">Installation en cours…</div>
     </div>
-
     <div id="install-status"><span class="spinner"></span>Préparation…</div>
 
     <!-- iOS -->
@@ -194,7 +152,7 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
       </ol>
     </div>
 
-    <!-- Android : ancienne version -->
+    <!-- Android : si beforeinstallprompt ne se déclenche pas (ancienne version installée) -->
     <div class="instructions" id="android-help" style="display:none">
       <p>⚠️ Ancienne version détectée</p>
       <ol>
@@ -203,23 +161,6 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
         <li><strong>Reviens sur cette page</strong> et appuie sur « Installer »</li>
       </ol>
     </div>
-
-    <!-- ── Section "Ouvrir dans Chrome" — toujours visible sur Android ── -->
-    <div id="chrome-section" style="display:none">
-      <div class="separator"><span>PROBLÈME D'INSTALLATION ?</span></div>
-      <div class="chrome-section">
-        <h3>🌐 Ouvrir dans Chrome</h3>
-        <p>L'application Google et certains navigateurs intégrés ne peuvent pas installer une vraie app. Utilise le vrai Chrome.</p>
-        <button id="btn-chrome" onclick="openInChrome()">
-          OUVRIR DANS CHROME →
-        </button>
-        <div class="url-row">
-          <div class="url-box" id="url-display"></div>
-          <button id="btn-copy" onclick="copyUrl()">📋 Copier</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <div class="divider"></div>
@@ -230,12 +171,11 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 let deferredPrompt = null;
 let promptFired = false;
 
-const ua = navigator.userAgent;
 const isInstalled = window.matchMedia('(display-mode: standalone)').matches
   || window.navigator.standalone === true;
-const isIOS     = /iphone|ipad|ipod/i.test(ua) && !window.MSStream;
-const isFirefox = /firefox\//i.test(ua);
-const isAndroid = /android/i.test(ua);
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+const isAndroid = /android/i.test(navigator.userAgent);
 
 function setStatus(msg) {
   document.getElementById('install-status').innerHTML = msg;
@@ -248,56 +188,12 @@ function showOpen(msg) {
   if (msg) setStatus(msg);
 }
 
-// ── Remplir l'URL dans la section Chrome ─────────────────────────────────────
-const installUrl = window.location.origin + '/install';
-document.getElementById('url-display').textContent = installUrl;
-
-// ── Ouvrir dans Chrome (plusieurs méthodes) ───────────────────────────────────
-function openInChrome() {
-  const host = window.location.hostname;
-  const path = '/install';
-  const fullUrl = window.location.origin + path;
-
-  // Méthode 1 : intent Android → force l'ouverture dans Chrome
-  const intent = 'intent://' + host + path
-    + '#Intent'
-    + ';scheme=https'
-    + ';package=com.android.chrome'
-    + ';action=android.intent.action.VIEW'
-    + ';S.browser_fallback_url=' + encodeURIComponent(fullUrl)
-    + ';end';
-
-  window.location.href = intent;
-
-  // Méthode 2 : si l'intent échoue après 1,5s → essayer googlechromes://
-  setTimeout(() => {
-    window.location.href = 'googlechromes://' + host + path;
-  }, 1500);
-}
-
-// ── Copier l'URL dans le presse-papier ────────────────────────────────────────
-function copyUrl() {
-  const btn = document.getElementById('btn-copy');
-  navigator.clipboard.writeText(installUrl).then(() => {
-    btn.textContent = '✓ Copié !';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '📋 Copier'; btn.classList.remove('copied'); }, 2500);
-  }).catch(() => {
-    // Fallback : sélectionner le texte
-    const box = document.getElementById('url-display');
-    const range = document.createRange();
-    range.selectNodeContents(box);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-  });
-}
-
-// ── Enregistrement SW ─────────────────────────────────────────────────────────
+// ── Enregistrement SW (requis par Chrome pour déclencher beforeinstallprompt) ─
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 
-// ── Déjà installée ────────────────────────────────────────────────────────────
+// ── Déjà installée en mode standalone ────────────────────────────────────────
 if (isInstalled) {
   document.getElementById('btn-open').textContent = '→ OUVRIR L\'APPLICATION';
   showOpen('Application déjà installée.');
@@ -320,12 +216,6 @@ else {
   showInstallBtn();
   setStatus('<span class="spinner"></span>Préparation de l\'installation…');
 
-  // Sur Android : toujours afficher la section "Ouvrir dans Chrome"
-  // (utile si l'utilisateur est dans l'app Google ou un navigateur intégré)
-  if (isAndroid) {
-    document.getElementById('chrome-section').style.display = 'block';
-  }
-
   window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     deferredPrompt = e;
@@ -333,7 +223,8 @@ else {
     setStatus('');
   });
 
-  // Timeout 5s : beforeinstallprompt n'a pas tiré → ancienne version
+  // Si beforeinstallprompt ne se déclenche pas après 5s :
+  // une ancienne version est probablement encore installée sur l'appareil.
   setTimeout(() => {
     if (!promptFired && !isInstalled) {
       if (isAndroid) {
@@ -356,32 +247,42 @@ function _setFill(pct) {
   document.getElementById('progress-label').textContent =
     pct < 100 ? 'Téléchargement… ' + pct + ' %' : '✓ Installation terminée !';
 }
+
 function _startProgress() {
   document.getElementById('btn-install').style.display = 'none';
   document.getElementById('progress-wrap').style.display = 'block';
   setStatus('');
   _progressVal = 0;
   _setFill(0);
+
+  // Phase 1 : 0 → 40 % en ~2 s (rapide, impression de démarrage)
+  // Phase 2 : 40 → 78 % en ~10 s (ralentit, attente serveur WebAPK)
   const start = Date.now();
-  const P1_END = 40, P1_MS = 2000;
-  const P2_END = 78, P2_MS = 10000;
+  const PHASE1_END = 40, PHASE1_MS = 2000;
+  const PHASE2_END = 78, PHASE2_MS = 10000;
+
   function tick() {
     const elapsed = Date.now() - start;
     let pct;
-    if (elapsed < P1_MS) {
-      pct = Math.round((elapsed / P1_MS) * P1_END);
+    if (elapsed < PHASE1_MS) {
+      pct = Math.round((elapsed / PHASE1_MS) * PHASE1_END);
     } else {
-      const t = Math.min((elapsed - P1_MS) / P2_MS, 1);
-      pct = P1_END + Math.round((1 - Math.pow(1 - t, 3)) * (P2_END - P1_END));
+      const e2 = elapsed - PHASE1_MS;
+      const t  = Math.min(e2 / PHASE2_MS, 1);
+      // ease-out cubique : rapide puis très lent vers la fin
+      const eased = 1 - Math.pow(1 - t, 3);
+      pct = PHASE1_END + Math.round(eased * (PHASE2_END - PHASE1_END));
     }
-    pct = Math.min(pct, P2_END);
+    pct = Math.min(pct, PHASE2_END);
     _setFill(pct);
-    if (pct < P2_END) _progressRaf = requestAnimationFrame(tick);
+    if (pct < PHASE2_END) _progressRaf = requestAnimationFrame(tick);
   }
   _progressRaf = requestAnimationFrame(tick);
 }
+
 function _completeProgress() {
   if (_progressRaf) { cancelAnimationFrame(_progressRaf); _progressRaf = null; }
+  // Transition CSS (.4s) fait le reste jusqu'à 100 %
   _setFill(100);
   setTimeout(() => {
     document.getElementById('progress-wrap').style.display = 'none';
@@ -389,18 +290,19 @@ function _completeProgress() {
     setStatus('✓ Application installée ! Retrouve l\'icône sur ton écran d\'accueil et lance-la depuis là.');
   }, 600);
 }
+
 function _cancelProgress() {
   if (_progressRaf) { cancelAnimationFrame(_progressRaf); _progressRaf = null; }
   document.getElementById('progress-wrap').style.display = 'none';
 }
 
-// ── Après installation ────────────────────────────────────────────────────────
+// ── Après installation ─────────────────────────────────────────────────────────
 window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
   _completeProgress();
 });
 
-// ── Fonction d'installation ───────────────────────────────────────────────────
+// ── Fonction d'installation ────────────────────────────────────────────────────
 async function installApp() {
   if (!deferredPrompt) {
     setStatus('<span class="spinner"></span>Préparation en cours… réessaie dans quelques secondes.');
@@ -414,6 +316,7 @@ async function installApp() {
     _cancelProgress();
     showOpen('Installation annulée. Tu peux ouvrir l\'application directement.');
   } else {
+    // L'utilisateur a accepté → on démarre la progression pendant que Chrome génère le WebAPK
     _startProgress();
   }
 }

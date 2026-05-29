@@ -1,24 +1,29 @@
-const CACHE = 'athle91-v102';
+const CACHE = 'athle91-v101';
 
-const ALL_ASSETS = [
+// Ressources critiques : si elles échouent, le SW ne s'installe pas
+const CORE_ASSETS = [
   '/',
   '/index.html',
   '/icon-192.png',
   '/icon-512.png',
   '/manifest.json',
-  '/screenshot.png',
+  '/screenshot.png'
+];
+
+// Ressources CDN : on tente de les mettre en cache, mais un échec n'empêche pas l'installation
+const CDN_ASSETS = [
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
   'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'
 ];
 
 self.addEventListener('install', e => {
-  // Promise.allSettled : l'installation du SW réussit toujours,
-  // même si certaines ressources (CDN) ne sont pas joignables.
-  // Un SW qui échoue à s'installer empêche Chrome de générer un WebAPK.
   e.waitUntil(
-    caches.open(CACHE).then(c =>
-      Promise.allSettled(ALL_ASSETS.map(url => c.add(url)))
-    )
+    caches.open(CACHE).then(async c => {
+      // Cacher les ressources critiques (bloque l'installation si ça échoue)
+      await c.addAll(CORE_ASSETS);
+      // Cacher les CDN en arrière-plan (échec toléré)
+      await Promise.allSettled(CDN_ASSETS.map(url => c.add(url)));
+    })
   );
   self.skipWaiting();
 });
