@@ -4010,9 +4010,13 @@ async function linkExistingAthlete(){
     }
   }
   closeModal('modal-new-athlete');
-  currentAthlete=selectedExistingAthleteId;
-  buildApp();
-  broadcastChange();
+  if(currentUser){
+    currentAthlete=selectedExistingAthleteId;
+    buildApp();
+    broadcastChange();
+  }else{
+    showAthletes(selectedLoginCoach);
+  }
   showMessage('Athlète associé',`${ath?ath.prenom+' '+ath.nom:''} a bien été ajouté à votre liste.`);
 }
 
