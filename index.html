@@ -56,8 +56,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .ath-btn.active{background:var(--yellow);border-color:var(--yellow);color:#fff;}
 .ath-btn:hover{color:var(--text);}
 .ath-btn.coach-add{border-color:var(--yellow);color:var(--yellow);}
-.logout-btn{font-size:10px;font-weight:400;text-transform:uppercase;padding:6px 14px;background:none;border:1.5px solid rgba(192,57,43,.35);color:var(--red);cursor:pointer;border-radius:6px;letter-spacing:.5px;}
-.logout-btn:hover{border-color:var(--red);opacity:.8;}
+.logout-btn{font-size:16px;font-weight:700;padding:5px 12px;background:#fff;border:none;color:var(--red);cursor:pointer;border-radius:6px;line-height:1;transition:opacity .2s;}
+.logout-btn:hover{opacity:.75;}
 
 /* ── HEADER ─────────────────────────────── */
 header{padding:22px 0 24px;border-bottom:1px solid #2a2a2a;margin-bottom:22px;border-left:3px solid var(--yellow);padding-left:28px;}
@@ -297,7 +297,7 @@ tr:hover td{background:#222;}
   }
   .topbar-left::-webkit-scrollbar{display:none;}
   .ath-btn{font-size:10px;padding:5px 10px;white-space:nowrap;flex-shrink:0;}
-  .logout-btn{font-size:10px;padding:5px 10px;white-space:nowrap;flex-shrink:0;}
+  .logout-btn{padding:4px 10px;white-space:nowrap;flex-shrink:0;}
 
   /* ── Header ── */
   header{padding:8px 0 8px;margin-bottom:8px;padding-left:12px;}
@@ -466,7 +466,7 @@ tr:hover td{background:#222;}
   td{font-size:12px;padding:5px 5px;}
   .chart-wrap{height:140px;}
   .hurdles-counter{font-size:44px;}
-  .ath-btn,.logout-btn{font-size:10px;padding:4px 8px;}
+  .ath-btn{font-size:10px;padding:4px 8px;}
 }
 
 
@@ -1367,7 +1367,7 @@ tr:hover td{background:#222;}
 <div class="container" id="app" style="display:none">
   <div class="topbar">
     <div class="topbar-left" id="athlete-switcher"></div>
-    <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    <button class="logout-btn" onclick="logout()" title="D&#233;connexion">&#x23FB;</button>
   </div>
   <header>
     <div class="header-inner">
