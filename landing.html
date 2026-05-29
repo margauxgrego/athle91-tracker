@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Athlé 91 — Tracker</title>
+<title>Athlé 91 — Installer l'application</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#f5c400">
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -62,6 +62,7 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 .instructions p{font-size:13px;color:#888;margin-bottom:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
 .instructions ol{padding-left:18px;}
 .instructions li{font-size:13px;color:#bbb;line-height:1.7;}
+.instructions li strong{color:#f5c400;}
 
 .divider{width:40px;height:3px;background:#f5c400;border-radius:2px;margin:40px auto;}
 .footer{font-size:11px;color:#444;text-align:center;margin-top:32px;letter-spacing:1px;}
@@ -119,6 +120,7 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
     <a id="btn-open" href="/">OUVRIR L'APPLICATION →</a>
     <div id="install-status"><span class="spinner"></span>Préparation…</div>
 
+    <!-- iOS -->
     <div class="instructions" id="ios-instructions" style="display:none">
       <p>Installer sur iPhone / iPad</p>
       <ol>
@@ -128,6 +130,7 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
       </ol>
     </div>
 
+    <!-- Firefox -->
     <div class="instructions" id="firefox-instructions" style="display:none">
       <p>Installer sur Firefox</p>
       <ol>
@@ -135,6 +138,16 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
         <li>Clique sur l'icône <strong>🏠⊕</strong> ou <strong>⬇</strong> qui apparaît</li>
         <li>Sélectionne <strong>« Installer »</strong></li>
         <li>Si l'icône n'apparaît pas : menu <strong>☰</strong> → <strong>Plus d'outils</strong> → <strong>Installer le site…</strong></li>
+      </ol>
+    </div>
+
+    <!-- Android : si beforeinstallprompt ne se déclenche pas (ancienne version installée) -->
+    <div class="instructions" id="android-help" style="display:none">
+      <p>⚠️ Ancienne version détectée</p>
+      <ol>
+        <li>Appuie <strong>longtemps sur l'icône</strong> Athlé 91 sur ton écran d'accueil</li>
+        <li>Sélectionne <strong>Désinstaller</strong> puis confirme</li>
+        <li><strong>Reviens sur cette page</strong> et appuie sur « Installer »</li>
       </ol>
     </div>
   </div>
@@ -151,6 +164,7 @@ const isInstalled = window.matchMedia('(display-mode: standalone)').matches
   || window.navigator.standalone === true;
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
 const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+const isAndroid = /android/i.test(navigator.userAgent);
 
 function setStatus(msg) {
   document.getElementById('install-status').innerHTML = msg;
@@ -168,27 +182,26 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 
-// ── Déjà installée ────────────────────────────────────────────────────────
+// ── Déjà installée en mode standalone ────────────────────────────────────────
 if (isInstalled) {
   document.getElementById('btn-open').textContent = '→ OUVRIR L\'APPLICATION';
   showOpen('Application déjà installée.');
 }
 
-// ── iOS : pas de beforeinstallprompt, instructions manuelles ──────────────
+// ── iOS ───────────────────────────────────────────────────────────────────────
 else if (isIOS) {
   document.getElementById('ios-instructions').style.display = 'block';
   showOpen('Sur iPhone, utilise Safari pour installer l\'app.');
 }
 
-// ── Firefox : instructions spécifiques ───────────────────────────────────
+// ── Firefox ───────────────────────────────────────────────────────────────────
 else if (isFirefox) {
   document.getElementById('firefox-instructions').style.display = 'block';
   showOpen('Sur Firefox, regarde l\'icône dans la barre d\'adresse pour installer.');
 }
 
-// ── Chrome / Edge / Android : installation automatique ───────────────────
+// ── Chrome / Edge / Android ───────────────────────────────────────────────────
 else {
-  // Afficher le bouton d'installation immédiatement (cliquable même avant que le prompt soit prêt)
   showInstallBtn();
   setStatus('<span class="spinner"></span>Préparation de l\'installation…');
 
@@ -196,41 +209,45 @@ else {
     e.preventDefault();
     deferredPrompt = e;
     promptFired = true;
-    // Prompt prêt : effacer le spinner, le bouton est cliquable
     setStatus('');
   });
 
-  // Pas de fallback artificiel : le bouton reste disponible pour un clic manuel
+  // Si beforeinstallprompt ne se déclenche pas après 5s :
+  // une ancienne version est probablement encore installée sur l'appareil.
+  setTimeout(() => {
+    if (!promptFired && !isInstalled) {
+      if (isAndroid) {
+        document.getElementById('android-help').style.display = 'block';
+        setStatus('Une ancienne version bloque l\'installation.');
+      } else {
+        showOpen('Installation non disponible. Ouvre l\'application directement.');
+      }
+    }
+  }, 5000);
 }
 
-// ── Après installation ────────────────────────────────────────────────────
+// ── Après installation ─────────────────────────────────────────────────────────
 window.addEventListener('appinstalled', () => {
   document.getElementById('btn-install').style.display = 'none';
+  document.getElementById('android-help').style.display = 'none';
   deferredPrompt = null;
-  // Ne pas rediriger dans le navigateur : ça ouvrirait en mode web, pas standalone.
-  // L'icône ajoutée à l'écran d'accueil ouvrira directement l'app installée.
-  document.getElementById('btn-open').textContent = '→ OUVRIR L\'APPLICATION';
-  showOpen('');
-  setStatus('✓ Application installée ! Ouvre-la depuis l\'icône sur ton écran d\'accueil.');
+  setStatus('✓ Application installée ! Retrouve l\'icône sur ton écran d\'accueil et lance-la depuis là.');
 });
 
-// ── Fonction d'installation ───────────────────────────────────────────────
+// ── Fonction d'installation ────────────────────────────────────────────────────
 async function installApp() {
   if (!deferredPrompt) {
-    // Le prompt n'est pas encore prêt : attendre
-    setStatus('<span class="spinner"></span>Préparation en cours, réessaie dans quelques secondes…');
+    setStatus('<span class="spinner"></span>Préparation en cours… réessaie dans quelques secondes.');
     return;
   }
   const prompt = deferredPrompt;
   deferredPrompt = null;
-  setStatus('Installation en cours…');
   prompt.prompt();
   const { outcome } = await prompt.userChoice;
   if (outcome === 'dismissed') {
     showOpen('Installation annulée. Tu peux ouvrir l\'application directement.');
     document.getElementById('btn-install').style.display = 'none';
   }
-  // Si 'accepted' : l'événement appinstalled gère la redirection
 }
 </script>
 
