@@ -1,4 +1,4 @@
-const CACHE = 'athle91-v102';
+const CACHE = 'athle91-v103';
 
 // Ressources critiques : si elles échouent, le SW ne s'installe pas
 const CORE_ASSETS = [
