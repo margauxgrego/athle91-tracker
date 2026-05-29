@@ -1232,7 +1232,7 @@ tr:hover td{background:#222;}
 
     <!-- Mode : Athlète existant -->
     <div id="na-form-link" style="display:none">
-      <p style="font-size:12px;color:#fff;margin-bottom:10px">Sélectionnez un athlète déjà enregistré pour l'associer à votre profil coach.</p>
+      <p style="font-size:12px;color:#fff;margin-bottom:10px">Sélectionnez un athlète déjà enregistré pour l'associer à votre profil.</p>
       <div class="existing-ath-list" id="na-existing-list"></div>
       <div class="modal-actions">
         <button class="btn-sm-cancel" onclick="closeModal('modal-new-athlete')">Annuler</button>
@@ -1819,7 +1819,7 @@ function showAthletes(coachKey){
     (!coachAthletes.length?`<div class="empty-state" style="padding:18px">Aucun athlète pour ce coach</div>`:'')+
     '</div>'+
     `<div style="margin-top:14px;border-top:1px solid #2a2a2a;padding-top:12px">
-      <p style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#f55a00;margin-bottom:8px">+ Associer un athlète</p>
+      <p style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#f55a00;margin-bottom:8px">+ Ajouter un athlète</p>
       <input type="number" id="athlete-gate-code" placeholder="Code" maxlength="4"
         style="width:100%;padding:8px 12px;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:8px;font-size:15px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:6px;color:var(--text)"
         onkeydown="if(event.key==='Enter')checkAthleteCode()">
@@ -2386,12 +2386,6 @@ function showNoAthleteScreen(){
     </div>`;
 }
 
-function openLinkAthleteModal(){
-  // Ouvre la modale directement sur l'onglet "Athlète existant" (currentUser est défini)
-  buildDiscCheckboxes();
-  origOpenModal('modal-new-athlete');
-  setAthleteMode('link');
-}
 
 function buildSwitcher(){
   const sw=document.getElementById('athlete-switcher');
@@ -2400,7 +2394,6 @@ function buildSwitcher(){
     sw.innerHTML=coachAthletes.map(a=>
       `<button class="ath-btn ${a.id===currentAthlete?'active':''}" onclick="switchAthlete('${a.id}')">${a.prenom} ${a.nom}</button>`
     ).join('')+
-    `<button class="ath-btn" onclick="openLinkAthleteModal()" title="Associer un athlète existant">+ Associer</button>`+
     `<button class="ath-btn" onclick="openCoachProfile()">Profil coach</button>`;
   }else{
     sw.innerHTML=`<span style="font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px">Mon espace</span>`;
@@ -3962,16 +3955,14 @@ function setAthleteMode(mode){
 }
 
 function buildExistingAthletesList(){
-  const coachKey=currentUser&&currentUser.type==='coach'?currentUser.key:null;
+  const coachKey=(currentUser&&currentUser.type==='coach'?currentUser.key:null)||selectedLoginCoach||null;
   const container=document.getElementById('na-existing-list');
-  if(!coachKey){
-    container.innerHTML='<p style="text-align:center;color:#fff;font-size:12px;padding:16px 0">Connectez-vous en tant que coach puis utilisez le bouton <strong>+ Associer</strong> dans la barre de navigation.</p>';
-    return;
-  }
   const all=Object.values(athletes).filter(a=>{
-    if(a.coachId===coachKey)return false;                                      // déjà mon athlète (principal)
-    if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false;         // déjà lié (multi-coach)
-    return true; // tous les athlètes non encore liés à ce coach
+    if(coachKey){
+      if(a.coachId===coachKey)return false;                                    // déjà mon athlète (principal)
+      if(a.extraCoaches&&a.extraCoaches.includes(coachKey))return false;       // déjà lié (multi-coach)
+    }
+    return true;
   }).sort((a,b)=>`${a.nom}${a.prenom}`.localeCompare(`${b.nom}${b.prenom}`));
   if(!all.length){
     container.innerHTML='<p style="text-align:center;color:#fff;font-size:12px;padding:16px 0">Tous les athlètes sont déjà associés à votre profil.</p>';
@@ -3999,7 +3990,7 @@ function selectExistingAthlete(id){
 
 async function linkExistingAthlete(){
   if(!selectedExistingAthleteId){showMessage('Sélection manquante','Veuillez sélectionner un athlète dans la liste.','danger');return;}
-  const coachKey=currentUser&&currentUser.type==='coach'?currentUser.key:null;
+  const coachKey=(currentUser&&currentUser.type==='coach'?currentUser.key:null)||selectedLoginCoach||null;
   if(!coachKey)return;
   const ath=athletes[selectedExistingAthleteId];
   const isOrphan=!ath||!ath.coachId||!users[ath.coachId];
