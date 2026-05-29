@@ -1607,15 +1607,13 @@ async function initApp(){
   // ── Écran de démarrage plein écran ─────────────────────────────────────
   const splash=document.createElement('div');
   splash.id='splash-screen';
-  splash.style.cssText='position:fixed;inset:0;background:#fff;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s ease;';
+  splash.style.cssText='position:fixed;inset:0;background:#fff;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
   splash.innerHTML='<img src="/icon-192.png" style="width:120px;height:120px;border-radius:28px;">'
     +'<div style="position:absolute;bottom:max(36px,env(safe-area-inset-bottom,36px));left:0;right:0;text-align:center;">'
     +'<span style="font-family:\'Barlow\',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#bbb;">from </span>'
     +'<span style="font-family:\'Barlow\',sans-serif;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(90deg,#f5c400,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">MG</span>'
     +'</div>';
   document.body.appendChild(splash);
-  // Fade-in : déclencher après le premier rendu
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{ splash.style.opacity='1'; }));
   const minSplash=new Promise(r=>setTimeout(r,1000));
 
   // ── try/finally : le splash est TOUJOURS retiré, même sur erreur inattendue ─
