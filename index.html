@@ -4062,25 +4062,31 @@ window.addEventListener('orientationchange',()=>setTimeout(()=>Object.values(cha
 </script>
 <script>
 // ═══════════════════════════════════════════════════════════════════════════
-// RECHARGEMENT AUTOMATIQUE
-// Compare l'ETag de index.html (généré par Vercel à chaque déploiement).
-// Aucune modification manuelle nécessaire — le rechargement est entièrement
-// automatique dès qu'un nouveau déploiement est détecté.
+// RECHARGEMENT AUTOMATIQUE — PERMANENT
+// Vercel exécute buildCommand à chaque déploiement → version.json reçoit
+// un nouveau timestamp. L'app compare toutes les 20s et au retour au
+// premier plan. Anti-boucle via sessionStorage.
+// Aucune modification manuelle nécessaire pour les futurs déploiements.
 // ═══════════════════════════════════════════════════════════════════════════
 let _swVer = null;
 let _swReg = null;
 
 async function checkAppVersion() {
   try {
-    // HEAD request + timestamp → bypass cache SW, va directement au réseau
-    const r = await fetch('/index.html?_=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
+    // Timestamp dans l'URL → bypass cache SW → réseau direct garanti
+    const r = await fetch('/version.json?_=' + Date.now(), { cache: 'no-store' });
     // Réseau OK → si mode hors ligne actif, reconnecter Supabase en priorité
     if (_offlineMode) { window.dispatchEvent(new Event('online')); return; }
-    // ETag Vercel = empreinte du fichier, change automatiquement à chaque déploiement
-    const ver = r.headers.get('etag') || r.headers.get('last-modified');
-    if (!ver) return;
-    if (!_swVer) { _swVer = ver; return; }  // 1er appel : mémoriser
-    if (_swVer !== ver) { location.reload(); return; }  // changé → reload auto
+    if (!r.ok) return;
+    const data = await r.json();
+    const ver = String(data.v || '');
+    if (!ver || ver === '0') return;          // version initiale vide → ignorer
+    if (!_swVer) { _swVer = ver; return; }   // 1er appel : mémoriser
+    if (_swVer !== ver) {
+      if (sessionStorage.getItem('_rv') === ver) return; // anti-boucle infinie
+      sessionStorage.setItem('_rv', ver);
+      location.reload();                      // nouveau déploiement → reload
+    }
   } catch(e) {}
   if (_swReg) try { await _swReg.update(); } catch(e) {}
 }

@@ -1,4 +1,4 @@
-const CACHE = 'athle91-v104';
+const CACHE = 'athle91-v105';
 
 // Ressources critiques : si elles échouent, le SW ne s'installe pas
 const CORE_ASSETS = [
@@ -42,6 +42,11 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // version.json : toujours réseau direct, jamais mis en cache
+  if (e.request.url.includes('/version.json')) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
   // Supabase : toujours réseau
   if (e.request.url.includes('supabase.co')) {
     e.respondWith(fetch(e.request));

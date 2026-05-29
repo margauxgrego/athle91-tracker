@@ -1,4 +1,7 @@
 {
+  "buildCommand": "node -e \"require('fs').writeFileSync('version.json',JSON.stringify({v:Date.now()}),'utf8')\"",
+  "outputDirectory": ".",
+  "installCommand": "",
   "rewrites": [
     { "source": "/install", "destination": "/landing.html" }
   ],
@@ -21,6 +24,13 @@
       "headers": [
         { "key": "Content-Type", "value": "image/png" },
         { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    },
+    {
+      "source": "/version.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" },
+        { "key": "Content-Type", "value": "application/json" }
       ]
     }
   ]
