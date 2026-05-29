@@ -1614,6 +1614,7 @@ async function initApp(){
     +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:900;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(90deg,#f5c400,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">MG</span>'
     +'</div>';
   document.body.appendChild(splash);
+  const minSplash=new Promise(r=>setTimeout(r,1000));
   try{
     // Chargement léger : la liste des clubs seulement
     const {data:clubs,error:clubErr}=await sb.from('clubs').select('*').order('nom');
@@ -1639,7 +1640,7 @@ async function initApp(){
                 ?savedSession.currentAthlete
                 :(athletesForCoach(cu.key)[0]?.id||null);
             }
-            splash.remove();
+            await minSplash; splash.remove();
             document.getElementById('login-screen').style.display='none';
             document.getElementById('app').style.display='block';
             buildApp();
@@ -1652,14 +1653,14 @@ async function initApp(){
       }
     }
 
-    splash.remove();
+    await minSplash; splash.remove();
     renderClubStep();
     showStep(0);
   }catch(err){
     console.warn('Supabase inaccessible — tentative cache local',err);
     if(_loadCache()){
       _offlineMode=true;
-      splash.remove();
+      await minSplash; splash.remove();
       // Tentative de restauration de session en mode hors ligne
       const savedSession=_loadSession();
       if(savedSession&&savedSession.selectedClub&&Object.keys(users).length){
@@ -1695,7 +1696,7 @@ async function initApp(){
       }
       _showOfflineBanner();
     }else{
-      splash.remove();
+      await minSplash; splash.remove();
       const detail=err?.message||err?.details||err?.hint||JSON.stringify(err)||'inconnue';
       box.innerHTML='<div style="text-align:center;padding:32px"><p style="color:var(--red);font-size:14px;font-weight:600">Erreur de connexion.<br>Vérifiez votre connexion internet.</p><p style="color:#888;font-size:10px;margin-top:8px;word-break:break-all">'+detail+'</p><button class="btn" style="margin-top:16px" onclick="location.reload()">Réessayer</button></div>';
     }
