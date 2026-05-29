@@ -2543,9 +2543,9 @@ function buildDiscTab(disc){
       <div class="card disc-card-hist">
         <div class="card-title" style="cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between" onclick="toggleHist('${k}')">
           <span>Historique</span>
-          <span id="hist-chevron-${k}" style="font-size:12px;color:#bbb;display:inline-block;transition:transform .25s;${window.innerWidth>640?'transform:rotate(180deg)':''}">▼</span>
+          <span id="hist-chevron-${k}" style="font-size:12px;color:#bbb;display:inline-block;transition:transform .25s;transform:rotate(180deg)">▼</span>
         </div>
-        <div id="hist-body-${k}" style="display:${window.innerWidth>640?'block':'none'};margin-top:12px">
+        <div id="hist-body-${k}" style="display:block;margin-top:12px">
           <div class="table-wrap">
             <table><thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Niveau</th><th>Lieu</th>${haiesTh}${ventTh}</tr></thead>
             <tbody id="table-${k}"></tbody></table>
@@ -3125,10 +3125,8 @@ function renderRecords(){
       <div class="rec-history" id="rec-hist-${i}"></div>
     </div>`).join('');
 
-  // Sur desktop/tablette (> 640 px) : ouvrir tous les historiques automatiquement
-  if(window.innerWidth > 640){
-    cards.forEach((c, i) => toggleRecHistory(i, c.disc));
-  }
+  // Ouvrir tous les historiques automatiquement (tous appareils)
+  cards.forEach((c, i) => toggleRecHistory(i, c.disc));
 }
 
 function toggleRecHistory(i,disc){
