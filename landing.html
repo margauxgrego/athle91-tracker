@@ -71,20 +71,6 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
 .instructions li{font-size:13px;color:#bbb;line-height:1.7;}
 .instructions li strong{color:#f5c400;}
 
-/* Bloc Edge */
-.edge-block{margin-top:24px;background:#1a1a1a;border-radius:14px;padding:20px 18px;text-align:left;border:1px solid #2a2a2a;}
-.edge-block-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
-.edge-block p{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:16px;}
-#btn-edge{
-  display:block;width:100%;padding:16px;
-  background:linear-gradient(135deg,#0078d4,#106ebe);color:#fff;
-  font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:2px;
-  border:none;border-radius:12px;cursor:pointer;
-  transition:transform .15s,box-shadow .15s;
-  box-shadow:0 4px 20px rgba(0,120,212,.35);
-}
-#btn-edge:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,120,212,.5);}
-
 .divider{width:40px;height:3px;background:#f5c400;border-radius:2px;margin:40px auto;}
 .footer{font-size:11px;color:#444;text-align:center;margin-top:32px;letter-spacing:1px;}
 
@@ -175,13 +161,6 @@ body{background:#111;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh
         <li><strong>Reviens sur cette page</strong> et appuie sur « Installer »</li>
       </ol>
     </div>
-
-    <!-- Bloc Edge — affiché sur Android si Chrome ne crée pas un vrai WebAPK -->
-    <div class="edge-block" id="edge-block" style="display:none">
-      <div class="edge-block-title">Chrome ne crée qu'un raccourci ?</div>
-      <p>Sur certains appareils, Chrome n'installe qu'un lien au lieu d'une vraie application. <strong>Microsoft Edge</strong> installe la vraie app (visible dans tes applications).</p>
-      <button id="btn-edge" onclick="openInEdge()">INSTALLER AVEC EDGE →</button>
-    </div>
   </div>
 
   <div class="divider"></div>
@@ -207,18 +186,6 @@ function showInstallBtn() {
 function showOpen(msg) {
   document.getElementById('btn-open').style.display = 'block';
   if (msg) setStatus(msg);
-}
-
-// ── Ouvrir dans Edge via intent Android ───────────────────────────────────────
-function openInEdge() {
-  const host = window.location.hostname;
-  const path = '/install';
-  const fallback = window.location.origin + path;
-  // intent:// package Edge Android = com.microsoft.emmx
-  window.location.href = 'intent://' + host + path
-    + '#Intent;scheme=https;package=com.microsoft.emmx'
-    + ';S.browser_fallback_url=' + encodeURIComponent(fallback)
-    + ';end';
 }
 
 // ── Enregistrement SW (requis par Chrome pour déclencher beforeinstallprompt) ─
@@ -351,17 +318,6 @@ async function installApp() {
   } else {
     // L'utilisateur a accepté → on démarre la progression pendant que Chrome génère le WebAPK
     _startProgress();
-    // Sur Android : si appinstalled ne tire pas dans 20s,
-    // Chrome a probablement créé un raccourci (pas un WebAPK) → proposer Edge
-    if (isAndroid) {
-      setTimeout(() => {
-        if (_progressVal > 0 && _progressVal < 100) {
-          _cancelProgress();
-          document.getElementById('edge-block').style.display = 'block';
-          setStatus('⚠️ Chrome a créé un raccourci au lieu d\'une app. Essaie Edge ci-dessous.');
-        }
-      }, 20000);
-    }
   }
 }
 </script>
