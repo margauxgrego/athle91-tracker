@@ -2144,21 +2144,26 @@ const TUTORIAL_STEPS=[
   {
     title:'Bienvenue sur Athlé 91 !',
     text:'Ce tutoriel te guide en quelques étapes pour maîtriser toutes les fonctionnalités. Tu peux l\'arrêter à tout moment et le relancer depuis les Paramètres.',
+    coachText:'Ce tutoriel vous guide en quelques étapes pour maîtriser toutes les fonctionnalités. Vous pouvez l\'arrêter à tout moment et le relancer depuis les Paramètres.',
     target:null,tab:null
   },
   {
     title:'La navigation',
     text:'Ces onglets te permettent de passer entre tes disciplines, observations, records et paramètres. Sur mobile, le nom de l\'onglet actif s\'affiche en haut de l\'écran.',
+    coachText:'Ces onglets vous permettent de passer entre vos disciplines, observations, records et paramètres. Sur mobile, le nom de l\'onglet actif s\'affiche en haut de l\'écran.',
     target:'.tabs',tab:null,pos:'top'
   },
   {
     title:'Tes athlètes',
+    coachTitle:'Vos athlètes',
     text:'Cette barre affiche les athlètes disponibles. En tant que coach tu peux en gérer plusieurs. Clique sur un nom pour changer de vue.',
+    coachText:'Cette barre affiche les athlètes disponibles. En tant que coach vous pouvez en gérer plusieurs. Cliquez sur un nom pour changer de vue.',
     target:'.topbar',tab:null,pos:'bottom',skipFor:['athlete']
   },
   {
     title:'Gérer les disciplines',
     text:'Depuis les Paramètres, ajoute ou retire des disciplines. Chaque discipline crée un onglet dédié avec son graphique de progression et son historique complet.',
+    coachText:'Depuis les Paramètres, ajoutez ou retirez des disciplines. Chaque discipline crée un onglet dédié avec son graphique de progression et son historique complet.',
     target:'#param-disc-card',tab:'parametres',scrollBlock:'end'
   },
   {
@@ -2174,16 +2179,19 @@ const TUTORIAL_STEPS=[
   {
     title:'Records & Historique',
     text:'L\'onglet Records centralise tous tes records personnels par discipline. Clique sur une carte pour dérouler l\'historique complet avec le compteur de performances.',
+    coachText:'L\'onglet Records centralise tous les records de l\'athlète sélectionné par discipline. Cliquez sur une carte pour dérouler l\'historique complet avec le compteur de performances.',
     target:'.records-grid',tab:'records',pos:'top'
   },
   {
     title:'Graphique de progression',
     text:'Chaque discipline affiche un graphique interactif. Filtre par période ou par type de séance pour analyser finement ta progression.',
+    coachText:'Chaque discipline affiche un graphique interactif. Filtrez par période ou par type de séance pour analyser finement la progression de l\'athlète.',
     target:'.disc-card-chart',tab:null,pos:'bottom'
   },
   {
     title:'C\'est parti ! 🎯',
     text:'Tu maîtrises maintenant l\'essentiel ! Tu peux relancer ce tutoriel à tout moment depuis l\'onglet Paramètres. Bonne chance sur les pistes !',
+    coachText:'Vous maîtrisez maintenant l\'essentiel ! Vous pouvez relancer ce tutoriel à tout moment depuis l\'onglet Paramètres. Bonne chance sur les pistes !',
     target:null,tab:null
   }
 ];
@@ -2347,10 +2355,13 @@ async function _showTutStep(n){
   if(!card)return;
   // Forcer le re-déclenchement de l'animation CSS
   card.style.animation='none';void card.offsetWidth;card.style.animation='';
+  const _isCoach=currentUser?.type==='coach';
+  const _tutTitle=(_isCoach&&step.coachTitle)?step.coachTitle:step.title;
+  const _tutText=(_isCoach&&step.coachText)?step.coachText:step.text;
   card.innerHTML=`
     <div class="tut-step-label">Étape ${visiblePos+1} / ${visibleTotal}</div>
-    <div class="tut-card-title">${step.title}</div>
-    <div class="tut-card-text">${step.text}</div>
+    <div class="tut-card-title">${_tutTitle}</div>
+    <div class="tut-card-text">${_tutText}</div>
     <div class="tut-dots">${dots}</div>
     <div class="tut-card-actions">
       <button class="tut-skip" onclick="skipTutorial()">Passer</button>
