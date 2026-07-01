@@ -3439,12 +3439,9 @@ async function changePassword(){
   if(!pw1||pw1.length<4){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Min 4 caractères';return;}
   if(pw1!==pw2){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Les mots de passe ne correspondent pas';return;}
   const password_hash=await hashPassword(pw1);
-  const table=currentUser.type==='athlete'?'athletes':'coaches';
-  const id=currentUser.type==='athlete'?currentAthlete:currentUser.key;
-  const {error}=await sb.from(table).update({password_hash}).eq('id',id);
+  const {error}=await sb.from('athletes').update({password_hash}).eq('id',currentAthlete);
   if(error){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Erreur lors du changement';return;}
-  if(currentUser.type==='athlete')athletes[currentAthlete].password_hash=password_hash;
-  else users[currentUser.key].password_hash=password_hash;
+  athletes[currentAthlete].password_hash=password_hash;
   msg.style.display='block';msg.style.color='var(--yellow)';msg.textContent='Mis à jour ✓';
   document.getElementById('p-pw1').value='';document.getElementById('p-pw2').value='';
 }
