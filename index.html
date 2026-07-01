@@ -3351,9 +3351,9 @@ function openEditPerf(dk,k,disc,id){
   document.getElementById('ep-type').value=d.type;
   document.getElementById('ep-lieu').value=d.lieu||'';
   document.getElementById('ep-niveau').value=d.niveau||'';
-  const step=isTimeDisc(disc)?'0.01':'1';
+  const step=isTimeDisc(disc)?'0.01':isDistDisc(disc)?'1':'0.01';
   document.getElementById('ep-val').step=step;
-  const lbl=isDistDisc(disc)?disc+' (cm)':isTimeDisc(disc)?'Temps (s)':disc+' (cm)';
+  const lbl=isDistDisc(disc)?disc+' (cm)':isTimeDisc(disc)?'Temps (s)':disc+' (m)';
   document.getElementById('ep-val-label').textContent=lbl;
   openModal('modal-edit-perf');
 }
