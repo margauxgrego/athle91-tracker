@@ -3112,7 +3112,7 @@ function renderPerf(k,disc){
   const pr=allData.length?(dist?Math.max(...allData.map(d=>d.val)):isTime?Math.min(...allData.map(d=>d.val)):Math.max(...allData.map(d=>d.val))):0;
   const last=sorted[0],prev=sorted[1];
   const diff=last&&prev?+(last.val-prev.val).toFixed(2):0;
-  const fmtPr=v=>dist?cmToM(v):isTime?formatTime(v):v+' cm';
+  const fmtPr=v=>dist?cmToM(v):isTime?formatTime(v):mToM(v);
   const statsEl=document.getElementById('stats-'+k);
   if(statsEl)statsEl.innerHTML=`
     <div class="stat"><div class="n">${pr?fmtPr(pr):'—'}</div><div class="l">Record perso</div></div>
@@ -3195,7 +3195,7 @@ function renderRecords(){
     const dist=isDistDisc(disc),isTime=isTimeDisc(disc);
     const pr=dist?Math.max(...data.map(d=>d.val)):isTime?Math.min(...data.map(d=>d.val)):Math.max(...data.map(d=>d.val));
     const prEntry=[...data].sort((a,b)=>b.date.localeCompare(a.date)).find(d=>d.val===pr);
-    const fmtPr=dist?cmToM(pr):isTime?formatTime(pr):pr+' cm';
+    const fmtPr=dist?cmToM(pr):isTime?formatTime(pr):mToM(pr);
     shown.add(disc);
     cards.push({disc,fmtPr,year:extractYear(prEntry?.date)||'',cat:ath.cat||''});
   });
@@ -3238,7 +3238,7 @@ function toggleRecHistory(i,disc){
   data=[...data].sort((a,b)=>b.date.localeCompare(a.date));
   if(!data.length){el.innerHTML='<div class="empty-state" style="padding:12px">Aucune donnée</div>';el.classList.add('show');card.classList.add('open');return;}
   const dist=isDistDisc(disc),isTime=isTimeDisc(disc);
-  const fmt=v=>dist?cmToM(v):isTime?formatTime(v):v;
+  const fmt=v=>dist?cmToM(v):isTime?formatTime(v):mToM(v);
   el.innerHTML=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="min-width:0;width:100%;min-width:260px">
     <thead><tr><th>Date</th><th>Perf.</th><th>Type</th><th>Lieu</th></tr></thead>
     <tbody>${data.map(d=>`<tr>
