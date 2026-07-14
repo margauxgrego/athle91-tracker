@@ -2957,7 +2957,7 @@ function initFilter(k,data){
   const sel=document.getElementById('period-select-'+k);
   if(!sel)return;
   const cur=chartFilters[k].period;
-  sel.innerHTML='<option value="tout">Tout</option>'+
+  sel.innerHTML='<option value="tout">Année</option>'+
     years.map(y=>`<option value="${y}">${y}</option>`).join('');
   sel.value=cur;
 }
