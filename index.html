@@ -3024,7 +3024,6 @@ function buildChart(k){
   if(!disc)return;
   const dk=dataKey(disc);
   const allData=ath[dk]||[];
-  if(!chartFilters[k])chartFilters[k]={period:'tout',view:'les2'};
   initFilter(k,allData);
   const period=chartFilters[k].period,view=chartFilters[k].view;
   const dist=isDistDisc(disc),isTime=isTimeDisc(disc);
