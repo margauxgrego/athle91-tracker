@@ -2557,15 +2557,18 @@ function dataKey(d){
   if(k==='hauteur')return'hauteur';
   if(k==='longueur')return'longueur';
   if(k==='triple_saut'||k==='triplesaut')return'triplesaut';
-  if(k==='400m_haies'||k==='400mhaies')return'haies';
+  if(k==='400m_haies'||k==='400mhaies')return'm400haies';
+  if(k==='110m_haies'||k==='110mhaies')return'm110haies';
+  if(k==='100m_haies'||k==='100mhaies')return'm100haies';
   if(k==='80m_haies'||k==='80mhaies')return'm80haies';
+  if(k==='60m_haies'||k==='60mhaies')return'm60haies';
   if(k==='100m')return'm100';
   if(k==='200m')return'm200';
   if(k==='400m')return'm400';
   if(k==='50m')return'm50';
   if(k==='poids')return'poids';
   if(k==='disque')return'disque';
-  if(k.includes('haies'))return'haies';
+  if(k.includes('haies'))return k;
   return k;
 }
 function isDistDisc(d){return['Hauteur','Longueur','Triple Saut'].includes(d);}
@@ -3096,7 +3099,7 @@ function renderAll(){
 
 function updateHeaderKPIs(){
   const ath=athletes[currentAthlete];
-  const total=['hauteur','haies','longueur','triplesaut',...(ath.disciplines.map(d=>dataKey(d)))]
+  const total=['hauteur','longueur','triplesaut',...(ath.disciplines.map(d=>dataKey(d)))]
     .filter((v,i,a)=>a.indexOf(v)===i)
     .reduce((s,k)=>s+(ath[k]||[]).filter(d=>d.type==='compet').length,0);
   const el=document.getElementById('nb-comps');
