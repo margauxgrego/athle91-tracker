@@ -2599,15 +2599,13 @@ function buildDiscTab(disc){
       <div class="card disc-card-chart">
         <div class="chart-header">
           <div class="card-title" style="margin:0">Progression</div>
-          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+          <div class="filter-row" style="align-items:center">
             <select id="period-select-${k}" class="chart-select" onchange="setPeriodSel('${k}',this.value)">
-              <option value="tout">Tout</option>
+              <option value="tout">Année</option>
             </select>
-            <div class="filter-row">
-              <button class="filter-btn active" onclick="setView('${k}','les2',this)">Les 2</button>
-              <button class="filter-btn f-compet" onclick="setView('${k}','compet',this)">Compét.</button>
-              <button class="filter-btn f-entrainement" onclick="setView('${k}','entrainement',this)">Entraîn.</button>
-            </div>
+            <button class="filter-btn active" onclick="setView('${k}','les2',this)">Les 2</button>
+            <button class="filter-btn f-compet" onclick="setView('${k}','compet',this)">Compét.</button>
+            <button class="filter-btn f-entrainement" onclick="setView('${k}','entrainement',this)">Entraîn.</button>
           </div>
         </div>
         <div class="chart-wrap"><canvas id="chart-${k}"></canvas></div>
