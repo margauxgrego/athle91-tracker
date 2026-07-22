@@ -1,0 +1,23 @@
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'   # Chaque lundi à 8h00 UTC
+  workflow_dispatch:        # Déclenchement manuel pour tester
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase (SELECT léger)
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4dWlsdGNneG52c3F4Z3lkeXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTYxMTgsImV4cCI6MjA5NTI5MjExOH0.VRfH2EZMBvtb5lr_yMAOEe518oU0FCfTMPAh2452CXI" \
+            -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4dWlsdGNneG52c3F4Z3lkeXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTYxMTgsImV4cCI6MjA5NTI5MjExOH0.VRfH2EZMBvtb5lr_yMAOEe518oU0FCfTMPAh2452CXI" \
+            "https://jxuiltcgxnvsqxgydyxg.supabase.co/rest/v1/clubs?select=id&limit=1")
+          echo "HTTP status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "Supabase ping OK"
+          else
+            echo "Supabase ping FAILED (status $HTTP_STATUS)" && exit 1
+          fi
