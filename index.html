@@ -4255,18 +4255,27 @@ window.addEventListener('online', async () => {
 });
 
 if('serviceWorker' in navigator){
-  // Listener immédiat — avant le load pour éviter la race condition avec SW_UPDATED
   navigator.serviceWorker.addEventListener('message', event => {
     if (event.data && event.data.type === 'SW_UPDATED') location.reload();
   });
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
-      .then(reg => {
-        _swReg = reg;
-        reg.update();
-      });
+      .then(reg => { _swReg = reg; reg.update(); });
   });
 }
+// Polling version.json — force reload sur tous les appareils dès qu'un nouveau déploiement est détecté
+let _knownVer = null;
+async function _checkVer(){
+  try{
+    const r = await fetch('/version.json?_='+Date.now());
+    if(!r.ok) return;
+    const {v} = await r.json();
+    if(_knownVer===null){_knownVer=v;return;}
+    if(_knownVer!==v) location.reload();
+  }catch(e){}
+}
+_checkVer();
+setInterval(_checkVer, 3*60*1000);
 </script>
 </body>
 </html>
